@@ -1,36 +1,34 @@
-{% load static %}
-{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfumería | Catálogo</title>
+    <title>TechHollow | Innovación Tecnológica</title>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/estilo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
 </head>
 <body>
 
     <header class="main-header">
         <div class="header-container">
             <div class="logo-brand">
-                <img src="https://via.placeholder.com/120x50?text=Logo" alt="Perfumería Logo" class="logo">
-                <span class="brand-name">PERFUMERÍA</span>
+                <img src="imagenes/tu-logo.png" alt="TechHollow Logo" class="logo">
+                <span class="brand-name">TECH_HOLLOW</span>
             </div>
 
             <div class="search-wrapper">
-                <form action="" method="get">
-                    <input type="search" name="q" placeholder="Buscar perfumes, fragancias, lociones...">
+                <form action="resultados.html" method="get">
+                    <input type="search" name="q" placeholder="Buscar periféricos, hardware, gadgets...">
                     <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </form>
             </div>
 
             <nav class="header-actions">
-                <a href="#" title="Cuenta" class="action-icon">
+                <a href="../users/login.html" title="Cuenta" class="action-icon">
                     <i class="fa-regular fa-user"></i>
                 </a>
-                <a href="#" title="Carrito" class="action-icon cart-trigger">
+                <a href="carrito.html" title="Carrito" class="action-icon cart-trigger">
                     <i class="fa-solid fa-cart-shopping"></i>
                     <span class="cart-badge">0</span>
                 </a>
@@ -42,25 +40,52 @@
     </header>
 
     <main class="store-container">
+        
         <nav class="category-nav">
             <a href="#" class="chip active">Todos</a>
-            {% for cat in categorias %}
-                <a href="#" class="chip">{{ cat.nombre }}</a>
-            {% empty %}
-                <a href="#" class="chip">Fragancias</a>
-                <a href="#" class="chip">Lociones</a>
-                <a href="#" class="chip">Sets</a>
-            {% endfor %}
+            <a href="#" class="chip">Computadoras</a>
+            <a href="#" class="chip">Móviles</a>
+            <a href="#" class="chip">Accesorios</a>
+            <a href="#" class="chip">Gaming</a>
         </nav>
 
         <div class="content-layout">
             <aside class="filters-sidebar">
                 <div class="filter-card">
                     <h3>Filtrar por</h3>
+                    
+                    <div class="filter-section">
+                        <h4>Palabras clave</h4>
+                        <div class="active-chips">
+                            <span class="chip-tag">Azul <i class="fa-solid fa-xmark"></i></span>
+                            <span class="chip-tag">Gamer <i class="fa-solid fa-xmark"></i></span>
+                        </div>
+                    </div>
+
                     <div class="filter-section">
                         <h4>Precio</h4>
                         <div class="price-input-group">
-                            <input type="range" min="0" max="10000" value="1500" class="modern-slider">
+                            <span>$0</span>
+                            <input type="range" min="0" max="5000" value="1500" class="modern-slider">
+                            <span>$5k+</span>
+                        </div>
+                    </div>
+
+                    <div class="filter-section">
+                        <h4>Marcas Populares</h4>
+                        <div class="checkbox-list">
+                            <label class="custom-check">Asus
+                                <input type="checkbox" checked>
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="custom-check">Logitech
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
+                            <label class="custom-check">Razer
+                                <input type="checkbox">
+                                <span class="checkmark"></span>
+                            </label>
                         </div>
                     </div>
                 </div>
@@ -68,58 +93,98 @@
 
             <section class="products-view">
                 <div class="view-controls">
-                    <p class="results-count">Mostrando {{ productos|length }} productos</p>
+                    <p class="results-count">Mostrando 24 productos</p>
                     <select class="sort-select">
                         <option>Ordenar por: Relevancia</option>
                         <option>Precio: Menor a Mayor</option>
+                        <option>Precio: Mayor a Menor</option>
+                        <option>Lo más nuevo</option>
                     </select>
                 </div>
 
                 <div class="product-grid">
-                    {% for p in productos %}
-                    <article class="product-card">
-                        <div class="product-image-wrapper">
-                            <div class="product-image">
-                                <img src="https://via.placeholder.com/400x400?text={{ p.nombre|urlencode }}" alt="{{ p.nombre }}" class="product-img">
-                            </div>
-                            <span class="badge-oferta">Oferta</span>
+                    <article class="product-card featured">
+                        <div class="product-image">
+                            <span class="badge sale">Oferta</span>
+                            <img src="ruta-imagen.jpg" alt="Producto">
                         </div>
                         <div class="product-info">
-                            <p class="product-category">{{ p.categoria.nombre|default:"Perfume" }}</p>
-                            <h3 class="product-title">{{ p.nombre }}</h3>
-                            <div class="price-section">
-                                <span class="original-price">${{ p.precio|add:300 }}</span>
-                                <span class="current-price">${{ p.precio }}</span>
-                                <span class="currency">MXN</span>
-                            </div>
-                            <button class="add-to-cart-btn">Añadir al carrito</button>
+                            <span class="category">Laptop</span>
+                            <h3>ZenBook Pro 14 AI</h3>
+                            <p class="price">$24,999 <span>$29,000</span></p>
+                            <button class="add-to-cart">Añadir al carrito</button>
                         </div>
                     </article>
-                    {% empty %}
-                        <div class="no-products"><p>No hay productos disponibles.</p></div>
-                    {% endfor %}
+
+                    <article class="product-card">
+                        <div class="product-image">
+                            <img src="ruta-imagen.jpg" alt="Producto">
+                        </div>
+                        <div class="product-info">
+                            <span class="category">Audio</span>
+                            <h3>Headset HyperX Cloud</h3>
+                            <p class="price">$1,299</p>
+                            <button class="add-to-cart">Añadir</button>
+                        </div>
+                    </article>
+                    </div>
+
+                <div class="pagination-container">
+                    <button class="pag-btn"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="pag-numbers">
+                        <span class="current">1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span class="dots">...</span>
+                        <span>12</span>
+                    </div>
+                    <button class="pag-btn"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
             </section>
         </div>
     </main>
 
-    <script>
-        const btn = document.getElementById('dark-mode-toggle');
-        const icon = btn.querySelector('i');
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            icon.classList.replace('fa-moon', 'fa-sun');
-        }
-        btn.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            if (document.body.classList.contains('dark-mode')) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-                localStorage.setItem('theme', 'dark');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-                localStorage.setItem('theme', 'light');
-            }
-        });
-    </script>
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-map">
+                <iframe src="https://maps.google.com/maps?q=Tecnol%C3%B3gico+Nacional+de+M%C3%A9xico+Campus+Iztapalapa&amp;t=&amp;z=15&amp;ie=UTF8&amp;iwloc=&amp;output=embed"></iframe>
+            </div>
+            <div class="footer-contact">
+                <h3>Visítanos</h3>
+                <p><i class="fa-solid fa-location-dot"></i> TecNM Campus Iztapalapa</p>
+                <p><i class="fa-solid fa-phone"></i> 55-12-34-56-78</p>
+                <p><i class="fa-solid fa-clock"></i> Lunes - Viernes: 9am - 6pm</p>
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
 </body>
+
+<script>
+  const btn = document.getElementById('dark-mode-toggle');
+  const icon = btn.querySelector('i');
+  
+  // Revisar si ya existía una preferencia guardada
+  if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    icon.classList.replace('fa-moon', 'fa-sun');
+  }
+
+  btn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    
+    // Cambiar el icono y guardar preferencia
+    if (document.body.classList.contains('dark-mode')) {
+      icon.classList.replace('fa-moon', 'fa-sun');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      icon.classList.replace('fa-sun', 'fa-moon');
+      localStorage.setItem('theme', 'light');
+    }
+  });
+</script>
 </html>
