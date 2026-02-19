@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Essence | El Arte de la Fragancia</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-brand">
+                <img src="https://via.placeholder.com/120x50?text=Aura+Essence" alt="Aura Essence Logo" class="logo">
+                <span class="brand-name">AURA_ESSENCE</span>
+            </div>
+
+            <div class="search-wrapper">
+                <form action="/catalogo/" method="get">
+                    <input type="search" name="q" placeholder="Buscar notas, marcas, sensaciones...">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+            <nav class="header-actions">
+                {% if user.is_authenticated %}
+                <a href="#" class="action-icon" title="Perfil">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                {% else %}
+                <a href="{% url 'auth:login' %}" class="action-icon" title="Inicia Sesión">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                {% endif %}
+                <a href="{% url 'auth:carrito' %}" class="action-icon cart-trigger">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button id="dark-mode-toggle" class="theme-btn">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container">
+
+      <section class="hero-section">
+        <div class="hero-content">
+          <span class="hero-tag">Colección 2026</span>
+          <h1 class="hero-title">Fragancias que definen tu <span>Aura</span></h1>
+          <p class="hero-subtitle">Una selección curada de alta perfumería diseñada para quienes buscan dejar una huella inolvidable.</p>
+          <div class="hero-btns">
+            <a href="/catalogo/" class="cta-button">Ver Catálogo</a>
+            <a href="#esencia" class="cta-outline">Nuestra Historia</a>
+          </div>
+        </div>
+        <aside class="hero-floating-card">
+          <div class="badge-icon"><i class="fa-solid fa-truck-fast"></i></div>
+          <h4>Envío Express Premium</h4>
+          <p>Recibe tu esencia en CDMX en menos de 24h con empaque de regalo de cortesía.</p>
+        </aside>
+      </section>
+
+      <section class="quick-features">
+        <div class="feature-item"><i class="fa-solid fa-gem"></i> <span>100% Original</span></div>
+        <div class="feature-item"><i class="fa-solid fa-leaf"></i> <span>Cruelty Free</span></div>
+        <div class="feature-item"><i class="fa-solid fa-award"></i> <span>Garantía Aura</span></div>
+      </section>
+
+      <section id="esencia" class="info-section">
+        <article class="info-card featured-info">
+          <div class="info-content">
+            <h3>Nuestra Esencia</h3>
+            <p>En Aura Essence, no solo vendemos perfumes; capturamos momentos en frascos. Cada nota es seleccionada por maestros perfumistas para garantizar una estela de elegancia y sofisticación.</p>
+          </div>
+        </article>
+
+        <div class="mission-vision-grid">
+          <article class="info-card small">
+            <h3>Misión</h3>
+            <p>Inspirar confianza y bienestar a través de aromas excepcionales y un servicio de lujo accesible.</p>
+          </article>
+          <article class="info-card small">
+            <h3>Visión</h3>
+            <p>Liderar la perfumería digital en México, siendo pioneros en sostenibilidad y personalización olfativa.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="families">
+        <h2 class="section-title">Familias Olfativas</h2>
+        <div class="families-grid">
+          <div class="family-card">
+            <div class="family-icon"><i class="fa-solid fa-seedling"></i></div>
+            <h4>Florales</h4>
+            <p>Rosas, peonías y jazmines para un aura romántica.</p>
+          </div>
+          <div class="family-card">
+            <div class="family-icon"><i class="fa-solid fa-lemon"></i></div>
+            <h4>Cítricas</h4>
+            <p>Energía pura con bergamota y neroli mediterráneo.</p>
+          </div>
+          <div class="family-card">
+            <div class="family-icon"><i class="fa-solid fa-tree"></i></div>
+            <h4>Amaderadas</h4>
+            <p>Sándalo y cedro que aportan carácter y distinción.</p>
+          </div>
+          <div class="family-card">
+            <div class="family-icon"><i class="fa-solid fa-fire-burner"></i></div>
+            <h4>Orientales</h4>
+            <p>Especias exóticas para momentos de misterio.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="main-footer">
+      <div class="footer-grid">
+        <div class="footer-info">
+          <h3>AURA_ESSENCE</h3>
+          <p>Elevando tus sentidos desde el corazón de la CDMX.</p>
+        </div>
+        <div class="footer-contact">
+          <p><strong>Visítanos:</strong> Av. Aromas 123, Centro, CDMX</p>
+          <p><strong>Llámanos:</strong> 55 1234 5678</p>
+        </div>
+        <div class="footer-social">
+          <div class="social-links">
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.getElementById('dark-mode-toggle');
+      const icon = btn?.querySelector('i');
+      
+      const setDarkMode = (isDark) => {
+        document.body.classList.toggle('dark-mode', isDark);
+        icon?.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      };
+
+      if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
+
+      btn?.addEventListener('click', () => setDarkMode(!document.body.classList.contains('dark-mode')));
+    </script>
+</body>
+</html>

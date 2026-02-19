@@ -1,0 +1,125 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfumería | Catálogo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-brand">
+                <img src="https://via.placeholder.com/120x50?text=Logo" alt="Perfumería Logo" class="logo">
+                <span class="brand-name">PERFUMERÍA</span>
+            </div>
+
+            <div class="search-wrapper">
+                <form action="" method="get">
+                    <input type="search" name="q" placeholder="Buscar perfumes, fragancias, lociones...">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+            <nav class="header-actions">
+                <a href="#" title="Cuenta" class="action-icon">
+                    <i class="fa-regular fa-user"></i>
+                </a>
+                <a href="#" title="Carrito" class="action-icon cart-trigger">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button id="dark-mode-toggle" class="theme-btn" title="Cambiar modo">
+                    <i class="fa-solid fa-moon"></i> 
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container">
+        <nav class="category-nav">
+            <a href="#" class="chip active">Todos</a>
+            {% for cat in categorias %}
+                <a href="#" class="chip">{{ cat.nombre }}</a>
+            {% empty %}
+                <a href="#" class="chip">Fragancias</a>
+                <a href="#" class="chip">Lociones</a>
+                <a href="#" class="chip">Sets</a>
+            {% endfor %}
+        </nav>
+
+        <div class="content-layout">
+            <aside class="filters-sidebar">
+                <div class="filter-card">
+                    <h3>Filtrar por</h3>
+                    <div class="filter-section">
+                        <h4>Precio</h4>
+                        <div class="price-input-group">
+                            <input type="range" min="0" max="10000" value="1500" class="modern-slider">
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="products-view">
+                <div class="view-controls">
+                    <p class="results-count">Mostrando {{ productos|length }} productos</p>
+                    <select class="sort-select">
+                        <option>Ordenar por: Relevancia</option>
+                        <option>Precio: Menor a Mayor</option>
+                    </select>
+                </div>
+
+                <div class="product-grid">
+                    {% for p in productos %}
+                    <article class="product-card">
+                        <div class="product-image-wrapper">
+                            <div class="product-image">
+                                <img src="https://via.placeholder.com/400x400?text={{ p.nombre|urlencode }}" alt="{{ p.nombre }}" class="product-img">
+                            </div>
+                            <span class="badge-oferta">Oferta</span>
+                        </div>
+                        <div class="product-info">
+                            <p class="product-category">{{ p.categoria.nombre|default:"Perfume" }}</p>
+                            <h3 class="product-title">{{ p.nombre }}</h3>
+                            <div class="price-section">
+                                <span class="original-price">${{ p.precio|add:300 }}</span>
+                                <span class="current-price">${{ p.precio }}</span>
+                                <span class="currency">MXN</span>
+                            </div>
+                            <button class="add-to-cart-btn">Añadir al carrito</button>
+                        </div>
+                    </article>
+                    {% empty %}
+                        <div class="no-products"><p>No hay productos disponibles.</p></div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        const btn = document.getElementById('dark-mode-toggle');
+        const icon = btn.querySelector('i');
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            icon.classList.replace('fa-moon', 'fa-sun');
+        }
+        btn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>

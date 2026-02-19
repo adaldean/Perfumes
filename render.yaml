@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: aura-essence-api
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn myproject.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: false
+      - key: PYTHON_VERSION
+        value: 3.11.8
+    
+  - type: pserv
+    name: aura-essence-db
+    ipAllowList: []
+    plan: free
