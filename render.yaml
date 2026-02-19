@@ -2,15 +2,10 @@ services:
   - type: web
     name: aura-essence-api
     runtime: python
-    buildCommand: "./render-build.sh"
-    startCommand: "gunicorn myproject.wsgi:application --bind 0.0.0.0:$PORT"
+    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
+    startCommand: "python manage.py migrate --noinput && gunicorn myproject.wsgi:application"
     envVars:
       - key: DEBUG
         value: false
       - key: PYTHON_VERSION
         value: 3.11.8
-    
-  - type: pserv
-    name: aura-essence-db
-    ipAllowList: []
-    plan: free
