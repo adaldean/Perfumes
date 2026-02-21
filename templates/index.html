@@ -1,157 +1,162 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aura Essence | El Arte de la Fragancia</title>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-</head>
-<body>
 
-    <header class="main-header">
-        <div class="header-container">
-            <div class="logo-brand">
-                <img src="https://via.placeholder.com/120x50?text=Aura+Essence" alt="Aura Essence Logo" class="logo">
-                <span class="brand-name">AURA_ESSENCE</span>
-            </div>
+{% block title %}Aura Essence | El Arte de la Inmortalidad Olfativa{% endblock %}
 
-            <div class="search-wrapper">
-                <form action="/catalogo/" method="get">
-                    <input type="search" name="q" placeholder="Buscar notas, marcas, sensaciones...">
-                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </form>
-            </div>
+{% block content %}
+<!-- Hero Section -->
+<section
+  class="bg-gray-900 text-white py-20 bg-cover bg-center min-h-[600px] flex items-center justify-center relative shadow-xl overflow-hidden"
+  style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1595166668735-fd8406f52cb3?q=80&w=2670&auto=format&fit=crop');">
+  <div class="container mx-auto px-4 text-center text-white relative z-10">
+    <span
+      class="inline-block bg-brand-gold text-brand-dark px-4 py-1.5 rounded-full uppercase text-xs font-bold tracking-widest hover:scale-105 transition-transform shadow-lg">Colección
+      2026</span>
+    <h1 class="font-serif text-5xl md:text-7xl font-extrabold mt-6 mb-6 leading-tight drop-shadow-lg">
+      Fragancias que definen tu <span class="text-brand-gold italic">Aura</span>
+    </h1>
+    <p class="text-lg md:text-xl md:w-2/3 mx-auto mb-10 text-gray-200 drop-shadow-md">
+      Una selección curada de alta perfumería diseñada para quienes buscan dejar una huella inolvidable.
+    </p>
+    <div class="flex flex-col md:flex-row gap-4 justify-center">
+      <a href="{% url 'frontend:catalogo' %}"
+        class="bg-brand-gold hover:bg-brand-accent text-brand-dark font-bold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-gold/50 transform hover:-translate-y-1">
+        Ver Catálogo
+      </a>
+      <a href="#esencia"
+        class="border border-white hover:bg-white hover:text-brand-dark font-bold py-3 px-8 rounded-full transition-all shadow-lg backdrop-blur-sm">
+        Nuestra Historia
+      </a>
+    </div>
+  </div>
+</section>
 
-            <nav class="header-actions">
-                {% if user.is_authenticated %}
-                <a href="#" class="action-icon" title="Perfil">
-                    <i class="fa-solid fa-user"></i>
-                </a>
-                {% else %}
-                <a href="{% url 'auth:login' %}" class="action-icon" title="Inicia Sesión">
-                    <i class="fa-solid fa-user"></i>
-                </a>
-                {% endif %}
-                <a href="{% url 'auth:carrito' %}" class="action-icon cart-trigger">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span class="cart-badge">0</span>
-                </a>
-                <button id="dark-mode-toggle" class="theme-btn">
-                    <i class="fa-solid fa-moon"></i>
-                </button>
-            </nav>
+<!-- Beneficios -->
+<section class="bg-brand-light dark:bg-zinc-900 py-16 transition-colors duration-300">
+  <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div
+      class="hover-lift bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-lg shadow-sm text-center border-t-4 border-brand-gold transition-all duration-300">
+      <div class="mb-4 inline-block p-3 rounded-full bg-brand-light dark:bg-zinc-700 text-brand-gold">
+        <i class="fa-solid fa-gem text-3xl"></i>
+      </div>
+      <h3 class="font-serif font-bold text-xl mb-2 text-brand-dark dark:text-white">100% Original</h3>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Autenticidad garantizada o te devolvemos tu dinero al
+        instante.</p>
+    </div>
+    <div
+      class="hover-lift bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-lg shadow-sm text-center border-t-4 border-brand-gold transition-all duration-300">
+      <div class="mb-4 inline-block p-3 rounded-full bg-brand-light dark:bg-zinc-700 text-brand-gold">
+        <i class="fa-solid fa-truck-fast text-3xl"></i>
+      </div>
+      <h3 class="font-serif font-bold text-xl mb-2 text-brand-dark dark:text-white">Envío Express</h3>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Entrega en menos de 24h en CDMX con seguimiento en tiempo
+        real.</p>
+    </div>
+    <div
+      class="hover-lift bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-lg shadow-sm text-center border-t-4 border-brand-gold transition-all duration-300">
+      <div class="mb-4 inline-block p-3 rounded-full bg-brand-light dark:bg-zinc-700 text-brand-gold">
+        <i class="fa-solid fa-award text-3xl"></i>
+      </div>
+      <h3 class="font-serif font-bold text-xl mb-2 text-brand-dark dark:text-white">Garantía Aura</h3>
+      <p class="text-gray-500 dark:text-gray-400 text-sm">Si el aroma no conecta contigo, cámbialo gratis.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Nuestra Esencia -->
+<section id="esencia" class="py-20 bg-white dark:bg-zinc-800 transition-colors duration-300">
+  <div class="container mx-auto px-4 flex flex-col md:flex-row items-center gap-16">
+    <div class="md:w-1/2 relative group">
+      <div
+        class="absolute inset-0 bg-brand-gold rounded-lg transform translate-x-4 translate-y-4 group-hover:translate-x-2 group-hover:translate-y-2 transition-transform hidden md:block">
+      </div>
+      <img src="https://images.unsplash.com/photo-1615634260167-c8cdede054de?q=80&w=1000&auto=format&fit=crop"
+        alt="Esencia" class="relative rounded-lg shadow-2xl w-full object-cover aspect-[4/3]">
+    </div>
+    <div class="md:w-1/2">
+      <span class="text-brand-gold font-bold uppercase tracking-widest text-sm mb-2 block">Sobre Nosotros</span>
+      <h2 class="font-serif text-4xl font-bold mb-6 text-brand-dark dark:text-white">Nuestra Esencia</h2>
+      <p class="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+        En Aura Essence, no solo vendemos perfumes; capturamos momentos en frascos. Cada nota es seleccionada por
+        maestros perfumistas para garantizar una estela de elegancia y sofisticación.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+        <div
+          class="border-l-4 border-brand-gold pl-4 hover:border-l-8 transition-all duration-300 group cursor-default">
+          <h4 class="font-bold text-lg mb-2 group-hover:text-brand-gold transition-colors">Misión</h4>
+          <p class="text-xs text-gray-500">Inspirar confianza y bienestar a través de aromas excepcionales.</p>
         </div>
-    </header>
-
-    <main class="store-container">
-
-      <section class="hero-section">
-        <div class="hero-content">
-          <span class="hero-tag">Colección 2026</span>
-          <h1 class="hero-title">Fragancias que definen tu <span>Aura</span></h1>
-          <p class="hero-subtitle">Una selección curada de alta perfumería diseñada para quienes buscan dejar una huella inolvidable.</p>
-          <div class="hero-btns">
-            <a href="/catalogo/" class="cta-button">Ver Catálogo</a>
-            <a href="#esencia" class="cta-outline">Nuestra Historia</a>
-          </div>
-        </div>
-        <aside class="hero-floating-card">
-          <div class="badge-icon"><i class="fa-solid fa-truck-fast"></i></div>
-          <h4>Envío Express Premium</h4>
-          <p>Recibe tu esencia en CDMX en menos de 24h con empaque de regalo de cortesía.</p>
-        </aside>
-      </section>
-
-      <section class="quick-features">
-        <div class="feature-item"><i class="fa-solid fa-gem"></i> <span>100% Original</span></div>
-        <div class="feature-item"><i class="fa-solid fa-leaf"></i> <span>Cruelty Free</span></div>
-        <div class="feature-item"><i class="fa-solid fa-award"></i> <span>Garantía Aura</span></div>
-      </section>
-
-      <section id="esencia" class="info-section">
-        <article class="info-card featured-info">
-          <div class="info-content">
-            <h3>Nuestra Esencia</h3>
-            <p>En Aura Essence, no solo vendemos perfumes; capturamos momentos en frascos. Cada nota es seleccionada por maestros perfumistas para garantizar una estela de elegancia y sofisticación.</p>
-          </div>
-        </article>
-
-        <div class="mission-vision-grid">
-          <article class="info-card small">
-            <h3>Misión</h3>
-            <p>Inspirar confianza y bienestar a través de aromas excepcionales y un servicio de lujo accesible.</p>
-          </article>
-          <article class="info-card small">
-            <h3>Visión</h3>
-            <p>Liderar la perfumería digital en México, siendo pioneros en sostenibilidad y personalización olfativa.</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="families">
-        <h2 class="section-title">Familias Olfativas</h2>
-        <div class="families-grid">
-          <div class="family-card">
-            <div class="family-icon"><i class="fa-solid fa-seedling"></i></div>
-            <h4>Florales</h4>
-            <p>Rosas, peonías y jazmines para un aura romántica.</p>
-          </div>
-          <div class="family-card">
-            <div class="family-icon"><i class="fa-solid fa-lemon"></i></div>
-            <h4>Cítricas</h4>
-            <p>Energía pura con bergamota y neroli mediterráneo.</p>
-          </div>
-          <div class="family-card">
-            <div class="family-icon"><i class="fa-solid fa-tree"></i></div>
-            <h4>Amaderadas</h4>
-            <p>Sándalo y cedro que aportan carácter y distinción.</p>
-          </div>
-          <div class="family-card">
-            <div class="family-icon"><i class="fa-solid fa-fire-burner"></i></div>
-            <h4>Orientales</h4>
-            <p>Especias exóticas para momentos de misterio.</p>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer class="main-footer">
-      <div class="footer-grid">
-        <div class="footer-info">
-          <h3>AURA_ESSENCE</h3>
-          <p>Elevando tus sentidos desde el corazón de la CDMX.</p>
-        </div>
-        <div class="footer-contact">
-          <p><strong>Visítanos:</strong> Av. Aromas 123, Centro, CDMX</p>
-          <p><strong>Llámanos:</strong> 55 1234 5678</p>
-        </div>
-        <div class="footer-social">
-          <div class="social-links">
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
-            <a href="#"><i class="fa-brands fa-facebook"></i></a>
-            <a href="#"><i class="fa-brands fa-tiktok"></i></a>
-          </div>
+        <div
+          class="border-l-4 border-brand-gold pl-4 hover:border-l-8 transition-all duration-300 group cursor-default">
+          <h4 class="font-bold text-lg mb-2 group-hover:text-brand-gold transition-colors">Visión</h4>
+          <p class="text-xs text-gray-500">Liderar la perfumería digital con sostenibilidad.</p>
         </div>
       </div>
-    </footer>
+    </div>
+  </div>
+</section>
 
-    <script>
-      const btn = document.getElementById('dark-mode-toggle');
-      const icon = btn?.querySelector('i');
-      
-      const setDarkMode = (isDark) => {
-        document.body.classList.toggle('dark-mode', isDark);
-        icon?.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      };
+<!-- Familias Olfativas -->
+<section class="pb-20 pt-10 bg-brand-light dark:bg-zinc-900 transition-colors duration-300">
+  <div class="container mx-auto px-4">
+    <h2
+      class="font-serif text-3xl font-bold text-center mb-12 text-brand-dark dark:text-white relative after:content-[''] after:block after:w-20 after:h-1 after:bg-brand-gold after:mx-auto after:mt-4">
+      Familias Olfativas</h2>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
+      <a href="{% url 'frontend:catalogo' %}?categoria=4"
+        class="block group bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all text-center cursor-pointer border border-transparent hover:border-brand-gold/30">
+        <div
+          class="w-16 h-16 mx-auto bg-brand-light dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-gold group-hover:text-white transition-colors duration-300">
+          <i class="fa-solid fa-seedling text-2xl text-brand-gold group-hover:text-white transition-colors"></i>
+        </div>
+        <h4 class="font-bold mb-2 group-hover:text-brand-gold transition-colors dark:text-white">Florales</h4>
+        <p class="text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-600 transition-colors">Rosas, peonías,
+          jazmín.</p>
+      </a>
+      <a href="{% url 'frontend:catalogo' %}?categoria=6"
+        class="block group bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all text-center cursor-pointer border border-transparent hover:border-brand-gold/30">
+        <div
+          class="w-16 h-16 mx-auto bg-brand-light dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-gold group-hover:text-white transition-colors duration-300">
+          <i class="fa-solid fa-lemon text-2xl text-brand-gold group-hover:text-white transition-colors"></i>
+        </div>
+        <h4 class="font-bold mb-2 group-hover:text-brand-gold transition-colors dark:text-white">Cítricos</h4>
+        <p class="text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-600 transition-colors">Limón,
+          bergamota, naranja.</p>
+      </a>
+      <a href="{% url 'frontend:catalogo' %}?categoria=5"
+        class="block group bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all text-center cursor-pointer border border-transparent hover:border-brand-gold/30">
+        <div
+          class="w-16 h-16 mx-auto bg-brand-light dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-gold group-hover:text-white transition-colors duration-300">
+          <i class="fa-solid fa-tree text-2xl text-brand-gold group-hover:text-white transition-colors"></i>
+        </div>
+        <h4 class="font-bold mb-2 group-hover:text-brand-gold transition-colors dark:text-white">Amaderados</h4>
+        <p class="text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-600 transition-colors">Sándalo, cedro,
+          vetiver.</p>
+      </a>
+      <a href="{% url 'frontend:catalogo' %}?categoria=7"
+        class="block group bg-white dark:bg-zinc-800 dark:border-zinc-700 p-8 rounded-xl shadow-sm hover:shadow-lg transition-all text-center cursor-pointer border border-transparent hover:border-brand-gold/30">
+        <div
+          class="w-16 h-16 mx-auto bg-brand-light dark:bg-zinc-700 rounded-full flex items-center justify-center mb-4 group-hover:bg-brand-gold group-hover:text-white transition-colors duration-300">
+          <i class="fa-solid fa-pepper-hot text-2xl text-brand-gold group-hover:text-white transition-colors"></i>
+        </div>
+        <h4 class="font-bold mb-2 group-hover:text-brand-gold transition-colors dark:text-white">Orientales</h4>
+        <p class="text-xs text-gray-400 dark:text-gray-500 group-hover:text-gray-600 transition-colors">Vainilla,
+          especias, ámbar.</p>
+      </a>
+    </div>
+  </div>
+</section>
 
-      if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
-
-      btn?.addEventListener('click', () => setDarkMode(!document.body.classList.contains('dark-mode')));
-    </script>
-</body>
-</html>
+<!-- Call To Action -->
+<section class="py-24 bg-brand-dark text-white text-center relative overflow-hidden">
+  <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+  <div class="container mx-auto px-4 relative z-10">
+    <h2 class="font-serif text-3xl md:text-5xl font-bold mb-8 tracking-wide">¿Listo para encontrar tu sello personal?
+    </h2>
+    <a href="{% url 'frontend:catalogo' %}"
+      class="inline-block bg-brand-gold text-brand-dark font-bold py-4 px-12 rounded-full hover:bg-white hover:text-brand-dark transition-all shadow-xl hover:shadow-2xl transform hover:-translate-y-1 text-lg">
+      Explorar Colección
+    </a>
+  </div>
+</section>
+{% endblock %}

@@ -26,7 +26,7 @@ class ProductoAdmin(admin.ModelAdmin):
     readonly_fields = ('creado_en', 'actualizado_en')
     fieldsets = (
         ('Información Básica', {
-            'fields': ('sku', 'nombre', 'descripcion')
+            'fields': ('sku', 'nombre', 'imagen', 'descripcion')
         }),
         ('Precio y Clasificación', {
             'fields': ('precio', 'marca', 'categoria', 'peso_kg')

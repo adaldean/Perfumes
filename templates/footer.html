@@ -2,36 +2,50 @@
     <div class="footer-grid">
         <div class="footer-contact">
             <h3>Aura Essence</h3>
-            <p><i class="fa-solid fa-location-dot"></i> Ciudad de México, México</p>
-            <p><i class="fa-solid fa-phone"></i> +52 (55) 1234-5678</p>
-            <p><i class="fa-solid fa-envelope"></i> info@auraessence.com</p>
+            <p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Av+Telecomunicaciones,+Chinam+Pac+de+Juárez,+Iztapalapa,+09208+Ciudad+de+México,+CDMX"
+                    target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <i class="fa-solid fa-location-dot"></i> Ciudad de México, México
+                </a>
+            </p>
+            <p>
+                <a href="https://wa.me/525531905010" target="_blank" rel="noopener noreferrer" class="contact-link">
+                    <i class="fa-solid fa-phone"></i> +52 (55) 3190-5010
+                </a>
+            </p>
+            <p>
+                <a href="mailto:josea0476@gmail.com" class="contact-link">
+                    <i class="fa-solid fa-envelope"></i> josea0476@gmail.com
+                </a>
+            </p>
             <p><i class="fa-solid fa-clock"></i> Lunes - Domingo: 9am - 9pm</p>
         </div>
         <div class="footer-links">
             <h4>Enlaces</h4>
             <ul>
                 <li><a href="/">Inicio</a></li>
-                <li><a href="{% url 'catalogo' %}">Catálogo</a></li>
-                <li><a href="#">Sobre Nosotros</a></li>
-                <li><a href="#">Contacto</a></li>
+                <li><a href="{% url 'frontend:catalogo' %}">Catálogo</a></li>
+                <li><a href="{% url 'home' %}#esencia">Sobre Nosotros</a></li>
+                <li><a href="{% url 'contacto' %}">Contacto</a></li>
             </ul>
         </div>
         <div class="footer-legal">
             <h4>Legal</h4>
             <ul>
-                <li><a href="#">Términos de Servicio</a></li>
-                <li><a href="#">Política de Privacidad</a></li>
-                <li><a href="#">Política de Devoluciones</a></li>
-                <li><a href="#">Cookies</a></li>
+                <li><a href="{% url 'terminos' %}">Términos de Servicio</a></li>
+                <li><a href="{% url 'privacidad' %}">Política de Privacidad</a></li>
+                <li><a href="{% url 'devoluciones' %}">Política de Devoluciones</a></li>
+                <li><a href="{% url 'cookies' %}">Cookies</a></li>
             </ul>
         </div>
         <div class="footer-social">
             <h4>Síguenos</h4>
             <div class="social-links">
-                <a href="#" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" title="Facebook"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" title="Twitter"><i class="fa-brands fa-twitter"></i></a>
-                <a href="#" title="Pinterest"><i class="fa-brands fa-pinterest"></i></a>
+                <a href="https://www.instagram.com/" target="_blank" title="Instagram"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a href="https://www.facebook.com/" target="_blank" title="Facebook"><i
+                        class="fa-brands fa-facebook"></i></a>
+                <a href="https://www.tiktok.com/" target="_blank" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
             </div>
         </div>
     </div>
@@ -39,3 +53,36 @@
         <p>&copy; 2024 Aura Essence. Todos los derechos reservados.</p>
     </div>
 </footer>
+
+<style>
+    /* Fix horizontal scroll issue */
+    html,
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    .contact-link {
+        color: inherit;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .contact-link:hover {
+        color: #D4AF37;
+        /* Brand Gold */
+        text-decoration: underline;
+    }
+
+    .footer-bottom {
+        text-align: center;
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .footer-bottom p {
+        margin: 0;
+    }
+</style>
