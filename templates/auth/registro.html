@@ -1,11 +1,15 @@
 {% load static %}
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Cuenta | Aura Essence</title>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Montserrat:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
     <style>
@@ -240,8 +244,58 @@
                 font-size: 0.95rem;
             }
         }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-muted);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .divider span {
+            padding: 0 10px;
+            font-size: 0.9rem;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #757575;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .google-btn:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     {% include 'header.html' %}
@@ -261,18 +315,23 @@
                 <form method="POST" novalidate>
                     {% csrf_token %}
 
+                    <div class="form-group grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="first_name">Nombre</label>
+                            <input type="text" id="first_name" name="first_name" placeholder="Juan"
+                                value="{{ first_name }}" required class="w-full">
+                        </div>
+                        <div>
+                            <label for="last_name">Apellidos</label>
+                            <input type="text" id="last_name" name="last_name" placeholder="Pérez"
+                                value="{{ last_name }}" required class="w-full">
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label for="username">Usuario</label>
-                        <input 
-                            type="text" 
-                            id="username" 
-                            name="username" 
-                            placeholder="tu_usuario"
-                            value="{{ username }}"
-                            minlength="3"
-                            required
-                            class="{% if errores.username %}error{% endif %}"
-                        >
+                        <input type="text" id="username" name="username" placeholder="tu_usuario" value="{{ username }}"
+                            minlength="3" required class="{% if errores.username %}error{% endif %}">
                         {% if errores.username %}
                         <div class="error-message">{{ errores.username }}</div>
                         {% endif %}
@@ -280,15 +339,8 @@
 
                     <div class="form-group">
                         <label for="email">Email</label>
-                        <input 
-                            type="email" 
-                            id="email" 
-                            name="email" 
-                            placeholder="tu@email.com"
-                            value="{{ email }}"
-                            required
-                            class="{% if errores.email %}error{% endif %}"
-                        >
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" value="{{ email }}"
+                            required class="{% if errores.email %}error{% endif %}">
                         {% if errores.email %}
                         <div class="error-message">{{ errores.email }}</div>
                         {% endif %}
@@ -296,15 +348,8 @@
 
                     <div class="form-group">
                         <label for="password">Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="password" 
-                            name="password" 
-                            placeholder="••••••••"
-                            minlength="6"
-                            required
-                            class="{% if errores.password %}error{% endif %}"
-                        >
+                        <input type="password" id="password" name="password" placeholder="••••••••" minlength="6"
+                            required class="{% if errores.password %}error{% endif %}">
                         {% if errores.password %}
                         <div class="error-message">{{ errores.password }}</div>
                         {% else %}
@@ -314,15 +359,8 @@
 
                     <div class="form-group">
                         <label for="password2">Confirmar Contraseña</label>
-                        <input 
-                            type="password" 
-                            id="password2" 
-                            name="password2" 
-                            placeholder="••••••••"
-                            minlength="6"
-                            required
-                            class="{% if errores.password2 %}error{% endif %}"
-                        >
+                        <input type="password" id="password2" name="password2" placeholder="••••••••" minlength="6"
+                            required class="{% if errores.password2 %}error{% endif %}">
                         {% if errores.password2 %}
                         <div class="error-message">{{ errores.password2 }}</div>
                         {% endif %}
@@ -333,8 +371,17 @@
                     </button>
                 </form>
 
+                <div class="divider">
+                    <span>O</span>
+                </div>
+
+                <a href="{% provider_login_url 'google' %}" class="google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    Registrarse con Google
+                </a>
+
                 <div class="auth-footer">
-                    ¿Ya tienes cuenta? 
+                    ¿Ya tienes cuenta?
                     <a href="{% url 'auth:login' %}">Inicia sesión aquí</a>
                 </div>
             </div>
@@ -353,4 +400,5 @@
         }
     </script>
 </body>
+
 </html>

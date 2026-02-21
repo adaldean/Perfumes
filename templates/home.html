@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel | Teck_nology-Hollow</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600&family=Montserrat:wght@700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
     <link rel="stylesheet" href="../css/estilo_home.css">
 </head>
+
 <body>
 
     <div class="container">
@@ -22,7 +25,7 @@
                 <ul class="nav-links">
                     <li class="active"><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="inventario.html"><i class="fas fa-boxes"></i> Inventario</a></li>
-                    <li><a href="gestion_clientes.html"><i class="fas fa-users"></i> Usuarios</a></li>
+                    <li><a href="{% url 'auth:gestion_clientes' %}"><i class="fas fa-users"></i> Usuarios</a></li>
                     <li><a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a></li>
                     <li class="logout-item">
                         <button class="btn-logout" onclick="cerrarSesion()">
@@ -32,14 +35,14 @@
                 </ul>
             </nav>
         </aside>
-        
+
         <main class="main-content">
             <header class="header">
                 <div class="header-title">
                     <h1>Sistema de Inventarios</h1>
                     <p>Panel de Control Administrativo</p>
                 </div>
-                
+
                 <div class="user-controls">
                     <button class="theme-toggle-inline" onclick="toggleDarkMode()" title="Cambiar tema">
                         <i id="theme-icon" class="fas fa-moon"></i>
@@ -50,7 +53,7 @@
                     </div>
                 </div>
             </header>
-            
+
             <div id="alerta-exito" class="alerta-exito">
                 <i class="fas fa-check-circle"></i> ¡Bienvenido de nuevo al sistema!
             </div>
@@ -110,8 +113,8 @@
         function toggleDarkMode() {
             const isDark = document.body.classList.toggle("dark-mode");
             const icon = document.getElementById("theme-icon");
-            
-            if(isDark) {
+
+            if (isDark) {
                 icon.classList.replace("fa-moon", "fa-sun");
                 localStorage.setItem("theme", "dark");
             } else {
@@ -121,10 +124,12 @@
         }
 
         function cerrarSesion() {
-            if(confirm("¿Deseas cerrar la sesión administrativa?")) {
-                window.location.href = "login.html";
+            if (confirm("¿Deseas cerrar la sesión administrativa?")) {
+                // Redirigir al login principal
+                window.location.href = "{% url 'auth:login' %}";
             }
         }
     </script>
 </body>
+
 </html>

@@ -1,59 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-
-class Marca(models.Model):
-    """Modelo de marcas de perfumes."""
-    nombre = models.CharField(max_length=150, unique=True)
-    descripcion = models.TextField(blank=True, null=True)
-    
-    class Meta:
-        db_table = 'marcas'
-        verbose_name = 'Marca'
-        verbose_name_plural = 'Marcas'
-    
-    def __str__(self):
-        return self.nombre
-
-
-class Categoria(models.Model):
-    """Modelo de categorías de productos."""
-    nombre = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True, blank=True, null=True)
-    descripcion = models.TextField(blank=True, null=True)
-    padre = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subcategorias')
-    
-    class Meta:
-        db_table = 'categorias'
-        verbose_name = 'Categoría'
-        verbose_name_plural = 'Categorías'
-    
-    def __str__(self):
-        return self.nombre
-
-
-class Producto(models.Model):
-    """Modelo de productos para perfumería."""
-    sku = models.CharField(max_length=50, unique=True, default='SKU-NEW')
-    nombre = models.CharField(max_length=250)
-    descripcion = models.TextField(blank=True, null=True)
-    precio = models.DecimalField(max_digits=10, decimal_places=2)
-    imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
-    marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
-    categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
-    peso_kg = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
-    activo = models.BooleanField(default=True)
-    creado_en = models.DateTimeField(auto_now_add=True)
-    actualizado_en = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'productos'
-        verbose_name = 'Producto'
-        verbose_name_plural = 'Productos'
-        ordering = ['-creado_en']
-    
-    def __str__(self):
-        return self.nombre
-
+from apps.catalog.models import Producto
 
 class Pedido(models.Model):
     """Modelo de pedidos de clientes."""
@@ -183,3 +130,27 @@ class ItemCarrito(models.Model):
     def subtotal(self):
         """Calcula el subtotal de este item."""
         return self.producto.precio * self.cantidad
+
+class Pago(models.Model):
+    """Modelo de pagos."""
+    METODO_CHOICES = [
+        ('stripe', 'Stripe'),
+        ('transferencia', 'Transferencia'),
+    ]
+    ESTADO_CHOICES = [
+        ('pendiente', 'Pendiente'),
+        ('completado', 'Completado'),
+        ('fallido', 'Fallido'),
+    ]
+    
+    pedido = models.OneToOneField('Pedido', on_delete=models.CASCADE, related_name='pago')
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    metodo_pago = models.CharField(max_length=20, choices=METODO_CHOICES, default='stripe')
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
+    transaccion_id = models.CharField(max_length=100, blank=True, null=True)
+    fecha_pago = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'pagos'
+        verbose_name = 'Pago'
+        verbose_name_plural = 'Pagos'
