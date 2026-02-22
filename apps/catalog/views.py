@@ -1,22 +1,30 @@
 from django.shortcuts import render, get_object_or_404
 import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from .models import Producto, Categoria
 
 def catalogo(request):
     """Vista que renderiza el catálogo adaptado a la perfumería."""
-    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').order_by('-id')
+    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').prefetch_related('categorias_secundarias').order_by('-id')
     
     # Filtrado por categoría: aceptamos tanto IDs como claves como 'hombre','mujer', etc.
     categoria_param = request.GET.get('categoria')
     if categoria_param and categoria_param != 'todas':
-        if categoria_param.isdigit():
+        # soporte para filtros de género (hombre/mujer/unisex)
+        genero_keys = {'hombre', 'mujer', 'unisex'}
+        if categoria_param in genero_keys:
+            productos_list = productos_list.filter(genero=categoria_param)
+        elif categoria_param.isdigit():
             productos_list = productos_list.filter(categoria_id=categoria_param)
         else:
-            # mapear clave textual a una categoría existente por coincidencia parcial
-            cat_match = Categoria.objects.filter(nombre__icontains=categoria_param).order_by('id').first()
+            # mapear clave textual a una categoría existente por slug o coincidencia parcial
+            cat_match = Categoria.objects.filter(slug__iexact=categoria_param).order_by('id').first()
+            if not cat_match:
+                cat_match = Categoria.objects.filter(nombre__icontains=categoria_param).order_by('id').first()
             if cat_match:
-                productos_list = productos_list.filter(categoria=cat_match)
+                # incluir productos cuya categoria principal sea la buscada o que tengan la categoria en las secundarias
+                productos_list = productos_list.filter(Q(categoria=cat_match) | Q(categorias_secundarias=cat_match))
 
     # Filtrado por búsqueda
     query = request.GET.get('q')
