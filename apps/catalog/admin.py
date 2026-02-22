@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Producto, Marca, Categoria
@@ -15,15 +16,15 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'genero', 'marca', 'categoria', 'categorias_list', 'activo')
+    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'precio_oferta', 'genero', 'marca', 'categoria', 'categorias_list', 'activo')
     list_filter = ('genero', 'marca', 'categoria', 'activo')
     search_fields = ('nombre', 'sku', 'descripcion')
-    list_editable = ('precio', 'activo')
+    list_editable = ('precio', 'precio_oferta', 'activo')
     readonly_fields = ('imagen_preview_large',)
     filter_horizontal = ('categorias_secundarias',)
     fieldsets = (
         (None, {
-            'fields': ('nombre', 'sku', 'marca', 'categoria', 'categorias_secundarias', 'genero', 'precio', 'stock', 'imagen', 'imagen_preview_large', 'descripcion', 'activo')
+            'fields': ('nombre', 'sku', 'marca', 'categoria', 'categorias_secundarias', 'genero', 'precio', 'precio_oferta', 'stock', 'imagen', 'imagen_preview_large', 'descripcion', 'activo')
         }),
     )
 
@@ -43,3 +44,13 @@ class ProductoAdmin(admin.ModelAdmin):
         secs = [c.nombre for c in obj.categorias_secundarias.all()]
         return ", ".join(secs) if secs else '-'
     categorias_list.short_description = 'Categorias secundarias'
+
+    def save_model(self, request, obj, form, change):
+        """Override save_model para validar que precio_oferta < precio antes de guardar."""
+        try:
+            obj.full_clean()
+        except ValidationError as e:
+            # Si hay un error de validación, mostrar un mensaje amigable al admin
+            self.message_user(request, f"Error de validación: {e.message_dict}", level=40)  # 40 = ERROR
+            return
+        super().save_model(request, obj, form, change)

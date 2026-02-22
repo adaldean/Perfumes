@@ -50,6 +50,7 @@ def catalogo(request):
     
     # Evitar duplicados cuando se usan relaciones ManyToMany en filtros
     productos_list = productos_list.distinct()
+    # (removed temporary debug logging)
     paginator = Paginator(productos_list, 12)  # Mostrar 12 productos por página
     page = request.GET.get('page')
     
@@ -86,9 +87,13 @@ def catalogo(request):
         if key == 'todas':
             categorias.append({'id': 'todas', 'nombre': label})
         else:
-            cat = Categoria.objects.filter(nombre__icontains=key).order_by('id').first()
+            # Prefer exact matches by slug or name, fallback to contains or normalized match
+            cat = Categoria.objects.filter(slug__iexact=key).first()
             if not cat:
-                # fallback: normalize names and match
+                cat = Categoria.objects.filter(nombre__iexact=key).first()
+            if not cat:
+                cat = Categoria.objects.filter(nombre__icontains=key).order_by('id').first()
+            if not cat:
                 key_norm = _norm(key)
                 for c in Categoria.objects.all():
                     if key_norm in _norm(c.nombre):
