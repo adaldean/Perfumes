@@ -44,6 +44,7 @@ class Producto(models.Model):
     descripcion = models.TextField(blank=True, null=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
+    volumen_ml = models.PositiveIntegerField(null=True, blank=True, help_text='Capacidad en mililitros (ml)')
     marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
     categorias_secundarias = models.ManyToManyField(Categoria, blank=True, related_name='productos_secundarios')
