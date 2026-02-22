@@ -1,116 +1,146 @@
-# Documentación Completa del Proyecto Aura Essence
+# Aura Essence
 
-## 🌟 Introducción
-Aura Essence es una plataforma de e-commerce de perfumería de lujo desarrollada con Django y Django REST Framework. Este documento consolida toda la información necesaria para configurar, desarrollar y desplegar la aplicación.
+E-commerce de perfumería desarrollado con Django + Django REST Framework.
 
----
+## Stack actual
+- Python 3.11+
+- Django 6
+- Django REST Framework + JWT
+- Allauth (Google)
+- WhiteNoise (estáticos en producción)
+- Render (web service + PostgreSQL vía `render.yaml`)
 
-## 🚀 Inicio Rápido
+## Estructura del proyecto
+- `myproject/`: configuración global (`settings.py`, `urls.py`, `wsgi.py`)
+- `apps/catalog/`: catálogo, productos, vistas frontend y API
+- `apps/orders/`: carrito, pedidos, pago
+- `apps/users/`: autenticación, perfil y endpoints de usuario
+- `apps/core/`: rutas API principales y vistas de páginas estáticas
+- `templates/`: HTML del frontend y admin custom
+- `static/`, `media/`: recursos estáticos y subidas
+- `scripts/template_guard.py`: detector/corrector de expresiones Django multilinea
 
-### Requisitos Previos
-- Python 3.10+
-- Git
-- PostgreSQL (opcional para desarrollo, requerido para producción)
+## Configuración local (desarrollo)
 
-### Instalación Local
+### 1) Crear entorno e instalar dependencias
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/adaldean/Perfumes.git
-    cd Perfumes
-    ```
+### 2) Variables de entorno
+Copiar `.env.example` a `.env` y ajustar valores.
 
-2.  **Configurar entorno virtual:**
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate  # Linux/Mac
-    # .venv\Scripts\activate   # Windows
-    ```
+Variables clave:
+- `DEBUG=True`
+- `SECRET_KEY=...`
+- `ALLOWED_HOSTS=localhost,127.0.0.1`
+- `CSRF_TRUSTED_ORIGINS=http://localhost:8000`
+- `DATABASE_URL=` (vacío para SQLite local, o URL Postgres)
 
-3.  **Instalar dependencias:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+### 3) Migraciones y usuario admin
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
 
-4.  **Configurar variables de entorno:**
-    Crea un archivo `.env` en la raíz (puedes usar `.env.example` como base).
-    ```env
-    DEBUG=True
-    SECRET_KEY=tu_clave_secreta_local
-    ALLOWED_HOSTS=localhost,127.0.0.1
-    STRIPE_PUBLIC_KEY=pk_test_...
-    STRIPE_SECRET_KEY=sk_test_...
-    ```
+### 4) Ejecutar servidor
+```bash
+python manage.py runserver
+```
 
-5.  **Base de Datos y Migraciones:**
-    ```bash
-    python manage.py migrate
-    python manage.py createsuperuser
-    ```
+## Flujo de precios y descuentos (admin)
+- `precio`: precio normal del producto.
+- `precio_oferta` (opcional): si existe, se muestra como precio actual y `precio` aparece tachado.
+- Validación implementada: `precio_oferta` debe ser menor que `precio`.
+- El badge **Oferta** se muestra en catálogo cuando el producto tiene `precio_oferta`.
 
-6.  **Ejecutar servidor:**
-    ```bash
-    python manage.py runserver
-    ```
-    Visita `http://127.0.0.1:8000/`.
+## Endpoints principales
 
----
+### Frontend
+- `/` inicio
+- `/catalogo/` listado
+- `/catalogo/producto/<id>/` detalle de producto
+- `/carrito/`
+- `/perfil/`
 
-## 📚 API Rest
+### API
+Base: `/api/`
+- `GET /api/productos/`
+- `GET/POST /api/pedidos/`
+- `POST /api/pago/...` (acciones del `ViewSet`)
+- `POST /api/auth/login/`
+- `POST /api/auth/refresh/`
+- `POST /api/auth/registro/`
 
-La API está disponible en `/api/`.
+### Auth clásica
+- `/login/`
+- `/logout/`
+- `/registro/`
+- `/accounts/` (allauth)
 
-### Autenticación
-Usa JWT (JSON Web Tokens).
-- **Login:** POST `/api/auth/login/`
-  - Body: `{"username": "user", "password": "pass"}`
-  - Response: `{"access": "...", "refresh": "..."}`
+## Protección contra autoformateo de plantillas
 
-### Endpoints Principales
-- **Productos:** GET `/api/productos/`
-- **Carrito:** GET/POST `/api/carrito/`
-- **Pedidos:** GET/POST `/api/pedidos/`
+Se añadió una protección para evitar que aparezcan tokens literales como `{{ cat.nombre }}` en frontend:
 
----
+1. Configuración VS Code en `.vscode/settings.json` para `django-html`.
+2. Script `scripts/template_guard.py`.
 
-## ☁️ Despliegue en Render
+### Uso del guard
+```bash
+# Solo revisar
+python scripts/template_guard.py
 
-El proyecto está pre-configurado para desplegarse en [Render](https://render.com).
+# Revisar y corregir automáticamente
+python scripts/template_guard.py --fix
+```
 
-### Configuración Automática (Blueprint)
-El repositorio incluye un archivo `render.yaml`.
-1. En el dashboard de Render, selecciona **"New" > "Blueprint"**.
-2. Conecta tu repositorio de GitHub.
-3. Render detectará la configuración y creará el servicio web y la base de datos PostgreSQL automáticamente.
+El script recorre `templates/**/*.html` y colapsa expresiones `{{ ... }}` que hayan quedado partidas en varias líneas.
 
-### Configuración Manual
-Si prefieres hacerlo manualmente:
+## Despliegue en Render (paso a paso)
 
-1. **Crear Web Service:**
-   - **Runtime:** Python 3
-   - **Build Command:** `pip install -r requirements.txt && python manage.py collectstatic --no-input`
-   - **Start Command:** `python manage.py migrate --noinput && gunicorn myproject.wsgi:application`
+Este repo ya incluye `render.yaml` (Blueprint). Recomendado usar esa vía.
 
-2. **Variables de Entorno (Environment Variables):**
-   - `PYTHON_VERSION`: `3.11.8`
-   - `SECRET_KEY`: (Genera una segura)
-   - `DEBUG`: `False`
-   - `ALLOWED_HOSTS`: `*` (o tu dominio `.onrender.com`)
-   - `DATABASE_URL`: (Render la provee automáticamente si añades una base de datos)
-   - `STRIPE_PUBLIC_KEY` / `STRIPE_SECRET_KEY`: Tus claves de Stripe.
+### Opción A: Blueprint (recomendada)
+1. En Render: **New** → **Blueprint**.
+2. Conectar este repositorio.
+3. Render leerá `render.yaml` y creará:
+   - Web service `aura-essence-api`
+   - PostgreSQL `aura-essence-db`
+4. Esperar build/deploy y abrir la URL `.onrender.com`.
 
----
+### Opción B: Manual (si no usas Blueprint)
+Crear un **Web Service** con:
+- Runtime: Python
+- Build Command:
+  - `pip install -r requirements.txt && python manage.py collectstatic --no-input`
+- Start Command:
+  - `python manage.py migrate --noinput && gunicorn myproject.wsgi:application`
 
-## 💳 Pagos con Stripe
-El proyecto utiliza Stripe para procesar pagos.
-1. Configura tus claves en `.env` o en las variables de entorno de Render.
-2. Webhooks: Configura el endpoint `/api/webhook/stripe/` en para recibir eventos de pago.
+Agregar variables mínimas:
+- `SECRET_KEY` (segura)
+- `DEBUG=False`
+- `ALLOWED_HOSTS=.onrender.com`
+- `CSRF_TRUSTED_ORIGINS=https://*.onrender.com`
+- `DATABASE_URL=<connection string de Render Postgres>`
+- `PYTHON_VERSION=3.11.8`
 
----
+## Checklist post-despliegue
+- `/admin/` abre correctamente
+- `/catalogo/` renderiza sin tokens `{{...}}` literales
+- Estáticos cargan (CSS/JS)
+- Login y carrito funcionan
+- Si usas pagos, validar credenciales en variables de entorno
 
-## 🛠 Estructura del Proyecto
-- `apps/api/`: Contiene la lógica principal, modelos y vistas.
-- `myproject/settings.py`: Configuración global (adaptada para `dj-database-url`).
-- `templates/`: Plantillas HTML con Tailwind CSS.
-- `static/`: Archivos CSS/JS compilados.
+## Comandos útiles
+```bash
+# Comprobación general Django
+python manage.py check
 
+# Ejecutar migraciones
+python manage.py migrate
+
+# Recolectar estáticos (producción)
+python manage.py collectstatic --no-input
+```
