@@ -1,7 +1,27 @@
 from django.core.exceptions import ValidationError
 from django.contrib import admin
+from django.db.models import Q
 from django.utils.html import format_html
 from .models import Producto, Marca, Categoria
+
+
+class EstadoImagenFilter(admin.SimpleListFilter):
+    title = 'Estado de imagen'
+    parameter_name = 'estado_imagen'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('con', 'Con imagen'),
+            ('sin', 'Sin imagen'),
+        )
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'con':
+            return queryset.exclude(Q(imagen__isnull=True) | Q(imagen=''))
+        if value == 'sin':
+            return queryset.filter(Q(imagen__isnull=True) | Q(imagen=''))
+        return queryset
 
 @admin.register(Marca)
 class MarcaAdmin(admin.ModelAdmin):
@@ -16,15 +36,15 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'precio_oferta', 'genero', 'marca', 'categoria', 'categorias_list', 'activo')
-    list_filter = ('genero', 'marca', 'categoria', 'activo')
+    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'precio_oferta', 'volumen_ml', 'genero', 'marca', 'categoria', 'categorias_list', 'activo')
+    list_filter = ('genero', 'marca', 'categoria', 'activo', EstadoImagenFilter)
     search_fields = ('nombre', 'sku', 'descripcion')
     list_editable = ('precio', 'precio_oferta', 'activo')
     readonly_fields = ('imagen_preview_large',)
     filter_horizontal = ('categorias_secundarias',)
     fieldsets = (
         (None, {
-            'fields': ('nombre', 'sku', 'marca', 'categoria', 'categorias_secundarias', 'genero', 'precio', 'precio_oferta', 'stock', 'imagen', 'imagen_preview_large', 'descripcion', 'activo')
+            'fields': ('nombre', 'sku', 'marca', 'categoria', 'categorias_secundarias', 'genero', 'precio', 'precio_oferta', 'volumen_ml', 'stock', 'imagen', 'imagen_preview_large', 'descripcion', 'activo')
         }),
     )
 
