@@ -261,7 +261,7 @@ def obtener_carrito(request):
             'exito': True,
             'items': items,
             'total': total,
-            'cantidad_items': len(items),
+            'cantidad_items': len(items),  # Ojo: corregido para que el frontend lo use
         })
 
 
@@ -298,6 +298,13 @@ def agregar_carrito(request):
             # Agregar a carrito de sesión
             carrito_sesion = obtener_carrito_sesion(request)
             carrito_sesion[str(producto_id)] = carrito_sesion.get(str(producto_id), 0) + cantidad
+            request.session['carrito'] = carrito_sesion  # Guardar en sesión
+            request.session.modified = True
+
+        return JsonResponse({'exito': True, 'mensaje': 'Producto agregado'})
+    except Exception as e:
+        logger.error(f"Error agregando al carrito: {str(e)}")
+        return JsonResponse({'exito': False, 'error': str(e)}, status=500)
             guardar_carrito_sesion(request, carrito_sesion)
         
         # Retornar carrito actualizado

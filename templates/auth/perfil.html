@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Mi Perfil | Aura Essence{% endblock %}
+
+{% block content %}
+<section class="bg-gray-50 dark:bg-zinc-900 py-12 transition-colors duration-300">
+    <div class="container mx-auto px-4">
+        <h1 class="font-serif text-4xl font-bold text-center mb-8 text-brand-dark dark:text-white">Mi Perfil</h1>
+
+        <div
+            class="max-w-4xl mx-auto bg-white dark:bg-zinc-800 rounded-xl shadow-lg overflow-hidden transition-colors duration-300">
+            <div class="md:flex">
+                <!-- Sidebar -->
+                <div class="md:w-1/3 bg-brand-dark text-white p-8">
+                    <div class="text-center mb-8">
+                        <div
+                            class="w-24 h-24 rounded-full bg-brand-gold mx-auto flex items-center justify-center text-4xl font-bold text-brand-dark mb-4 drop-shadow-lg">
+                            {{ user.first_name|first|default:user.username|first|upper }}
+                        </div>
+                        <h2 class="font-serif text-xl font-bold">{{ user.get_full_name|default:user.username }}</h2>
+                        <p class="text-sm text-gray-400">{{ user.email }}</p>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="#info"
+                            class="block py-2 px-4 rounded hover:bg-white/10 transition-colors bg-white/10 border-l-4 border-brand-gold">
+                            <i class="fa-solid fa-user mr-2 text-brand-gold"></i> Información Personal
+                        </a>
+                        <a href="#pedidos"
+                            class="block py-2 px-4 rounded hover:bg-white/10 transition-colors opacity-70 hover:opacity-100">
+                            <i class="fa-solid fa-box mr-2"></i> Mis Pedidos
+                        </a>
+                        <a href="{% url 'auth:logout' %}"
+                            class="block py-2 px-4 rounded hover:bg-red-500/20 text-red-300 hover:text-red-200 transition-colors mt-8">
+                            <i class="fa-solid fa-sign-out-alt mr-2"></i> Cerrar Sesión
+                        </a>
+                    </nav>
+                </div>
+
+                <!-- Content -->
+                <div class="md:w-2/3 p-8">
+                    <!-- Info Section -->
+                    <div id="info" class="mb-10">
+                        <h3
+                            class="font-serif text-2xl font-bold mb-6 text-brand-dark dark:text-white border-b pb-2 dark:border-gray-700">
+                            Información de la Cuenta</h3>
+
+                        <form class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Usuario</label>
+                                    <input type="text" value="{{ user.username }}" disabled
+                                        class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-zinc-700 border-none text-gray-600 dark:text-gray-300">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email</label>
+                                    <input type="email" value="{{ user.email }}" disabled
+                                        class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-zinc-700 border-none text-gray-600 dark:text-gray-300">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Nombre</label>
+                                    <div
+                                        class="px-4 py-2 rounded-lg bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+                                        {{ user.first_name|default:"--" }}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Apellidos</label>
+                                    <div
+                                        class="px-4 py-2 rounded-lg bg-gray-50 dark:bg-zinc-900 border border-gray-200 dark:border-gray-700 text-gray-800 dark:text-gray-200">
+                                        {{ user.last_name|default:"--" }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="p-4 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/30 rounded-lg flex flex-col md:flex-row justify-between items-center gap-4">
+                                <p class="text-sm text-yellow-800 dark:text-yellow-500">
+                                    <i class="fa-solid fa-info-circle mr-2"></i> Para editar tu información, contacta a
+                                    soporte.
+                                </p>
+                                <a href="{% url 'contacto' %}"
+                                    class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold py-2 px-4 rounded text-sm transition-colors">
+                                    Contactar Soporte
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Orders Section Preview -->
+                    <div id="pedidos">
+                        <h3
+                            class="font-serif text-2xl font-bold mb-6 text-brand-dark dark:text-white border-b pb-2 dark:border-gray-700">
+                            Historial de Pedidos</h3>
+                        {% if user.pedidos.exists %}
+                        <div class="space-y-4">
+                            {% for pedido in user.pedidos.all|slice:":3" %}
+                            <div
+                                class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-zinc-700 transition-colors">
+                                <div>
+                                    <div class="font-bold text-brand-dark dark:text-white">Pedido #{{ pedido.id }}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">{{
+                                        pedido.fecha_creacion|date:"d M Y" }}</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="font-bold text-brand-gold">${{ pedido.total }}</div>
+                                    <span
+                                        class="inline-block px-2 py-1 text-xs rounded-full bg-gray-200 dark:bg-zinc-600 text-gray-700 dark:text-gray-300">
+                                        {{ pedido.estado }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <a href="#" class="block text-center text-sm text-brand-gold hover:underline mt-4">Ver todos
+                                los pedidos</a>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-8">
+                            <i class="fa-solid fa-basket-shopping text-4xl text-gray-300 dark:text-zinc-600 mb-3"></i>
+                            <p class="text-gray-500 dark:text-gray-400">Aún no has realizado pedidos.</p>
+                            <a href="{% url 'frontend:catalogo' %}"
+                                class="inline-block mt-4 text-brand-gold font-bold hover:underline">Ir a comprar</a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

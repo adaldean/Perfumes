@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -77,16 +78,38 @@ class ProductoViewSet(viewsets.ModelViewSet):
 
 def catalogo(request):
     """Vista que renderiza el catálogo adaptado a la perfumería."""
-    productos = Producto.objects.filter(activo=True).select_related('marca', 'categoria')[:48]
+    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').order_by('-id')
+    
+    # Filtrado por categoría
+    categoria_id = request.GET.get('categoria')
+    if categoria_id and categoria_id != 'todas':
+        productos_list = productos_list.filter(categoria_id=categoria_id)
+
+    # Filtrado por búsqueda
+    query = request.GET.get('q')
+    if query:
+        productos_list = productos_list.filter(nombre__icontains=query)
+    
+    paginator = Paginator(productos_list, 12)  # Mostrar 12 productos por página
+    page = request.GET.get('page')
+    
+    try:
+        productos = paginator.page(page)
+    except PageNotAnInteger:
+        # Si la página no es un entero, mostrar la primera página.
+        productos = paginator.page(1)
+    except EmptyPage:
+        # Si la página está fuera de rango, mostrar la última página de resultados.
+        productos = paginator.page(paginator.num_pages)
 
     # Intentar obtener categorías desde la tabla si existe
     categorias_qs = []
     try:
         from apps.api import models as api_models
-        if hasattr(api_models, 'categorias'):
-            categorias_qs = api_models.categorias.objects.all()
+        from apps.api.models import Categoria  # Importación directa recomendada
+        categorias_qs = Categoria.objects.all()
     except Exception:
-        categorias_qs = []
+        pass  # Si falla, simplemente lista vacía
 
     context = {
         'productos': productos,

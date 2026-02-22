@@ -1,16 +1,30 @@
 from django.shortcuts import render, get_object_or_404
 import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 from .models import Producto, Categoria
 
 def catalogo(request):
     """Vista que renderiza el catálogo adaptado a la perfumería."""
-    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').order_by('-id')
+    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').prefetch_related('categorias_secundarias').order_by('-id')
     
-    # Filtrado por categoría
-    categoria_id = request.GET.get('categoria')
-    if categoria_id and categoria_id != 'todas':
-        productos_list = productos_list.filter(categoria_id=categoria_id)
+    # Filtrado por categoría: aceptamos tanto IDs como claves como 'hombre','mujer', etc.
+    categoria_param = request.GET.get('categoria')
+    if categoria_param and categoria_param != 'todas':
+        # soporte para filtros de género (hombre/mujer/unisex)
+        genero_keys = {'hombre', 'mujer', 'unisex'}
+        if categoria_param in genero_keys:
+            productos_list = productos_list.filter(genero=categoria_param)
+        elif categoria_param.isdigit():
+            productos_list = productos_list.filter(categoria_id=categoria_param)
+        else:
+            # mapear clave textual a una categoría existente por slug o coincidencia parcial
+            cat_match = Categoria.objects.filter(slug__iexact=categoria_param).order_by('id').first()
+            if not cat_match:
+                cat_match = Categoria.objects.filter(nombre__icontains=categoria_param).order_by('id').first()
+            if cat_match:
+                # incluir productos cuya categoria principal sea la buscada o que tengan la categoria en las secundarias
+                productos_list = productos_list.filter(Q(categoria=cat_match) | Q(categorias_secundarias=cat_match))
 
     # Filtrado por búsqueda
     query = request.GET.get('q')
@@ -29,18 +43,44 @@ def catalogo(request):
         # Si la página está fuera de rango, mostrar la última página de resultados.
         productos = paginator.page(paginator.num_pages)
 
-    # Mostrar solo las categorías deseadas en el catálogo
-    # Permitimos coincidencias parciales (case-insensitive) para cubrir variantes de nombres
-    from django.db.models import Q
-    allowed_terms = ['hombre', 'mujer', 'unisex', 'floral', 'amaderad', 'citr', 'oriental']
-    q = Q()
-    for t in allowed_terms:
-        q |= Q(nombre__icontains=t)
-    categorias = Categoria.objects.filter(q).order_by('id')
-    # Debug: log sample of categorias and productos types/values to help trace rendering issue
+    # Usar un conjunto fijo y ordenado de etiquetas para los filtros del catálogo
+    fixed = [
+        ('todas', 'Todos'),
+        ('hombre', 'Hombre'),
+        ('mujer', 'Mujer'),
+        ('unisex', 'Unisex'),
+        ('floral', 'Floral'),
+        ('amaderado', 'Amaderado'),
+        ('citrico', 'Cítrico'),
+        ('oriental', 'Oriental'),
+    ]
+
+    # Construir lista de diccionarios con keys `id` y `nombre` para mantener compatibilidad con la plantilla
+    categorias = []
+    import unicodedata
+    def _norm(s):
+        if not s:
+            return ''
+        return unicodedata.normalize('NFKD', s).encode('ascii', 'ignore').decode('ascii').lower()
+
+    for key, label in fixed:
+        if key == 'todas':
+            categorias.append({'id': 'todas', 'nombre': label})
+        else:
+            cat = Categoria.objects.filter(nombre__icontains=key).order_by('id').first()
+            if not cat:
+                # fallback: normalize names and match
+                key_norm = _norm(key)
+                for c in Categoria.objects.all():
+                    if key_norm in _norm(c.nombre):
+                        cat = c
+                        break
+            categorias.append({'id': cat.id if cat else key, 'nombre': label})
+
+    # Debug: log sample de categorias y productos para ayudar a depurar
     logger = logging.getLogger(__name__)
     try:
-        logger.warning('DEBUG categorias count=%s sample=%s', categorias.count(), list(categorias.values('id','nombre')[:10]))
+        logger.warning('DEBUG categorias count=%s sample=%s', len(categorias), [c['nombre'] for c in categorias[:10]])
     except Exception as e:
         logger.exception('Error logging categorias: %s', e)
     context = {
