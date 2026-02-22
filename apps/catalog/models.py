@@ -46,6 +46,7 @@ class Producto(models.Model):
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
     categoria = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
+    categorias_secundarias = models.ManyToManyField(Categoria, blank=True, related_name='productos_secundarios')
     peso_kg = models.DecimalField(max_digits=8, decimal_places=3, null=True, blank=True)
     stock = models.IntegerField(default=0)
     activo = models.BooleanField(default=True)
