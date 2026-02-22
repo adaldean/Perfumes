@@ -15,11 +15,17 @@ class CategoriaAdmin(admin.ModelAdmin):
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'genero', 'marca', 'categoria', 'activo')
+    list_display = ('imagen_preview', 'nombre', 'sku', 'precio', 'genero', 'marca', 'categoria', 'categorias_list', 'activo')
     list_filter = ('genero', 'marca', 'categoria', 'activo')
     search_fields = ('nombre', 'sku', 'descripcion')
     list_editable = ('precio', 'activo')
     readonly_fields = ('imagen_preview_large',)
+    filter_horizontal = ('categorias_secundarias',)
+    fieldsets = (
+        (None, {
+            'fields': ('nombre', 'sku', 'marca', 'categoria', 'categorias_secundarias', 'genero', 'precio', 'stock', 'imagen', 'imagen_preview_large', 'descripcion', 'activo')
+        }),
+    )
 
     def imagen_preview(self, obj):
         if obj.imagen:
@@ -32,3 +38,8 @@ class ProductoAdmin(admin.ModelAdmin):
             return format_html('<img src="{}" style="max-width: 300px; border-radius: 10px;" />', obj.imagen.url)
         return "No Image"
     imagen_preview_large.short_description = "Vista Previa"
+
+    def categorias_list(self, obj):
+        secs = [c.nombre for c in obj.categorias_secundarias.all()]
+        return ", ".join(secs) if secs else '-'
+    categorias_list.short_description = 'Categorias secundarias'
