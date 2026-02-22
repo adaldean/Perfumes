@@ -17,7 +17,9 @@
             <div id="__debug" class="sr-only">DEBUG: first={{ categorias.0.nombre }} count={{ categorias|length }}</div>
 
             {% for cat in categorias %}
-            <a href="?categoria={{ cat.id }}" class="px-6 py-2 rounded-full {% if request.GET.categoria == cat.id|stringformat:'s' %}bg-brand-dark text-white{% else %}bg-white dark:bg-zinc-800 dark:text-gray-300 dark:border-gray-600 text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:border-brand-gold hover:text-brand-gold transition-colors">{{ cat.nombre|default:cat }}</a>
+            <a href="?categoria={{ cat.id }}"
+                class="px-6 py-2 rounded-full {% if request.GET.categoria == cat.id|stringformat:'s' %}bg-brand-dark text-white{% else %}bg-white dark:bg-zinc-800 dark:text-gray-300 dark:border-gray-600 text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:border-brand-gold hover:text-brand-gold transition-colors">{{
+                cat.nombre|default:cat }}</a>
             {% endfor %}
         </div>
 
@@ -83,12 +85,15 @@
                     <div class="text-sm text-gray-500 mb-2">Tamaño: {{ producto.volumen_ml }} ml</div>
                     {% endif %}
                     {% if producto.descripcion %}
-                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-3">{{ producto.descripcion|truncatechars:120 }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-3">{{
+                        producto.descripcion|truncatechars:120 }}</p>
                     {% endif %}
                     <div class="flex items-end justify-between mt-4">
                         <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 line-through">${{ producto.precio|default:0|add:200|floatformat:2 }}</span>
-                            <span class="text-xl font-bold text-brand-dark dark:text-white">${{ producto.precio|default:0|floatformat:2 }}</span>
+                            <span class="text-xs text-gray-400 line-through">${{
+                                producto.precio|default:0|add:200|floatformat:2 }}</span>
+                            <span class="text-xl font-bold text-brand-dark dark:text-white">${{
+                                producto.precio|default:0|floatformat:2 }}</span>
                         </div>
                         <div class="text-yellow-400 text-xs">
                             <i class="fa-solid fa-star"></i>
