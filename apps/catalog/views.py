@@ -16,7 +16,16 @@ def catalogo(request):
         if categoria_param in genero_keys:
             productos_list = productos_list.filter(genero=categoria_param)
         elif categoria_param.isdigit():
-            productos_list = productos_list.filter(categoria_id=categoria_param)
+            # Si se pasó un id numérico, buscar la categoría y filtrar tanto por
+            # categoría principal como por categorías secundarias.
+            try:
+                cat_by_id = Categoria.objects.filter(id=int(categoria_param)).first()
+            except (ValueError, TypeError):
+                cat_by_id = None
+            if cat_by_id:
+                productos_list = productos_list.filter(Q(categoria=cat_by_id) | Q(categorias_secundarias=cat_by_id))
+            else:
+                productos_list = productos_list.filter(categoria_id=categoria_param)
         else:
             # mapear clave textual a una categoría existente por slug o coincidencia parcial
             cat_match = Categoria.objects.filter(slug__iexact=categoria_param).order_by('id').first()
@@ -25,12 +34,22 @@ def catalogo(request):
             if cat_match:
                 # incluir productos cuya categoria principal sea la buscada o que tengan la categoria en las secundarias
                 productos_list = productos_list.filter(Q(categoria=cat_match) | Q(categorias_secundarias=cat_match))
+            else:
+                # Fallback: buscar directamente en los nombres/slugs de las categorías principales o secundarias
+                productos_list = productos_list.filter(
+                    Q(categoria__slug__iexact=categoria_param) |
+                    Q(categoria__nombre__icontains=categoria_param) |
+                    Q(categorias_secundarias__slug__iexact=categoria_param) |
+                    Q(categorias_secundarias__nombre__icontains=categoria_param)
+                )
 
     # Filtrado por búsqueda
     query = request.GET.get('q')
     if query:
         productos_list = productos_list.filter(nombre__icontains=query)
     
+    # Evitar duplicados cuando se usan relaciones ManyToMany en filtros
+    productos_list = productos_list.distinct()
     paginator = Paginator(productos_list, 12)  # Mostrar 12 productos por página
     page = request.GET.get('page')
     
