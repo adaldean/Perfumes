@@ -18,8 +18,7 @@
 
             {% for cat in categorias %}
             <a href="?categoria={{ cat.id }}"
-                class="px-6 py-2 rounded-full {% if request.GET.categoria == cat.id|stringformat:'s' %}bg-brand-dark text-white{% else %}bg-white dark:bg-zinc-800 dark:text-gray-300 dark:border-gray-600 text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:border-brand-gold hover:text-brand-gold transition-colors">{{
-                cat.nombre|default:cat }}</a>
+                class="px-6 py-2 rounded-full {% if request.GET.categoria == cat.id|stringformat:'s' %}bg-brand-dark text-white{% else %}bg-white dark:bg-zinc-800 dark:text-gray-300 dark:border-gray-600 text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:border-brand-gold hover:text-brand-gold transition-colors">{{ cat.nombre|default:cat }}</a>
             {% endfor %}
         </div>
 
@@ -65,9 +64,12 @@
 
                 <!-- Info -->
                 <div class="p-6">
-                    <div class="text-xs text-brand-gold mb-2 font-bold uppercase tracking-wide">
-                        {{ producto.marca.nombre|default:"Aura Essence" }}
-                    </div>
+                                <div class="text-xs text-brand-gold mb-2 font-bold uppercase tracking-wide">
+                                    {{ producto.marca.nombre|default:"Aura Essence" }}
+                                </div>
+                                <span class="text-brand-gold font-bold uppercase tracking-widest text-sm mb-2 block">
+                                    {{ producto.get_genero_display }}{% if producto.categoria %} - {{ producto.categoria.nombre }}{% endif %}{% for c in producto.categorias_secundarias.all %}{% if forloop.first and not producto.categoria %} - {% else %} / {% endif %}{{ c.nombre }}{% endfor %}
+                                </span>
                     <a href="{% url 'frontend:detalle_producto' producto.id %}" class="block">
                         <h3 class="font-serif font-bold text-lg mb-2 text-brand-dark dark:text-gray-100 group-hover:text-brand-gold transition-colors cursor-pointer truncate"
                             title="{{ producto.nombre }}">
@@ -76,10 +78,8 @@
                     </a>
                     <div class="flex items-end justify-between mt-4">
                         <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 line-through">${{
-                                producto.precio|default:0|add:200|floatformat:2 }}</span>
-                            <span class="text-xl font-bold text-brand-dark dark:text-white">${{
-                                producto.precio|default:0|floatformat:2 }}</span>
+                            <span class="text-xs text-gray-400 line-through">${{ producto.precio|default:0|add:200|floatformat:2 }}</span>
+                            <span class="text-xl font-bold text-brand-dark dark:text-white">${{ producto.precio|default:0|floatformat:2 }}</span>
                         </div>
                         <div class="text-yellow-400 text-xs">
                             <i class="fa-solid fa-star"></i>
@@ -111,13 +111,9 @@
 
             {% for i in productos.paginator.page_range %}
             {% if productos.number == i %}
-            <span
-                class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark text-white font-bold cursor-default">{{
-                i }}</span>
+            <span class="w-10 h-10 flex items-center justify-center rounded-full bg-brand-dark text-white font-bold cursor-default">{{ i }}</span>
             {% else %}
-            <a href="?page={{ i }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}"
-                class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-600 hover:border-brand-gold hover:text-brand-gold transition-colors">{{
-                i }}</a>
+            <a href="?page={{ i }}{% if request.GET.categoria %}&categoria={{ request.GET.categoria }}{% endif %}" class="w-10 h-10 flex items-center justify-center rounded-full bg-white border border-gray-200 text-gray-600 hover:border-brand-gold hover:text-brand-gold transition-colors">{{ i }}</a>
             {% endif %}
             {% endfor %}
 

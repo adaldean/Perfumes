@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ producto.nombre }} | Aura Essence{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-white dark:bg-zinc-900 transition-colors duration-300 min-h-screen">
+    <div class="container mx-auto px-4">
+        <!-- Breadcrumb -->
+        <nav class="text-sm text-gray-500 mb-8 font-medium">
+            <a href="{% url 'home' %}" class="hover:text-brand-gold transition-colors">Inicio</a> <span
+                class="mx-2">/</span>
+            <a href="{% url 'frontend:catalogo' %}" class="hover:text-brand-gold transition-colors">Catálogo</a> <span
+                class="mx-2">/</span>
+            <span class="text-brand-dark dark:text-gray-300">{{ producto.nombre }}</span>
+        </nav>
+
+        <div class="flex flex-col lg:flex-row gap-12 items-start">
+            <!-- Imagen -->
+            <div class="w-full lg:w-1/2">
+                <div
+                    class="relative aspect-square bg-gray-50 dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-zinc-700">
+                    {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}"
+                        class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700">
+                    {% else %}
+                    <img src="https://source.unsplash.com/random/800x800/?perfume&sig={{ producto.id }}"
+                        alt="{{ producto.nombre }}"
+                        class="w-full h-full object-cover opacity-90 transform hover:scale-105 transition-transform duration-700">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <i class="fa-solid fa-spray-can-sparkles text-6xl text-white/50"></i>
+                    </div>
+                    {% endif %}
+
+                    {% if producto.stock <= 0 %} <div
+                        class="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                        Agotado
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Detalles -->
+        <div class="w-full lg:w-1/2 flex flex-col gap-6">
+            <div>
+                <span class="text-brand-gold font-bold uppercase tracking-widest text-sm mb-2 block">
+                    {{ producto.categoria.nombre|default:"Exclusivo" }}
+                </span>
+                <h1
+                    class="font-serif text-4xl md:text-5xl font-bold text-brand-dark dark:text-white mb-4 leading-tight">
+                    {{ producto.nombre }}
+                </h1>
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="text-brand-gold text-sm flex gap-1">
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star"></i>
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    </div>
+                    <span class="text-gray-400 text-sm">(24 reseñas)</span>
+                </div>
+            </div>
+
+            <div class="text-3xl font-bold text-brand-dark dark:text-white flex items-center gap-4">
+                ${{ producto.precio }}
+                <span class="text-lg text-gray-400 line-through font-normal">${{ producto.precio|add:"500" }}</span>
+            </div>
+
+            <div class="prose dark:prose-invert text-gray-600 dark:text-gray-300 leading-relaxed">
+                <p>{{ producto.descripcion|linebreaksbr }}</p>
+            </div>
+
+            <!-- Acciones -->
+            <div class="py-6 border-t border-b border-gray-100 dark:border-zinc-700 space-y-6">
+
+                {% if producto.stock > 0 %}
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <!-- Contador -->
+                    <div class="flex items-center border border-gray-300 dark:border-gray-600 rounded-full w-max">
+                        <button onclick="updateQuantity(-1)"
+                            class="w-12 h-10 flex items-center justify-center text-gray-500 hover:text-brand-dark dark:hover:text-white transition-colors">
+                            <i class="fa-solid fa-minus text-xs"></i>
+                        </button>
+                        <input type="number" id="quantity" value="1" min="1" max="{{ producto.stock }}"
+                            class="w-12 text-center border-none bg-transparent font-bold text-brand-dark dark:text-white focus:ring-0 p-0"
+                            readonly>
+                        <button onclick="updateQuantity(1)"
+                            class="w-12 h-10 flex items-center justify-center text-gray-500 hover:text-brand-dark dark:hover:text-white transition-colors">
+                            <i class="fa-solid fa-plus text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Botón Agregar -->
+                    <button onclick="addToCart({{ producto.id }})" id="add-to-cart-btn"
+                        class="flex-1 bg-brand-dark hover:bg-brand-gold text-white font-bold py-3 px-8 rounded-full transition-all shadow-lg hover:shadow-brand-gold/50 flex items-center justify-center gap-3 transform active:scale-95 duration-200">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Agregar al Carrito</span>
+                    </button>
+                </div>
+                <p class="text-xs text-green-600 dark:text-green-400 font-bold flex items-center gap-1">
+                    <i class="fa-solid fa-check-circle"></i> Disponibles: {{ producto.stock }} unidades
+                </p>
+                {% else %}
+                <div class="bg-gray-100 dark:bg-zinc-800 p-4 rounded-lg text-center">
+                    <p class="text-gray-500">Este producto no está disponible por el momento.</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 text-sm text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-brand-light dark:bg-zinc-800 flex items-center justify-center text-brand-gold">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <span>Envío Gratis</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-brand-light dark:bg-zinc-800 flex items-center justify-center text-brand-gold">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <span>Original Garantizado</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-10 h-10 rounded-full bg-brand-light dark:bg-zinc-800 flex items-center justify-center text-brand-gold">
+                        <i class="fa-regular fa-credit-card"></i>
+                    </div>
+                    <span>Pago Seguro</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Productos Relacionados -->
+    {% if relacionados %}
+    <div class="mt-20 border-t border-gray-100 dark:border-zinc-700 pt-12">
+        <h2 class="font-serif text-3xl font-bold text-center mb-10 text-brand-dark dark:text-white">También te podría
+            gustar</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {% for item in relacionados %}
+            <div
+                class="group bg-white dark:bg-zinc-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-gray-100 dark:border-zinc-700">
+                <div class="relative h-64 overflow-hidden bg-gray-100 dark:bg-zinc-900">
+                    {% if item.imagen %}
+                    <img src="{{ item.imagen.url }}" alt="{{ item.nombre }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    {% else %}
+                    <img src="https://source.unsplash.com/random/400x400/?perfume&sig={{ item.id }}"
+                        class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 opacity-80">
+                    {% endif %}
+
+                    <a href="{% url 'frontend:detalle_producto' item.id %}" class="absolute inset-0 z-10"></a>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-bold text-brand-dark dark:text-white mb-1 truncate">{{ item.nombre }}</h3>
+                    <p class="text-brand-gold font-bold">${{ item.precio }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    </div>
+</section>
+
+<script>
+    function updateQuantity(change) {
+        const input = document.getElementById('quantity');
+        let newVal = parseInt(input.value) + change;
+        const max = parseInt(input.getAttribute('max'));
+
+        if (newVal >= 1 && newVal <= max) {
+            input.value = newVal;
+        }
+    }
+
+    async function addToCart(productoId) {
+        const btn = document.getElementById('add-to-cart-btn');
+        const originalContent = btn.innerHTML;
+        const cantidad = parseInt(document.getElementById('quantity').value);
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Agregando...';
+
+        try {
+            const response = await fetch('/api/carrito/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    producto_id: productoId,
+                    cantidad: cantidad
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.exito) {
+                // Show success feedback
+                btn.innerHTML = '<i class="fa-solid fa-check"></i> ¡Agregado!';
+                btn.classList.replace('bg-brand-dark', 'bg-green-600');
+                btn.classList.replace('hover:bg-brand-gold', 'hover:bg-green-700');
+
+                // Update cart badge if exists
+                const badge = document.querySelector('.fa-bag-shopping + span');
+                if (badge && data.cantidad_items) badge.textContent = data.cantidad_items;
+
+                setTimeout(() => {
+                    btn.innerHTML = originalContent;
+                    btn.classList.replace('bg-green-600', 'bg-brand-dark');
+                    btn.classList.replace('hover:bg-green-700', 'hover:bg-brand-gold');
+                    btn.disabled = false;
+                }, 2000);
+            } else {
+                alert('Error: ' + data.error);
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error al conectar con el servidor.');
+            btn.innerHTML = originalContent;
+            btn.disabled = false;
+        }
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}
