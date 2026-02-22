@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Producto, Categoria
+from apps.api.models import Producto, Categoria
 
 def catalogo(request):
     """Vista que renderiza el catálogo adaptado a la perfumería."""
