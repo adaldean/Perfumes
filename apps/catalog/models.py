@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 class Marca(models.Model):
     """Modelo de marcas de perfumes."""
@@ -43,6 +44,7 @@ class Producto(models.Model):
     genero = models.CharField(max_length=20, choices=GENERO_CHOICES, default='unisex')
     descripcion = models.TextField(blank=True, null=True)
     precio = models.DecimalField(max_digits=10, decimal_places=2)
+    precio_oferta = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text='Precio en oferta (opcional). Si está presente se mostrará como precio actual.')
     imagen = models.ImageField(upload_to='productos/', null=True, blank=True)
     volumen_ml = models.PositiveIntegerField(null=True, blank=True, help_text='Capacidad en mililitros (ml)')
     marca = models.ForeignKey(Marca, on_delete=models.SET_NULL, null=True, blank=True, related_name='productos')
@@ -61,3 +63,10 @@ class Producto(models.Model):
     
     def __str__(self):
         return self.nombre
+
+    def clean(self):
+        """Validar que precio_oferta sea menor que precio si está presente."""
+        if self.precio_oferta and self.precio_oferta >= self.precio:
+            raise ValidationError(
+                {'precio_oferta': 'El precio de oferta debe ser menor que el precio original.'}
+            )
