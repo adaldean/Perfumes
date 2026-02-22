@@ -15,7 +15,8 @@
         <!-- MARKER: templates/catalogo.html workspace -->
         <div class="flex flex-wrap justify-center gap-4 mb-12">
             <div id="__debug" class="sr-only">DEBUG: first={{ categorias.0.nombre }} count={{ categorias|length }}</div>
-
+            <a href="?categoria=todas"
+                class="px-6 py-2 rounded-full {% if not request.GET.categoria or request.GET.categoria == 'todas' %}bg-brand-dark text-white{% else %}bg-white text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:bg-brand-gold hover:text-white transition-colors">Todos</a>
             {% for cat in categorias %}
             <a href="?categoria={{ cat.id }}"
                 class="px-6 py-2 rounded-full {% if request.GET.categoria == cat.id|stringformat:'s' %}bg-brand-dark text-white{% else %}bg-white dark:bg-zinc-800 dark:text-gray-300 dark:border-gray-600 text-gray-600 border border-gray-200{% endif %} text-sm font-bold hover:border-brand-gold hover:text-brand-gold transition-colors">{{
