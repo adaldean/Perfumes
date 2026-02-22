@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aura Essence | El Arte de la Fragancia{% endblock %}</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jost:wght@400;600;700&family=Montserrat:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo-brand">
+                <img src="https://via.placeholder.com/120x50?text=Aura+Essence" alt="Aura Essence Logo" class="logo">
+                <span class="brand-name">AURA_ESSENCE</span>
+            </div>
+
+            <div class="search-wrapper">
+                <form action="/catalogo/" method="get">
+                    <input type="search" name="q" placeholder="Buscar notas, marcas, sensaciones...">
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+
+            <nav class="header-actions">
+                {% if user.is_authenticated %}
+                <a href="#" class="action-icon" title="Perfil">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                {% else %}
+                <a href="{% url 'auth:login' %}" class="action-icon" title="Inicia Sesión">
+                    <i class="fa-solid fa-user"></i>
+                </a>
+                {% endif %}
+                <a href="{% url 'auth:carrito' %}" class="action-icon cart-trigger">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-badge">0</span>
+                </a>
+                <button id="dark-mode-toggle" class="theme-btn">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="store-container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-grid">
+            <div class="footer-info">
+                <h3>AURA_ESSENCE</h3>
+                <p>Elevando tus sentidos desde el corazón de la CDMX.</p>
+            </div>
+            <div class="footer-contact">
+                <p><strong>Visítanos:</strong> Av. Aromas 123, Centro, CDMX</p>
+                <p><strong>Contáctanos:</strong> josea0476@gmail.com</p>
+            </div>
+            <div class="footer-social">
+                <div class="social-links">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const btn = document.getElementById('dark-mode-toggle');
+        const icon = btn?.querySelector('i');
+
+        const setDarkMode = (isDark) => {
+            document.body.classList.toggle('dark-mode', isDark);
+            icon?.classList.replace(isDark ? 'fa-moon' : 'fa-sun', isDark ? 'fa-sun' : 'fa-moon');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        };
+
+        if (localStorage.getItem('theme') === 'dark') setDarkMode(true);
+
+        btn?.addEventListener('click', () => setDarkMode(!document.body.classList.contains('dark-mode')));
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>
