@@ -4,6 +4,18 @@ from django.contrib.auth.decorators import login_required
 from .serializers import RegistroSerializer
 from apps.orders.models import Carrito
 
+
+def _google_login_available(request):
+    """Indica si Google OAuth está configurado correctamente para el sitio actual."""
+    try:
+        from allauth.socialaccount.models import SocialApp
+        from django.contrib.sites.shortcuts import get_current_site
+
+        site = get_current_site(request)
+        return SocialApp.objects.filter(provider='google', sites=site).exists()
+    except Exception:
+        return False
+
 def login_view(request):
     """
     Vista de Login.
@@ -16,7 +28,8 @@ def login_view(request):
         
         if not username or not password:
             return render(request, 'auth/login.html', {
-                'error': 'Usuario y contraseña son requeridos'
+                'error': 'Usuario y contraseña son requeridos',
+                'google_login_available': _google_login_available(request),
             })
         
         user = authenticate(request, username=username, password=password)
@@ -41,9 +54,12 @@ def login_view(request):
             return render(request, 'auth/login.html', {
                 'error': 'Usuario o contraseña incorrectos',
                 'username': username,
+                'google_login_available': _google_login_available(request),
             })
     
-    return render(request, 'auth/login.html')
+    return render(request, 'auth/login.html', {
+        'google_login_available': _google_login_available(request),
+    })
 
 @login_required(login_url='auth:login')
 def logout_view(request):

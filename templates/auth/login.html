@@ -318,6 +318,7 @@
                     </button>
                 </form>
 
+                {% if google_login_available %}
                 <div class="divider">
                     <span>O</span>
                 </div>
@@ -326,6 +327,7 @@
                     <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
                     Iniciar con Google
                 </a>
+                {% endif %}
 
                 <div class="auth-footer">
                     ¿No tienes cuenta?
