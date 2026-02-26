@@ -16,19 +16,28 @@ from apps.users.models import UserProfile
 User = get_user_model()
 
 def ensure_user(username, email, is_super=False):
-    pwd = secrets.token_urlsafe(12)
     u = User.objects.filter(username=username).first()
     if u:
-        u.email = email
-        u.is_staff = is_super
-        u.is_superuser = is_super
-        u.set_password(pwd)
-        u.save()
+        changed = False
+        if u.email != email:
+            u.email = email
+            changed = True
+        if u.is_staff != is_super:
+            u.is_staff = is_super
+            changed = True
+        if u.is_superuser != is_super:
+            u.is_superuser = is_super
+            changed = True
+        if changed:
+            u.save()
         created = False
+        pwd = None
+        profile, _ = UserProfile.objects.get_or_create(user=u)
     else:
+        pwd = secrets.token_urlsafe(12)
         try:
             if is_super and hasattr(User.objects, 'create_superuser'):
-                User.objects.create_superuser(username=username, email=email, password=pwd)
+                u = User.objects.create_superuser(username=username, email=email, password=pwd)
                 created = True
             else:
                 u = User.objects.create_user(username=username, email=email, password=pwd)
@@ -44,9 +53,9 @@ def ensure_user(username, email, is_super=False):
             u.save()
             created = True
 
-    profile, _ = UserProfile.objects.get_or_create(user=User.objects.get(username=username))
-    profile.must_change_password = True
-    profile.save(update_fields=['must_change_password'])
+        profile, _ = UserProfile.objects.get_or_create(user=u)
+        profile.must_change_password = True
+        profile.save(update_fields=['must_change_password'])
 
     return pwd, created
 
@@ -72,7 +81,7 @@ def main():
         if pwd:
             print(f"{username} ({email}) [{role}] {status}: password={pwd}")
         else:
-            print(f"{username} ({email}) [{role}] {status}: password=ERROR")
+            print(f"{username} ({email}) [{role}] {status}: password=UNCHANGED")
 
 if __name__ == '__main__':
     main()
