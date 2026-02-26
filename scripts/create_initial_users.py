@@ -61,8 +61,8 @@ def ensure_user(username, email, is_super=False):
 
 def main():
     pairs = [
-        ("Joss", "jossA@example.com", True),
-        ("Adal", "adald@gmail.com", False),
+        ("Adal", "adal@gmail.com", "123456aa", True),
+        ("Joss", "jossA@example.com", "OtraSegura123", True),
     ]
 
     results = []
