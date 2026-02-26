@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 from .serializers import RegistroSerializer
 from apps.orders.models import Carrito
+from .models import UserProfile
 
 
 def _google_login_available(request):
@@ -139,3 +142,19 @@ def registro_view(request):
             })
 
     return render(request, 'auth/registro.html')
+
+
+class ForcedPasswordChangeView(auth_views.PasswordChangeView):
+    template_name = 'auth/password_change_form.html'
+    success_url = reverse_lazy('auth:password_change_done')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        profile, _ = UserProfile.objects.get_or_create(user=self.request.user)
+        profile.must_change_password = False
+        profile.save(update_fields=['must_change_password'])
+        return response
+
+
+class ForcedPasswordChangeDoneView(auth_views.PasswordChangeDoneView):
+    template_name = 'auth/password_change_done.html'

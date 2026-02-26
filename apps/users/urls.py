@@ -13,6 +13,8 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('registro/', views.registro_view, name='registro'),
+    path('cambiar-password/', views.ForcedPasswordChangeView.as_view(), name='password_change'),
+    path('cambiar-password/hecho/', views.ForcedPasswordChangeDoneView.as_view(), name='password_change_done'),
     path('gestion_clientes/', admin_views.gestion_usuarios_view, name='gestion_clientes'),
     path('api/registro/', api_views.RegistroView.as_view(), name='api_registro'),
 
