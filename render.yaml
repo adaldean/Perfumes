@@ -3,7 +3,7 @@ services:
     name: aura-essence-api
     runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
-    releaseCommand: "python manage.py migrate --noinput && python manage.py collectstatic --no-input && python scripts/create_admin_user.py"
+    releaseCommand: "python manage.py migrate --noinput && python manage.py collectstatic --no-input && python scripts/create_initial_users.py"
     startCommand: "gunicorn myproject.wsgi:application"
     envVars:
       - key: SECRET_KEY
@@ -18,6 +18,12 @@ services:
         value: "postgresql://aura_essence_user:zOxrKcUTQ393OMWyjXa1VS35txSgrg3m@dpg-d6fovu15pdvs73flpueg-a.oregon-postgres.render.com/aura_essence_wzwi?sslmode=require"
       - key: PYTHON_VERSION
         value: 3.11.8
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_EMAIL
+        value: admin@example.com
+      - key: ADMIN_PASSWORD
+        value: securepassword
 
 databases:
   - name: aura-essence-db
