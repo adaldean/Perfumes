@@ -14,7 +14,11 @@ import json
 import hmac
 import hashlib
 
-from .models import Producto, Pedido, DetallePedido, Pago
+from apps.catalog.models import Producto
+from apps.orders.models import Pedido, DetallePedido, Pago
+
+# Eliminar la línea incorrecta
+# from .models import Producto, Pedido, DetallePedido, Pago
 from .serializers import (
     ProductoSerializer, 
     RegistroSerializer, 

@@ -8,6 +8,7 @@ from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
 from apps.core import views as core_views
+from apps.api import views as api_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -15,6 +16,7 @@ urlpatterns = [
     
     # New Architecture URLs
     path('api/', include('apps.core.api_urls')),
+    path('api/', include('apps.api.urls')),
     
     # Allauth URLs (Login con Google etc)
     path('accounts/', include('allauth.urls')),

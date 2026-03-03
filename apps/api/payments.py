@@ -41,7 +41,7 @@ import stripe
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.utils import timezone
-from .models import Pago, Pedido
+from apps.orders.models import Pago, Pedido
 import logging
 
 # Configurar logging para pagos
