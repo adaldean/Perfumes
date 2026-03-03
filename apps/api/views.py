@@ -13,6 +13,7 @@ import stripe
 import json
 import hmac
 import hashlib
+from django.contrib.auth import get_user_model
 
 from apps.catalog.models import Producto
 from apps.orders.models import Pedido, DetallePedido, Pago
@@ -32,7 +33,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 stripe.api_key = settings.STRIPE_SECRET_KEY
-
+User = get_user_model()
 
 # ============================================
 # Vistas de Autenticación
@@ -272,5 +273,8 @@ def create_admin_user(request):
 
     if not User.objects.filter(username=username).exists():
         User.objects.create_superuser(username=username, email=email, password=password)
-        return JsonResponse({"status": "success", "message": "Admin user created."})
-    return JsonResponse({"status": "error", "message": "Admin user already exists."})
+        context = {"status": True, "message": "Admin user created."}
+    else:
+        context = {"status": False, "message": "Admin user already exists."}
+
+    return render(request, "api/create_admin_user.html", context)
