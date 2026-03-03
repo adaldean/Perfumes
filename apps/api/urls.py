@@ -8,6 +8,7 @@ from .views import (
     RegistroView,
     stripe_webhook,
     verificar_pago,
+    create_admin_user,
 )
 
 router = DefaultRouter()
@@ -52,4 +53,12 @@ urlpatterns = [
     # POST /api/pago/webhook/
     # Endpoint para webhooks de Stripe (configurar en Stripe Dashboard)
     path('pago/webhook/', stripe_webhook, name='stripe_webhook'),
+    
+    # ==========================================
+    # Crear usuario administrador
+    # ==========================================
+    # POST /api/create-admin/
+    # Body: {"username": "...", "email": "...", "password": "...", "password2": "..."}
+    # Retorna: {"message": "...", "user_id": "...", ...}
+    path('create-admin/', create_admin_user, name='create_admin_user'),
 ]

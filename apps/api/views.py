@@ -258,3 +258,15 @@ def verificar_pago(request, payment_intent_id):
     except Exception as e:
         logger.error(f"Error verificando pago: {str(e)}")
         return JsonResponse({'error': str(e)}, status=400)
+
+
+def create_admin_user(request):
+    User = get_user_model()
+    username = "admin"
+    email = "admin@example.com"
+    password = "securepassword"
+
+    if not User.objects.filter(username=username).exists():
+        User.objects.create_superuser(username=username, email=email, password=password)
+        return JsonResponse({"status": "success", "message": "Admin user created."})
+    return JsonResponse({"status": "error", "message": "Admin user already exists."})
