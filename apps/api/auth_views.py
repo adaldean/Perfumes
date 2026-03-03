@@ -12,6 +12,9 @@ from django.views.decorators.http import require_http_methods, require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 from .models import Carrito, ItemCarrito, Producto
 
@@ -305,16 +308,6 @@ def agregar_carrito(request):
     except Exception as e:
         logger.error(f"Error agregando al carrito: {str(e)}")
         return JsonResponse({'exito': False, 'error': str(e)}, status=500)
-            guardar_carrito_sesion(request, carrito_sesion)
-        
-        # Retornar carrito actualizado
-        return obtener_carrito(request)
-    
-    except Exception as e:
-        return JsonResponse({
-            'exito': False,
-            'error': str(e)
-        }, status=400)
 
 
 @require_POST

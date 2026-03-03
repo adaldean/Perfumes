@@ -13,12 +13,11 @@ from .views import (
 router = DefaultRouter()
 router.register(r'productos', ProductoViewSet, basename='producto')
 router.register(r'pedidos', PedidoViewSet, basename='pedido')
-router.register(r'pago', CrearPagoView, basename='pago')
 
 app_name = 'api'
 
 urlpatterns = [
-    # Rutas del router (productos, pedidos, pago)
+    # Rutas del router (productos, pedidos)
     path('', include(router.urls)),
     
     # ==========================================
