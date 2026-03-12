@@ -399,6 +399,30 @@
             document.body.classList.add('dark-mode');
         }
     </script>
+    <script>
+        // Validación cliente: contraseña mínimo 6 y alertas
+        (function(){
+            const form = document.querySelector('form[method="POST"]');
+            if(!form) return;
+            form.addEventListener('submit', function(e){
+                const pwd = document.getElementById('password');
+                const pwd2 = document.getElementById('password2');
+                if(pwd && pwd.value.length < 6){
+                    e.preventDefault();
+                    alert('Contraseña inválida: mínima 6 caracteres');
+                    pwd.focus();
+                    return false;
+                }
+                if(pwd && pwd2 && pwd.value !== pwd2.value){
+                    e.preventDefault();
+                    alert('Las contraseñas no coinciden');
+                    pwd2.focus();
+                    return false;
+                }
+                // permitir envío
+            });
+        })();
+    </script>
 </body>
 
 </html>
