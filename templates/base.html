@@ -35,6 +35,7 @@
             }
         }
     </script>
+    
 
     <script>
         // Check local storage and system preference on load
@@ -61,6 +62,41 @@
         .text-shadow {
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
+        /* Brand CSS variables and interface color rules */
+        :root {
+            --brand-gold: #FFD14D;
+            --brand-dark: #111317;
+            --brand-light: #FAFAFA;
+            --brand-accent: #E0B24A;
+            --brand-text: #111317;
+        }
+
+        /* Non-dark (light) theme overrides */
+        html:not(.dark) header {
+            background-color: var(--brand-dark) !important;
+        }
+        html:not(.dark) footer {
+            background-color: var(--brand-dark) !important;
+        }
+        html:not(.dark) a,
+        html:not(.dark) .container a {
+            color: inherit;
+        }
+        html:not(.dark) a:hover {
+            color: var(--brand-gold) !important;
+        }
+        /* Make primary buttons use the gold color */
+        .bg-brand-gold, .btn-primary {
+            background-color: var(--brand-gold) !important;
+            color: #111 !important;
+        }
+        /* Header links and icons use brand gold as accent */
+        header a:hover, header .hover\:text-brand-gold:hover {
+            color: var(--brand-gold) !important;
+        }
+        /* Footer text color improvements */
+        footer, footer a { color: #e6efe9 !important; }
+        footer a:hover { color: var(--brand-gold) !important; }
     </style>
 </head>
 
@@ -190,6 +226,135 @@
         </div>
     </footer>
 
+    <!-- Chat widget (fixed): placed before </body> -->
+    <div id="chat-widget" class="fixed right-6 bottom-6 z-50">
+        <button id="open-chat" title="Abrir chat"
+            class="bg-black text-brand-gold px-5 py-3 rounded-full shadow-lg hover:opacity-95">¿Cómo podemos ayudarte hoy?</button>
+        <div id="chat-modal" class="hidden mt-3 w-[28rem] max-w-md bg-white dark:bg-zinc-800 text-black dark:text-gray-100 rounded-lg shadow-xl overflow-hidden">
+            <div id="chat-header" class="px-4 py-3 bg-gray-100 dark:bg-zinc-900 border-b border-gray-200 dark:border-zinc-700">
+                <strong>Asistente Aura Essence</strong>
+            </div>
+            <div id="chat-messages" class="p-3 h-72 overflow-y-auto text-sm space-y-2 bg-white dark:bg-zinc-800"></div>
+            <div class="px-3 py-2 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+                <div class="flex gap-2">
+                    <input id="chat-input" placeholder="Escribe tu pregunta..." class="flex-grow px-3 py-2 rounded border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-700 text-sm focus:outline-none" />
+                    <button id="send-chat" class="bg-black text-brand-gold px-4 py-2 rounded">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function(){
+        // helpers
+        function getCookie(name) {
+            const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+            return v ? v.pop() : '';
+        }
+
+        // Elements
+        const openBtn = document.getElementById('open-chat');
+        const modal = document.getElementById('chat-modal');
+        const sendBtn = document.getElementById('send-chat');
+        const input = document.getElementById('chat-input');
+        const messages = document.getElementById('chat-messages');
+
+        if(!openBtn || !modal || !sendBtn || !input || !messages) return;
+
+        // State
+        const chatState = { awaiting: null };
+
+        // Open handler: show menu when first opened
+        openBtn.addEventListener('click', function(){
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                input.focus();
+                if (messages.children.length === 0) {
+                    const init = document.createElement('div');
+                    init.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">¿En qué podemos ayudarte hoy? Responde con el número:<br>1) Promociones<br>2) Catálogo 2026<br>3) Nuevos lanzamientos</div>`;
+                    messages.appendChild(init);
+                    messages.scrollTop = messages.scrollHeight;
+                    chatState.awaiting = 'menu_choice';
+                }
+            }
+        });
+
+        async function sendMessage(){
+            const text = input.value.trim();
+            if(!text) return;
+            const userBubble = document.createElement('div');
+            userBubble.className = 'text-right';
+            userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+            messages.appendChild(userBubble);
+            messages.scrollTop = messages.scrollHeight;
+            input.value = '';
+
+            const lower = text.toLowerCase();
+
+            if (chatState.awaiting === 'menu_choice'){
+                if (['1','2','3'].includes(lower)){
+                    const botBubble = document.createElement('div');
+                    let reply = '';
+                    if (lower === '1') reply = 'Promociones actuales: 20% en fragancias seleccionadas. Visita la sección Promociones para más.';
+                    if (lower === '2') reply = 'Catálogo 2026: descubre nuestra colección 2026 con ediciones limitadas y notas exclusivas.';
+                    if (lower === '3') reply = 'Nuevos lanzamientos: suscríbete para recibir alertas. Consulta la sección Novedades.';
+                    botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${reply}</div>`;
+                    messages.appendChild(botBubble);
+                    const follow = document.createElement('div');
+                    follow.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">¿Deseas algo más? (si/no)</div>`;
+                    messages.appendChild(follow);
+                    messages.scrollTop = messages.scrollHeight;
+                    chatState.awaiting = 'yes_no';
+                    return;
+                }
+            }
+
+            if (chatState.awaiting === 'yes_no'){
+                if (['si','s','sí'].includes(lower)){
+                    const menu = document.createElement('div');
+                    menu.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">¿En qué podemos ayudarte hoy? Responde con el número:<br>1) Promociones<br>2) Catálogo 2026<br>3) Nuevos lanzamientos</div>`;
+                    messages.appendChild(menu);
+                    messages.scrollTop = messages.scrollHeight;
+                    chatState.awaiting = 'menu_choice';
+                    return;
+                }
+                if (['no','n'].includes(lower)){
+                    const bye = document.createElement('div');
+                    bye.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">Ten buen día</div>`;
+                    messages.appendChild(bye);
+                    messages.scrollTop = messages.scrollHeight;
+                    chatState.awaiting = null;
+                    setTimeout(()=>{ modal.classList.add('hidden'); },1000);
+                    return;
+                }
+                const askAgain = document.createElement('div');
+                askAgain.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">Por favor responde "si" o "no".</div>`;
+                messages.appendChild(askAgain);
+                messages.scrollTop = messages.scrollHeight;
+                return;
+            }
+
+            // fallback: call backend for generic replies
+            const botBubble = document.createElement('div');
+            botBubble.innerHTML = '<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">…</div>';
+            messages.appendChild(botBubble);
+            messages.scrollTop = messages.scrollHeight;
+            try{
+                const res = await fetch('/api/chat/',{
+                    method:'POST', headers:{'Content-Type':'application/json','X-CSRFToken':getCookie('csrftoken')}, body: JSON.stringify({message:text})
+                });
+                const data = await res.json();
+                botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${(data.reply||'Lo siento, algo salió mal.')}</div>`;
+                messages.scrollTop = messages.scrollHeight;
+            }catch(err){
+                botBubble.innerHTML = `<div class="inline-block bg-red-100 text-red-700 px-3 py-1.5 rounded-lg text-sm">Error de conexión</div>`;
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        input.addEventListener('keydown', function(e){ if(e.key==='Enter') sendMessage(); });
+    })();
+    </script>
     <script>
         // Theme Toggle Logic
         const themeToggleBtn = document.getElementById('theme-toggle');
