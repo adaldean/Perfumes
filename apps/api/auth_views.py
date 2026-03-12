@@ -4,6 +4,7 @@ Maneja login, registro y lógica de carrito persistente.
 """
 
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -82,7 +83,9 @@ def registro_view(request):
             user = authenticate(request, username=username, password=password)
             login(request, user)
             
-            return redirect('auth:login')  # Redirigir a login con mensaje de éxito
+            # Redirigir a login con indicador query para mostrar alerta en frontend
+            login_url = reverse('auth:login') + '?registered=1'
+            return redirect(login_url)
             
         except Exception as e:
             return render(request, 'auth/registro.html', {
