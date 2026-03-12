@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from apps.catalog.api_views import ProductoViewSet
 from apps.orders.api_views import PedidoViewSet, CrearPagoView
 from apps.users.api_views import RegistroView
+from .api_views import chat_api
 
 router = DefaultRouter()
 router.register(r'productos', ProductoViewSet, basename='producto')
@@ -20,4 +21,6 @@ urlpatterns = [
     path('auth/login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/registro/', RegistroView.as_view(), name='registro'),
+    # Chatbot endpoint
+    path('chat/', chat_api, name='chat'),
 ]
