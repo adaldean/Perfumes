@@ -100,6 +100,6 @@ class PedidoAdmin(admin.ModelAdmin):
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
-    list_display = ('transaccion_id', 'pedido', 'metodo_pago', 'monto', 'estado', 'fecha_pago')
+    list_display = ('stripe_payment_intent_id', 'pedido', 'metodo_pago', 'monto', 'estado', 'creado_en')
     list_filter = ('metodo_pago', 'estado')
-    search_fields = ('transaccion_id', 'pedido__numero_pedido')
+    search_fields = ('stripe_payment_intent_id', 'pedido__numero_pedido')

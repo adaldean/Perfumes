@@ -15,8 +15,8 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls')),
     
     # New Architecture URLs
-    path('api/', include('apps.core.api_urls')),
-    path('api/', include('apps.api.urls')),
+    path('api/core/', include(('apps.core.api_urls', 'core-api'), namespace='core-api')),
+    path('api/', include(('apps.api.urls', 'api'), namespace='api')),
     
     # Allauth URLs (Login con Google etc)
     path('accounts/', include('allauth.urls')),
