@@ -270,6 +270,61 @@
         // State
         const chatState = { awaiting: 'hello' };
 
+        function appendBotMessage(text){
+            const botBubble = document.createElement('div');
+            botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+            messages.appendChild(botBubble);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function appendUserMessage(text){
+            const userBubble = document.createElement('div');
+            userBubble.className = 'text-right';
+            userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+            messages.appendChild(userBubble);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function renderMenuButtons(){
+            const wrapper = document.createElement('div');
+            wrapper.className = 'flex flex-wrap gap-2 mt-1';
+
+            const options = [
+                { key: 'promociones', label: 'Promociones' },
+                { key: 'catalogo', label: 'Catálogo 2026' },
+                { key: 'nuevos', label: 'Nuevos lanzamientos' },
+            ];
+
+            options.forEach(function(option){
+                const button = document.createElement('button');
+                button.type = 'button';
+                button.className = 'px-3 py-1.5 rounded-lg border border-gray-300 dark:border-zinc-600 text-sm bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700';
+                button.textContent = option.label;
+                button.addEventListener('click', function(){
+                    appendUserMessage(option.label);
+                    handleMenuSelection(option.key);
+                });
+                wrapper.appendChild(button);
+            });
+
+            messages.appendChild(wrapper);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function handleMenuSelection(choice){
+            let reply = '';
+            if (choice === 'promociones') reply = 'Promociones actuales: 20% en fragancias seleccionadas. Visita la sección Promociones para más.';
+            if (choice === 'catalogo') reply = 'Catálogo 2026: descubre nuestra colección 2026 con ediciones limitadas y notas exclusivas.';
+            if (choice === 'nuevos') reply = 'Nuevos lanzamientos: suscríbete para recibir alertas. Consulta la sección Novedades.';
+
+            if (!reply) return;
+
+            appendBotMessage(reply);
+            appendBotMessage('Puedes elegir otra opción con los botones o escribir tu consulta.');
+            renderMenuButtons();
+            chatState.awaiting = 'menu_choice';
+        }
+
         // Open handler: no message until user writes the greeting
         openBtn.addEventListener('click', function(){
             modal.classList.toggle('hidden');
@@ -281,11 +336,7 @@
         async function sendMessage(){
             const text = input.value.trim();
             if(!text) return;
-            const userBubble = document.createElement('div');
-            userBubble.className = 'text-right';
-            userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
-            messages.appendChild(userBubble);
-            messages.scrollTop = messages.scrollHeight;
+            appendUserMessage(text);
             input.value = '';
 
             const lower = text.toLowerCase();
@@ -295,38 +346,24 @@
                 const hasHola = /\bhola\b/.test(normalized);
                 const hasBuenosDias = /\bbuenos\s+dias\b/.test(normalized);
                 if (hasHola || hasBuenosDias) {
-                    const botBubble = document.createElement('div');
-                    botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">¡Hola! ¿En qué podemos ayudarte hoy? Responde con el número:<br>1) Promociones<br>2) Catálogo 2026<br>3) Nuevos lanzamientos<br><br><strong>Necesitas ayuda, contáctanos.</strong></div>`;
-                    messages.appendChild(botBubble);
-                    messages.scrollTop = messages.scrollHeight;
+                    appendBotMessage('¡Hola! ¿En qué podemos ayudarte hoy? Elige una opción:<br><strong>Necesitas ayuda, contáctanos.</strong>');
+                    renderMenuButtons();
                     chatState.awaiting = 'menu_choice';
                     return;
                 } else {
-                    const botBubble = document.createElement('div');
-                    botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">Por favor escribe "hola" o "buenos días" para iniciar el chat. Necesitas ayuda, contáctanos.</div>`;
-                    messages.appendChild(botBubble);
-                    messages.scrollTop = messages.scrollHeight;
+                    appendBotMessage('Por favor escribe "hola" o "buenos días" para iniciar el chat. Necesitas ayuda, contáctanos.');
                     return;
                 }
             }
 
             if (chatState.awaiting === 'menu_choice'){
-                const isPromociones = lower === '1' || lower.includes('promocion');
-                const isCatalogo = lower === '2' || lower.includes('catálogo') || lower.includes('catalogo');
-                const isNuevos = lower === '3' || lower.includes('nuevos lanzamientos') || lower.includes('nuevos') || lower.includes('lanzamientos');
+                const isPromociones = lower.includes('promocion');
+                const isCatalogo = lower.includes('catálogo') || lower.includes('catalogo');
+                const isNuevos = lower.includes('nuevos lanzamientos') || lower.includes('nuevos') || lower.includes('lanzamientos');
                 if (isPromociones || isCatalogo || isNuevos){
-                    const botBubble = document.createElement('div');
-                    let reply = '';
-                    if (isPromociones) reply = 'Promociones actuales: 20% en fragancias seleccionadas. Visita la sección Promociones para más.';
-                    if (isCatalogo) reply = 'Catálogo 2026: descubre nuestra colección 2026 con ediciones limitadas y notas exclusivas.';
-                    if (isNuevos) reply = 'Nuevos lanzamientos: suscríbete para recibir alertas. Consulta la sección Novedades.';
-                    botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${reply}</div>`;
-                    messages.appendChild(botBubble);
-                    const follow = document.createElement('div');
-                    follow.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">Puedes elegir otra opción (1, 2 o 3) o escribir tu consulta.</div>`;
-                    messages.appendChild(follow);
-                    messages.scrollTop = messages.scrollHeight;
-                    chatState.awaiting = 'menu_choice';
+                    if (isPromociones) handleMenuSelection('promociones');
+                    if (isCatalogo) handleMenuSelection('catalogo');
+                    if (isNuevos) handleMenuSelection('nuevos');
                     return;
                 }
             }
