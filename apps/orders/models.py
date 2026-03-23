@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from apps.catalog.models import Producto
+from django.utils.text import slugify
+from storages.backends.s3boto3 import S3Boto3Storage
+
+class ImageUploadMixin:
+    """Mixin para manejar el guardado de imágenes en S3."""
+    def save(self, *args, **kwargs):
+        if self.imagen:
+            self.imagen.name = slugify(self.imagen.name)
+        super().save(*args, **kwargs)
 
 class Pedido(models.Model):
     """Modelo de pedidos de clientes."""
@@ -100,7 +109,7 @@ class ItemCarrito(models.Model):
         return self.producto.precio * self.cantidad
 
 
-class Pago(models.Model):
+class Pago(models.Model, ImageUploadMixin):
     """Modelo para gestionar pagos con Stripe."""
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),

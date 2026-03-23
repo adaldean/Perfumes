@@ -49,7 +49,7 @@ class ProductoAdmin(admin.ModelAdmin):
     )
 
     def imagen_preview(self, obj):
-        if obj.imagen:
+        if obj.imagen and hasattr(obj.imagen, 'url'):
             return format_html('<img src="{}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;" />', obj.imagen.url)
         return "No Image"
     imagen_preview.short_description = "Imagen"
