@@ -13,6 +13,36 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
     <style>
+        /* Palette shared with base (Aura Essence) */
+        :root{
+            --brand-gold: #D4AF37;
+            --brand-accent: #C5A028;
+            --brand-dark: #1A1A1A;
+            --brand-light: #F5F5F5;
+            --primary: var(--brand-gold);
+            --accent: var(--brand-accent);
+            --bg-gradient: linear-gradient(135deg, rgba(38,112,106,0.03) 0%, #ffffff 100%);
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+            --text-main: #0f172a;
+            --text-muted: #6b7280;
+            --shadow: 0 10px 30px rgba(2,6,23,0.08);
+        }
+        /* Apply brand gold to primary elements */
+        .add-to-cart-btn {
+            background: var(--brand-gold) !important;
+            color: var(--brand-dark) !important;
+        }
+        .add-to-cart-btn:hover {
+            background: var(--brand-accent) !important;
+            color: var(--brand-dark) !important;
+        }
+        .auth-footer a {
+            color: var(--brand-gold) !important;
+        }
+        .divider span {
+            color: var(--brand-gold) !important;
+        }
         /* Layout principal */
         body {
             display: flex;
@@ -347,6 +377,23 @@
         if (themeToggle === 'dark') {
             document.body.classList.add('dark-mode');
         }
+    </script>
+    <script>
+        // Mostrar alerta si viene ?registered=1
+        (function(){
+            try{
+                const params = new URLSearchParams(window.location.search);
+                if (params.get('registered') === '1'){
+                    alert('Cuenta creada correctamente. Por favor inicia sesión.');
+                    // opcional: limpiar el parámetro de la URL sin recargar
+                    if (window.history && window.history.replaceState) {
+                        const url = new URL(window.location);
+                        url.searchParams.delete('registered');
+                        window.history.replaceState({}, document.title, url.toString());
+                    }
+                }
+            }catch(e){}
+        })();
     </script>
 </body>
 

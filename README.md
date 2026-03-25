@@ -38,6 +38,7 @@ Variables clave:
 - `ALLOWED_HOSTS=localhost,127.0.0.1`
 - `CSRF_TRUSTED_ORIGINS=http://localhost:8000`
 - `DATABASE_URL=` (vacío para SQLite local, o URL Postgres)
+- `GEMINI_API_KEY=` (habilita respuestas del chatbot con Gemini)
 
 ### 3) Migraciones y usuario admin
 ```bash
