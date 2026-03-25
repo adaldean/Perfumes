@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from apps.catalog.models import Producto
+from django.utils.text import slugify
+from storages.backends.s3boto3 import S3Boto3Storage
+
+class ImageUploadMixin:
+    """Mixin para manejar el guardado de imágenes en S3."""
+    def save(self, *args, **kwargs):
+        if self.imagen:
+            self.imagen.name = slugify(self.imagen.name)
+        super().save(*args, **kwargs)
 
 class Pedido(models.Model):
     """Modelo de pedidos de clientes."""
@@ -47,38 +56,6 @@ class DetallePedido(models.Model):
     
     def __str__(self):
         return f"Detalle del Pedido {self.pedido.numero_pedido}"
-
-
-class Pago(models.Model):
-    """Modelo para gestionar pagos con Stripe."""
-    ESTADO_CHOICES = [
-        ('pendiente', 'Pendiente'),
-        ('procesando', 'Procesando'),
-        ('exitoso', 'Exitoso'),
-        ('fallido', 'Fallido'),
-        ('cancelado', 'Cancelado'),
-    ]
-    
-    pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE, related_name='pago')
-    stripe_payment_intent_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
-    moneda = models.CharField(max_length=3, default='USD')
-    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
-    metodo_pago = models.CharField(max_length=50, null=True, blank=True)
-    id_transaccion = models.CharField(max_length=255, unique=True, null=True, blank=True)
-    razon_fallo = models.TextField(blank=True, null=True)
-    creado_en = models.DateTimeField(auto_now_add=True)
-    actualizado_en = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        db_table = 'pagos'
-        verbose_name = 'Pago'
-        verbose_name_plural = 'Pagos'
-        ordering = ['-creado_en']
-    
-    def __str__(self):
-        return f"Pago {self.stripe_payment_intent_id} - {self.estado}"
 
 
 class Carrito(models.Model):
@@ -131,26 +108,34 @@ class ItemCarrito(models.Model):
         """Calcula el subtotal de este item."""
         return self.producto.precio * self.cantidad
 
-class Pago(models.Model):
-    """Modelo de pagos."""
-    METODO_CHOICES = [
-        ('stripe', 'Stripe'),
-        ('transferencia', 'Transferencia'),
-    ]
+
+class Pago(models.Model, ImageUploadMixin):
+    """Modelo para gestionar pagos con Stripe."""
     ESTADO_CHOICES = [
         ('pendiente', 'Pendiente'),
-        ('completado', 'Completado'),
+        ('procesando', 'Procesando'),
+        ('exitoso', 'Exitoso'),
         ('fallido', 'Fallido'),
+        ('cancelado', 'Cancelado'),
     ]
-    
-    pedido = models.OneToOneField('Pedido', on_delete=models.CASCADE, related_name='pago')
+
+    pedido = models.OneToOneField(Pedido, on_delete=models.CASCADE, related_name='pago')
+    stripe_payment_intent_id = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    stripe_customer_id = models.CharField(max_length=255, null=True, blank=True)
     monto = models.DecimalField(max_digits=10, decimal_places=2)
-    metodo_pago = models.CharField(max_length=20, choices=METODO_CHOICES, default='stripe')
+    moneda = models.CharField(max_length=3, default='USD')
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='pendiente')
-    transaccion_id = models.CharField(max_length=100, blank=True, null=True)
-    fecha_pago = models.DateTimeField(auto_now_add=True)
-    
+    metodo_pago = models.CharField(max_length=50, null=True, blank=True)
+    id_transaccion = models.CharField(max_length=255, unique=True, null=True, blank=True)
+    razon_fallo = models.TextField(blank=True, null=True)
+    creado_en = models.DateTimeField(auto_now_add=True)
+    actualizado_en = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = 'pagos'
         verbose_name = 'Pago'
         verbose_name_plural = 'Pagos'
+        ordering = ['-creado_en']
+
+    def __str__(self):
+        return f"Pago {self.stripe_payment_intent_id} - {self.estado}"
