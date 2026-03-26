@@ -340,7 +340,7 @@
     if(!openBtn || !modal || !sendBtn || !clearBtn || !closeBtn || !input || !messages) return;
 
     // State
-    const chatState = { awaiting: 'hello', currentMenu: 'main' };
+    const chatState = { awaiting: 'hello', currentMenu: 'main', initialized: false };
 
     function appendBotMessage(text){
         const botBubble = document.createElement('div');
@@ -393,13 +393,40 @@
         chatState.awaiting = 'menu_choice';
     }
 
+    function fetchProductosPorGenero(genero, label){
+        appendBotMessage(`🔍 Buscando ${label}...`);
+        fetch(`/catalogo/api/genero/${genero}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    appendBotMessage(`Aún no hay perfumes disponibles en esta categoría, pero puedes explorar otros.`);
+                    showCatalogMenu();
+                    return;
+                }
+                let html = `<strong>💎 ${label}</strong><br>`;
+                data.slice(0, 8).forEach((producto, idx) => {
+                    const precio = producto.precio_oferta || producto.precio;
+                    html += `${idx + 1}. <a href="/catalogo/producto/${producto.id}/" class="text-brand-gold hover:underline">${producto.nombre}</a> - $${parseFloat(precio).toFixed(2)}<br>`;
+                });
+                html += '<br>Haz clic en un producto para verlo.';
+                appendBotMessage(html);
+                chatState.currentMenu = 'products';
+                chatState.awaiting = 'menu_choice';
+            })
+            .catch(err => {
+                console.error('Error al obtener productos', err);
+                appendBotMessage('No fue posible cargar los productos ahora.');
+                showCatalogMenu();
+            });
+    }
+
     function showCatalogMenu(){
         appendBotMessage('🛍️ Catálogo de Perfumes - Selecciona cómo deseas explorar:');
         
         const buttons = [
-            { label: '👩 Para Mujer', action: () => { appendBotMessage('Perfumes para mujer - Explora nuestra colección exclusiva. Contáctanos para más información.'); backToMenu(); } },
-            { label: '👨 Para Hombre', action: () => { appendBotMessage('Perfumes para hombre - Descubre fragancias sofisticadas. Contáctanos para más información.'); backToMenu(); } },
-            { label: '⚡ Unisex', action: () => { appendBotMessage('Fragancias unisex - Perfeccionadas para todos. Contáctanos para más información.'); backToMenu(); } },
+            { label: '👩 Para Mujer', action: () => { fetchProductosPorGenero('mujer', 'Perfumes para Mujer'); } },
+            { label: '👨 Para Hombre', action: () => { fetchProductosPorGenero('hombre', 'Perfumes para Hombre'); } },
+            { label: '⚡ Unisex', action: () => { fetchProductosPorGenero('unisex', 'Perfumes Unisex'); } },
             { label: '🌸 Florales y Dulces', action: () => { appendBotMessage('Fragancias florales y dulces - Elegantes y sofisticadas. Contáctanos para más información.'); backToMenu(); } },
             { label: '🌲 Amaderados y Especiados', action: () => { appendBotMessage('Fragancias amaderadas y especiadas - Cálidas y envolventes. Contáctanos para más información.'); backToMenu(); } },
             { label: '🍋 Cítricos y Frescos', action: () => { appendBotMessage('Fragancias cítricos y frescos - Vigorizantes y refrescantes. Contáctanos para más información.'); backToMenu(); } },
@@ -545,9 +572,14 @@
 
     // Open handler: always show main menu when opening
     openBtn.addEventListener('click', function(){
+        const wasHidden = modal.classList.contains('hidden');
         modal.classList.toggle('hidden');
-        if (!modal.classList.contains('hidden')) {
-            if (messages.innerHTML === '') {
+        
+        // Si se acaba de abrir y no se ha inicializado, mostrar el menú
+        if (wasHidden && !modal.classList.contains('hidden')) {
+            if (!chatState.initialized) {
+                messages.innerHTML = '';
+                chatState.initialized = true;
                 chatState.awaiting = 'menu_choice';
                 showMainMenu();
             }
@@ -627,9 +659,11 @@
         messages.innerHTML = '';
         chatState.awaiting = 'hello';
         chatState.currentMenu = 'main';
+        chatState.initialized = false;
         input.value = '';
         input.focus();
         showMainMenu();
+        chatState.initialized = true;
     });
 
     closeBtn.addEventListener('click', function(){
