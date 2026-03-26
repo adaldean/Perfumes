@@ -313,8 +313,33 @@
 
     if(!openBtn || !modal || !sendBtn || !clearBtn || !closeBtn || !input || !messages) return;
 
-    // State
-    const chatState = { awaiting: 'hello', currentMenu: 'main', initialized: false };
+    const saludos = [
+        '¡Hola! Bienvenido a Aura Essence',
+        '¡Qué gusto verte! Soy tu asistente de fragancias',
+        '✨ ¡Hola! Estoy aquí para ayudarte a encontrar tu perfume ideal',
+        '🌟 ¡Bienvenido! ¿Listo para descubrir fragancias increíbles?',
+        '💎 ¡Hola! Aquí encontrarás los mejores perfumes de lujo'
+    ];
+
+    const despedidas = [
+        '🌟 ¡Gracias por visitarnos! Esperamos volverte a ver pronto.',
+        '✨ ¡Hasta luego! No olvides explorar nuestras nuevas fragancias.',
+        '💎 ¡Adiós! Que disfrutes tu fragancia favorita.',
+        '👋 ¡Nos vemos pronto! Siempre con tu aroma perfecto.',
+        '🎀 ¡Gracias por confiar en Aura Essence! ¡Vuelve cuando quieras!',
+        '🌹 ¡Que tengas un día aromático! ¡Hasta pronto!'
+    ];
+
+    let chatState = JSON.parse(localStorage.getItem('chatState')) || { 
+        awaiting: 'hello', 
+        currentMenu: 'main', 
+        initialized: false,
+        messagesCount: 0
+    };
+
+    function saveChatState() {
+        localStorage.setItem('chatState', JSON.stringify(chatState));
+    }
 
     function appendBotMessage(text){
         const botBubble = document.createElement('div');
@@ -366,6 +391,7 @@
         renderMenuButtons(buttons);
         chatState.currentMenu = 'main';
         chatState.awaiting = 'menu_choice';
+        saveChatState();
     }
 
     function fetchProductosPorGenero(genero, label){
@@ -387,6 +413,7 @@
                 appendBotMessage(html);
                 chatState.currentMenu = 'products';
                 chatState.awaiting = 'menu_choice';
+                saveChatState();
             })
             .catch(err => {
                 console.error('Error al obtener productos', err);
@@ -396,18 +423,23 @@
     }
 
     function showCatalogMenu(){
-        appendBotMessage('� Explora nuestras colecciones por género.\n\nCada colección está cuidadosamente seleccionada con las mejor fragancias del mercado. ¿Cuál es tu preferencia?');
+        appendBotMessage('🎀 Explora nuestras colecciones por género y notas olfativas.\n\nCada colección está cuidadosamente seleccionada con las mejores fragancias del mercado. ¿Cuál es tu preferencia?');
         
         const buttons = [
             { label: '💃 Para Mujer - Elegancia & Sofisticación', action: () => { fetchProductosPorGenero('mujer', 'Perfumes para Mujer'); } },
             { label: '👔 Para Hombre - Poder & Seducción', action: () => { fetchProductosPorGenero('hombre', 'Perfumes para Hombre'); } },
             { label: '✨ Unisex - Modernos & Versátiles', action: () => { fetchProductosPorGenero('unisex', 'Perfumes Unisex'); } },
-            { label: '⭐ Lo Más Vendido de cada Género', action: () => { fetchBestSellers(); } },
+            { label: '🌸 Florales - Románticos & Elegantes', action: () => { appendBotMessage('🌸 Fragancias florales. Las flores son la esencia de la elegancia y la sofisticación. Explora nuestro catálogo para encuentra tu favorita.'); backToMenu(); } },
+            { label: '🌲 Amaderados - Cálidos & Profundos', action: () => { appendBotMessage('🌲 Fragancias amaderadas. Notas de madera que evocan naturaleza, calidez y profundidad. Perfectas para quien busca sofisticación. Descubre nuestras opciones.'); backToMenu(); } },
+            { label: '🍋 Cítricos - Frescos & Vibrantes', action: () => { appendBotMessage('🍋 Fragancias cítricas. Aromas frescos y energéticos que iluminan el día. Ideales para cualquier momento. Explora nuestra colección refrescante.'); backToMenu(); } },
+            { label: '🌹 Orientales - Sensuales & Misteriosos', action: () => { appendBotMessage('🌹 Fragancias orientales. Notas profundas, envolventes y sofisticadas. Para ocasiones especiales y noches memorables. Descubre la magia oriental.'); backToMenu(); } },
+            { label: '⭐ Lo Más Vendido', action: () => { fetchBestSellers(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
         renderMenuButtons(buttons);
         chatState.currentMenu = 'catalog';
+        saveChatState();
     }
 
     function showQuizMenu(){
@@ -422,9 +454,8 @@
 
         renderMenuButtons(buttons);
         chatState.currentMenu = 'quiz';
+        saveChatState();
     }
-
-    function showOccasionQuiz(){
         appendBotMessage('📅 Cada ocasión merece una fragancia especial.\n\nCuéntame, ¿para qué momento necesitas el perfecto aroma?');
         
         const buttons = [
@@ -480,6 +511,7 @@
 
         renderMenuButtons(buttons);
         chatState.currentMenu = 'orders';
+        saveChatState();
     }
 
     function showFAQMenu(){
@@ -496,6 +528,7 @@
 
         renderMenuButtons(buttons);
         chatState.currentMenu = 'faq';
+        saveChatState();
     }
 
     function showSupportMenu(){
@@ -511,6 +544,7 @@
 
         renderMenuButtons(buttons);
         chatState.currentMenu = 'support';
+        saveChatState();
     }
 
     function fetchBestSellers(){
@@ -532,6 +566,7 @@
                 appendBotMessage(html);
                 chatState.currentMenu = 'bestsellers';
                 chatState.awaiting = 'menu_choice';
+                saveChatState();
             })
             .catch(err => {
                 console.error('Error al obtener bestsellers', err);
@@ -577,63 +612,100 @@
         const lower = text.toLowerCase();
         const normalized = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-        // Check for special commands
-        if (normalized.includes('volver') || normalized.includes('menu principal') || normalized.includes('inicio')) {
+        const hasHola = /\b(hola|buenos|buenas|hey|yo|qué tal|que tal)\b/.test(lower);
+        const hasSalir = /\b(salir|adios|adiós|hasta|chao|si|gracias|ok)\b/.test(lower);
+
+        if (hasHola && chatState.messagesCount === 0) {
+            const saludoRandom = saludos[Math.floor(Math.random() * saludos.length)];
+            appendBotMessage(saludoRandom + '\n\n¿Qué te gustaría hacer?');
+            chatState.awaiting = 'menu_choice';
+            chatState.messagesCount++;
+            saveChatState();
             showMainMenu();
             return;
         }
 
-        if (normalized.includes('salir') || normalized.includes('finalizar') || normalized.includes('cerrar')) {
-            appendBotMessage('¡Gracias por usar nuestro servicio! Si tienes más preguntas, estamos aquí para ayudarte.');
+        if (hasSalir && (normalized.includes('salir') || normalized.includes('adios') || normalized.includes('adiós') || normalized.includes('hasta') || normalized.includes('chao'))) {
+            const despedidaRandom = despedidas[Math.floor(Math.random() * despedidas.length)];
+            appendBotMessage(despedidaRandom);
+            chatState.initialized = false;
+            saveChatState();
             return;
         }
 
-        // If at hello state, wait for greeting
-        if (chatState.awaiting === 'hello') {
-            const hasHola = /\bhola\b|\bbuenos/i.test(text);
-            if (hasHola) {
-                showMainMenu();
-                return;
-            } else {
-                appendBotMessage('¡Hola! Por favor escribe "hola" o "buenos días" para iniciar el chat. 😊');
-                return;
-            }
+        if (normalized.includes('volver') || normalized.includes('menu principal') || normalized.includes('inicio')) {
+            showMainMenu();
+            saveChatState();
+            return;
         }
 
-        // Keyword recognition for menu selection
         if (normalized.includes('catalogo') || normalized.includes('catálogo') || normalized.includes('perfume') || normalized.includes('productos')) {
             showCatalogMenu();
+            saveChatState();
+            return;
+        }
+
+        if (normalized.includes('floral') || normalized.includes('flores')) {
+            appendBotMessage('🌸 Mostrando fragancias florales...');
+            appendBotMessage('Las fragancias florales son románticas y sofisticadas, perfectas para la mayoría de ocasiones. Vuelve al catálogo para verlas todas o contáctanos para recomendaciones.');
+            backToMenu();
+            return;
+        }
+
+        if (normalized.includes('amaderado') || normalized.includes('madera')) {
+            appendBotMessage('🌲 Mostrando fragancias amaderadas...');
+            appendBotMessage('Las fragancias amaderadas son cálidas y elegantes, ideales para quienes buscan profundidad y sofisticación. Vuelve al catálogo para explorar todas nuestras opciones.');
+            backToMenu();
+            return;
+        }
+
+        if (normalized.includes('citrico') || normalized.includes('cítrico')) {
+            appendBotMessage('🍋 Mostrando fragancias cítricas...');
+            appendBotMessage('Las fragancias cítricas son frescas y vibrantes, perfectas para el día a día y para climas cálidos. Descubre nuestras opciones refrescantes.');
+            backToMenu();
+            return;
+        }
+
+        if (normalized.includes('oriental')) {
+            appendBotMessage('🌹 Mostrando fragancias orientales...');
+            appendBotMessage('Las fragancias orientales son profundas, sensuales y sofisticadas. Ideales para ocasiones especiales y noches memorable. Explora nuestro catálogo.');
+            backToMenu();
             return;
         }
 
         if (normalized.includes('recomendador') || normalized.includes('quiz') || normalized.includes('cual') || normalized.includes('recomendar') || normalized.includes('sugerir')) {
             showQuizMenu();
+            saveChatState();
             return;
         }
 
         if (normalized.includes('pedido') || normalized.includes('orden') || normalized.includes('envio') || normalized.includes('envío') || normalized.includes('rastrear') || normalized.includes('seguimiento')) {
             showOrdersMenu();
+            saveChatState();
             return;
         }
 
         if (normalized.includes('pregunta') || normalized.includes('faq') || normalized.includes('frecuente') || normalized.includes('duda') || normalized.includes('como')) {
             showFAQMenu();
+            saveChatState();
             return;
         }
 
         if (normalized.includes('asesor') || normalized.includes('tienda') || normalized.includes('sucursal') || normalized.includes('ubicacion') || normalized.includes('ubicación') || normalized.includes('direcci') || normalized.includes('horario') || normalized.includes('contacto')) {
             showSupportMenu();
+            saveChatState();
             return;
         }
 
         if (normalized.includes('mas vendido') || normalized.includes('bestseller') || normalized.includes('los mas vendidos') || normalized.includes('top ventas') || normalized.includes('más vendidos')) {
             fetchBestSellers();
+            saveChatState();
             return;
         }
 
-        // Default response when nothing matches
-        appendBotMessage('No entendí bien tu pregunta 🤔. Aquí están las opciones disponibles:');
+        appendBotMessage('❓ No estoy seguro de tu pregunta. Aquí están las opciones disponibles:');
         showMainMenu();
+        saveChatState();
     }
 
     clearBtn.addEventListener('click', function(){
@@ -641,14 +713,17 @@
         chatState.awaiting = 'hello';
         chatState.currentMenu = 'main';
         chatState.initialized = false;
+        chatState.messagesCount = 0;
         input.value = '';
         input.focus();
         showMainMenu();
         chatState.initialized = true;
+        saveChatState();
     });
 
     closeBtn.addEventListener('click', function(){
         modal.classList.add('hidden');
+        saveChatState();
     });
 
     sendBtn.addEventListener('click', sendMessage);
