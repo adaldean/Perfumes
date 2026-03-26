@@ -320,11 +320,13 @@
 
 <script>
 (function(){
+    // helpers
     function getCookie(name) {
         const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
         return v ? v.pop() : '';
     }
 
+    // Elements
     const openBtn = document.getElementById('open-chat');
     const modal = document.getElementById('chat-modal');
     const sendBtn = document.getElementById('send-chat');
@@ -333,168 +335,306 @@
     const input = document.getElementById('chat-input');
     const messages = document.getElementById('chat-messages');
 
-    const chatState = { step: 'init' };
+    if(!openBtn || !modal || !sendBtn || !clearBtn || !closeBtn || !input || !messages) return;
 
-    // ABRIR CHAT + SALUDO AUTOMÁTICO
-    openBtn.onclick = () => {
-        modal.classList.toggle('hidden');
-        if(chatState.step === 'init'){
-            startChat();
-        }
-        setTimeout(() => input.focus(), 200);
-    };
+    // State
+    const chatState = { awaiting: 'hello', currentMenu: 'main' };
 
-    closeBtn.onclick = () => modal.classList.add('hidden');
-
-    clearBtn.onclick = () => {
-        messages.innerHTML = '';
-        chatState.step = 'init';
-        startChat();
-    };
-
-    function addMessage(text, type='bot'){
-        const div = document.createElement('div');
-        div.className = type === 'user' ? 'text-right' : 'text-left';
-
-        div.innerHTML = `
-        <div class="inline-block px-3 py-2 rounded-lg text-sm 
-        ${type==='user' 
-            ? 'bg-brand-gold text-white' 
-            : 'bg-gray-100 dark:bg-zinc-700'}">
-            ${text}
-        </div>`;
-
-        messages.appendChild(div);
+    function appendBotMessage(text){
+        const botBubble = document.createElement('div');
+        botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+        messages.appendChild(botBubble);
         messages.scrollTop = messages.scrollHeight;
     }
 
-    function addButtons(options) {
-        const div = document.createElement('div');
-        div.className = 'flex flex-wrap gap-2 mt-2';
+    function appendUserMessage(text){
+        const userBubble = document.createElement('div');
+        userBubble.className = 'text-right';
+        userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+        messages.appendChild(userBubble);
+        messages.scrollTop = messages.scrollHeight;
+    }
 
-        options.forEach(option => {
+    function renderMenuButtons(buttons){
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flex flex-col gap-2 mt-2';
+
+        buttons.forEach(function(btn){
             const button = document.createElement('button');
-            button.className = 'px-3 py-1 rounded bg-brand-gold text-white text-sm hover:scale-105 transition';
-            button.textContent = option.label;
-            button.onclick = option.action;
-            div.appendChild(button);
+            button.type = 'button';
+            button.className = 'px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 text-sm bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-left';
+            button.textContent = btn.label;
+            button.addEventListener('click', function(){
+                appendUserMessage(btn.label);
+                btn.action();
+            });
+            wrapper.appendChild(button);
         });
 
-        messages.appendChild(div);
+        messages.appendChild(wrapper);
         messages.scrollTop = messages.scrollHeight;
     }
 
-    // 🚀 INICIO AUTOMÁTICO
-    function startChat(){
-        addMessage(`👋 Hola, soy tu asistente de Aura Essence  
+    function showMainMenu(){
+        appendBotMessage('👋 ¡Hola! Bienvenido a Aura Essence. ¿En qué te puedo ayudar hoy? Por favor, elige una de las siguientes opciones:');
+        
+        const buttons = [
+            { label: '🛍️ Catálogo de Perfumes', action: () => showCatalogMenu() },
+            { label: '🎯 Recomendador de Fragancias (Quiz)', action: () => showQuizMenu() },
+            { label: '📦 Pedidos y Envíos', action: () => showOrdersMenu() },
+            { label: '❓ Preguntas Frecuentes (FAQ)', action: () => showFAQMenu() },
+            { label: '🎧 Atención Personalizada y Tiendas', action: () => showSupportMenu() }
+        ];
 
-¿En qué puedo ayudarte hoy?`);
-
-        addButtons([
-            { label: '🔥 Promociones', action: showPromos },
-            { label: '🛍️ Catálogo', action: showCatalogo },
-            { label: '✨ Nuevos', action: showNuevos },
-            { label: '📞 Contacto', action: showContacto }
-        ]);
-
-        chatState.step = 'menu';
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'main';
+        chatState.awaiting = 'menu_choice';
     }
 
-    // 🔥 PROMOCIONES
-    function showPromos(){
-        addMessage('🔥 Tenemos 20% de descuento en fragancias seleccionadas');
-        backToMenu();
+    function showCatalogMenu(){
+        appendBotMessage('🛍️ Catálogo de Perfumes - Selecciona cómo deseas explorar:');
+        
+        const buttons = [
+            { label: '👩 Para Mujer', action: () => { appendBotMessage('Perfumes para mujer - Explora nuestra colección exclusiva. Contáctanos para más información.'); backToMenu(); } },
+            { label: '👨 Para Hombre', action: () => { appendBotMessage('Perfumes para hombre - Descubre fragancias sofisticadas. Contáctanos para más información.'); backToMenu(); } },
+            { label: '⚡ Unisex', action: () => { appendBotMessage('Fragancias unisex - Perfeccionadas para todos. Contáctanos para más información.'); backToMenu(); } },
+            { label: '🌸 Florales y Dulces', action: () => { appendBotMessage('Fragancias florales y dulces - Elegantes y sofisticadas. Contáctanos para más información.'); backToMenu(); } },
+            { label: '🌲 Amaderados y Especiados', action: () => { appendBotMessage('Fragancias amaderadas y especiadas - Cálidas y envolventes. Contáctanos para más información.'); backToMenu(); } },
+            { label: '🍋 Cítricos y Frescos', action: () => { appendBotMessage('Fragancias cítricos y frescos - Vigorizantes y refrescantes. Contáctanos para más información.'); backToMenu(); } },
+            { label: '✨ Novedades y Lanzamientos', action: () => { appendBotMessage('Nuevos lanzamientos - Suscríbete para recibir alertas sobre nuestras novedades exclusivas. Contáctanos para más información.'); backToMenu(); } },
+            { label: '⭐ Los Más Vendidos (Bestsellers)', action: () => { fetchBestSellers(); } },
+            { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
+        ];
+
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'catalog';
     }
 
-    // 🛍️ CATÁLOGO
-    function showCatalogo(){
-        addMessage('¿Para quién buscas?');
+    function showQuizMenu(){
+        appendBotMessage('🎯 Recomendador de Fragancias - ¿Cómo te gustaría descubrir el perfume ideal?');
+        
+        const buttons = [
+            { label: '📅 Por Ocasión', action: () => showOccasionQuiz() },
+            { label: '👃 Por Notas Olfativas', action: () => showOlfactiveQuiz() },
+            { label: '🎁 Regalos', action: () => showGiftQuiz() },
+            { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
+        ];
 
-        addButtons([
-            { label: 'Hombre', action: () => showAromas('hombre') },
-            { label: 'Mujer', action: () => showAromas('mujer') },
-            { label: 'Unisex', action: () => showAromas('unisex') }
-        ]);
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'quiz';
     }
 
-    function showAromas(tipo){
-        addMessage(`Perfecto 👌 ¿Qué aroma buscas para ${tipo}?`);
+    function showOccasionQuiz(){
+        appendBotMessage('📅 Por Ocasión - ¿Para qué usarás el perfume?');
+        
+        const buttons = [
+            { label: 'Uso Diario', action: () => { appendBotMessage('Perfumes para uso diario - Ligeros y versátiles que acompañan tu día. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
+            { label: 'Fiesta', action: () => { appendBotMessage('Perfumes para fiesta - Intensos y cautivadores que dejan huella. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
+            { label: 'Cita Nocturna', action: () => { appendBotMessage('Perfumes para cita nocturna - Seductores y envolventes. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
+            { label: 'Oficina', action: () => { appendBotMessage('Perfumes para oficina - Profesionales y elegantes. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
+            { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
+        ];
 
-        addButtons([
-            { label: 'Dulce', action: () => recommend('dulce') },
-            { label: 'Fresco', action: () => recommend('fresco') },
-            { label: 'Intenso', action: () => recommend('intenso') }
-        ]);
+        renderMenuButtons(buttons);
     }
 
-    function recommend(tipo){
-        const data = {
-            dulce: '🍦 Te recomiendo *Vanilla Dreams*',
-            fresco: '🌊 Prueba *Ocean Breeze*',
-            intenso: '🌌 Mira *Night Intense*'
-        };
+    function showOlfactiveQuiz(){
+        appendBotMessage('👃 Por Notas Olfativas - ¿Qué aromas prefieres?');
+        
+        const buttons = [
+            { label: '🌸 Vainilla', action: () => { appendBotMessage('Perfumes con vainilla - Cálidos y envolventes. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
+            { label: '🌹 Rosas', action: () => { appendBotMessage('Perfumes con rosas - Románticos y sofisticados. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
+            { label: '🎩 Cuero', action: () => { appendBotMessage('Perfumes con cuero - Audaces y elegantes. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
+            { label: '☕ Café', action: () => { appendBotMessage('Perfumes con café - Estimulantes y oscuros. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
+            { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
+        ];
 
-        addMessage(data[tipo] || 'No encontré algo 😅');
-        backToMenu();
+        renderMenuButtons(buttons);
     }
 
-    // ✨ NUEVOS
-    function showNuevos(){
-        addMessage('✨ Tenemos nuevos lanzamientos disponibles esta temporada');
-        backToMenu();
+    function showGiftQuiz(){
+        appendBotMessage('🎁 Regalos - Ayudemos a elegir el perfume perfecto como regalo. ¿Para quién es?');
+        
+        const buttons = [
+            { label: 'Para Niños/as', action: () => { appendBotMessage('Perfumes para niños/as - Frescos y alegres. ¡Tenemos opciones encantadoras!'); backToMenu(); } },
+            { label: 'Para Adolescentes', action: () => { appendBotMessage('Perfumes para adolescentes - Modernos y trendies. ¡Tenemos opciones ideales!'); backToMenu(); } },
+            { label: 'Para Adultos', action: () => { appendBotMessage('Perfumes para adultos - Sofisticados y elegantes. ¡Tenemos opciones refinadas!'); backToMenu(); } },
+            { label: 'Para Adultos Mayores', action: () => { appendBotMessage('Perfumes para adultos mayores - Clásicos y elegantes. ¡Tenemos opciones atemporales!'); backToMenu(); } },
+            { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
+        ];
+
+        renderMenuButtons(buttons);
     }
 
-    // 📞 CONTACTO
-    function showContacto(){
-        addMessage('📞 Puedes contactarnos con un asesor o enviar tu duda aquí');
-        backToMenu();
+    function showOrdersMenu(){
+        appendBotMessage('📦 Pedidos y Envíos - ¿Cómo podemos ayudarte?');
+        
+        const buttons = [
+            { label: '🔍 Rastrear mi pedido', action: () => { appendBotMessage('Para rastrear tu pedido, por favor proporciona tu número de orden o correo electrónico. Un agente te ayudará en breve.'); backToMenu(); } },
+            { label: '🚚 Costos y tiempos de envío', action: () => { appendBotMessage('Envíos a nivel nacional e internacional. Los costos y tiempos varían según tu ubicación. ¡Contáctanos para más detalles!'); backToMenu(); } },
+            { label: '↩️ Cambios y devoluciones', action: () => { appendBotMessage('Tenemos políticas flexibles de cambios y devoluciones. Los perfumes abiertos pueden ser intercambiados según nuestras políticas. ¡Contáctanos para más información!'); backToMenu(); } },
+            { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
+        ];
+
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'orders';
+    }
+
+    function showFAQMenu(){
+        appendBotMessage('❓ Preguntas Frecuentes (FAQ) - Elige una pregunta:');
+        
+        const buttons = [
+            { label: '¿Venden muestras o decants?', action: () => { appendBotMessage('Sí, ofrecemos muestras y decants de nuestras fragancias. Contáctanos para disponibilidad y precios.'); backToMenu(); } },
+            { label: '¿Cómo asegurar que el perfume dure más tiempo?', action: () => { appendBotMessage('Para prolongar la duración: aplica en zonas pulso (cuello, muñecas, detrás de orejas), guarda en lugar fresco y oscuro, y evita frotarte. ¡Durarán más tiempo!'); backToMenu(); } },
+            { label: '¿Cuáles son los métodos de pago?', action: () => { appendBotMessage('Aceptamos tarjetas de crédito, débito, transferencias bancarias y otros métodos digitales. ¡Consulta nuestros términos!'); backToMenu(); } },
+            { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
+        ];
+
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'faq';
+    }
+
+    function showSupportMenu(){
+        appendBotMessage('🎧 Atención Personalizada y Tiendas - ¿Cómo te podemos servir?');
+        
+        const buttons = [
+            { label: '🏪 Ubicación de sucursales', action: () => { appendBotMessage('Tenemos sucursales en diversas ubicaciones con directores especializados. ¡Haz clic aquí o contáctanos para direcciones y horarios!'); backToMenu(); } },
+            { label: '👤 Hablar con un asesor', action: () => { appendBotMessage('Un agente especialista se pondrá en contacto contigo pronto para brindarte asesoría personalizada. ¡Gracias por tu interés!'); backToMenu(); } },
+            { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
+        ];
+
+        renderMenuButtons(buttons);
+        chatState.currentMenu = 'support';
+    }
+
+    function fetchBestSellers(){
+        appendBotMessage('🔝 Cargando los más vendidos...');
+        fetch('/catalogo/api/best-sellers/')
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    appendBotMessage('Aún no hay datos de los más vendidos, pero puedes ver nuestro catálogo completo.');
+                    showCatalogMenu();
+                    return;
+                }
+                let html = '<strong>⭐ Más Vendidos</strong><br>';
+                data.forEach((producto, idx) => {
+                    const precio = producto.precio_oferta || producto.precio;
+                    html += `${idx + 1}. <a href="/catalogo/producto/${producto.id}/" class="text-brand-gold hover:underline">${producto.nombre}</a> - $${precio}<br>`;
+                });
+                html += '<br>Haz clic en un producto para verlo o escribe "catálogo" para más opciones.';
+                appendBotMessage(html);
+                chatState.currentMenu = 'bestsellers';
+                chatState.awaiting = 'menu_choice';
+            })
+            .catch(err => {
+                console.error('Error al obtener bestsellers', err);
+                appendBotMessage('No fue posible cargar los más vendidos ahora; te muestro el catálogo.');
+                showCatalogMenu();
+            });
     }
 
     function backToMenu(){
         setTimeout(() => {
-            addMessage('¿Quieres ver algo más?');
-            addButtons([
-                { label: 'Menú principal', action: startChat }
-            ]);
+            appendBotMessage('¿Hay algo más en lo que pueda ayudarte?');
+            showMainMenu();
         }, 500);
     }
 
-    // 🧠 INPUT INTELIGENTE
+    // Open handler: no message until user writes the greeting
+    openBtn.addEventListener('click', function(){
+        modal.classList.toggle('hidden');
+        if (!modal.classList.contains('hidden')) {
+            if (messages.innerHTML === '') {
+                showMainMenu();
+            }
+            input.focus();
+        }
+    });
+
     async function sendMessage(){
         const text = input.value.trim();
         if(!text) return;
-
-        addMessage(text, 'user');
+        appendUserMessage(text);
         input.value = '';
 
-        try {
-            const res = await fetch('/api/core/chat/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ message: text })
-            });
+        const lower = text.toLowerCase();
+        const normalized = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-            const data = await res.json();
-
-            if (data.productos) {
-                addMessage(data.reply);
-                showProducts(data.productos);
-            } else {
-                addMessage(data.reply);
-            }
-        } catch {
-            addMessage('⚠️ Error de conexión');
+        // Check for special commands
+        if (normalized.includes('volver') || normalized.includes('menu principal') || normalized.includes('inicio')) {
+            showMainMenu();
+            return;
         }
+
+        if (normalized.includes('salir') || normalized.includes('finalizar') || normalized.includes('cerrar')) {
+            appendBotMessage('¡Gracias por usar nuestro servicio! Si tienes más preguntas, estamos aquí para ayudarte.');
+            return;
+        }
+
+        // If at hello state, wait for greeting
+        if (chatState.awaiting === 'hello') {
+            const hasHola = /\bhola\b|\bbuenos/i.test(text);
+            if (hasHola) {
+                showMainMenu();
+                return;
+            } else {
+                appendBotMessage('¡Hola! Por favor escribe "hola" o "buenos días" para iniciar el chat. 😊');
+                return;
+            }
+        }
+
+        // Keyword recognition for menu selection
+        if (normalized.includes('catalogo') || normalized.includes('catálogo') || normalized.includes('perfume') || normalized.includes('productos')) {
+            showCatalogMenu();
+            return;
+        }
+
+        if (normalized.includes('recomendador') || normalized.includes('quiz') || normalized.includes('cual') || normalized.includes('recomendar') || normalized.includes('sugerir')) {
+            showQuizMenu();
+            return;
+        }
+
+        if (normalized.includes('pedido') || normalized.includes('orden') || normalized.includes('envio') || normalized.includes('envío') || normalized.includes('rastrear') || normalized.includes('seguimiento')) {
+            showOrdersMenu();
+            return;
+        }
+
+        if (normalized.includes('pregunta') || normalized.includes('faq') || normalized.includes('frecuente') || normalized.includes('duda') || normalized.includes('como')) {
+            showFAQMenu();
+            return;
+        }
+
+        if (normalized.includes('asesor') || normalized.includes('tienda') || normalized.includes('sucursal') || normalized.includes('ubicacion') || normalized.includes('ubicación') || normalized.includes('direcci') || normalized.includes('horario') || normalized.includes('contacto')) {
+            showSupportMenu();
+            return;
+        }
+
+        if (normalized.includes('mas vendido') || normalized.includes('bestseller') || normalized.includes('los mas vendidos') || normalized.includes('top ventas') || normalized.includes('más vendidos')) {
+            fetchBestSellers();
+            return;
+        }
+
+        // Default response when nothing matches
+        appendBotMessage('No entendí bien tu pregunta 🤔. Aquí están las opciones disponibles:');
+        showMainMenu();
     }
 
-    sendBtn.onclick = sendMessage;
-    input.addEventListener('keydown', e => {
-        if(e.key === 'Enter') sendMessage();
+    clearBtn.addEventListener('click', function(){
+        messages.innerHTML = '';
+        chatState.awaiting = 'hello';
+        chatState.currentMenu = 'main';
+        input.value = '';
+        input.focus();
+        showMainMenu();
     });
 
+    closeBtn.addEventListener('click', function(){
+        modal.classList.add('hidden');
+    });
+
+    sendBtn.addEventListener('click', sendMessage);
+    input.addEventListener('keydown', function(e){ if(e.key==='Enter') sendMessage(); });
 })();
 </script>
 </body>
