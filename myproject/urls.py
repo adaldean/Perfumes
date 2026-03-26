@@ -38,7 +38,6 @@ urlpatterns = [
     path('catalogo/', include('apps.catalog.urls')),
 ]
 
-# Agregar configuración para servir archivos de medios en modo de desarrollo
-
+# Servir archivos de medios en desarrollo y producción
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
