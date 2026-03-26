@@ -284,14 +284,16 @@
 
     <!-- MODAL -->
     <div id="chat-modal"
-        class="hidden fixed top-0 left-0 w-full h-full sm:w-[28rem] sm:h-[32rem] 
+        class="hidden fixed bottom-24 right-6 sm:bottom-28 sm:right-8 z-50 
+        w-96 h-[28rem] sm:w-[32rem] sm:h-[36rem] md:w-[36rem] md:h-[40rem]
         bg-white dark:bg-zinc-800 
-        sm:rounded-xl 
-        shadow-2xl overflow-hidden flex flex-col">
+        rounded-xl 
+        shadow-2xl overflow-hidden flex flex-col 
+        transition-all duration-300 ease-out">
 
         <!-- HEADER -->
-        <div class="flex justify-between items-center px-4 py-3 bg-gray-100 dark:bg-zinc-900 border-b">
-            <strong class="text-sm sm:text-base">Asistente Aura Essence</strong>
+        <div class="flex justify-between items-center px-4 py-4 bg-gray-100 dark:bg-zinc-900 border-b">
+            <strong class="text-lg sm:text-xl font-semibold">Asistente Aura Essence</strong>
             <div class="flex gap-2">
                 <button id="clear-chat"
                     class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-zinc-700">↻</button>
@@ -302,16 +304,16 @@
 
         <!-- MENSAJES -->
         <div id="chat-messages"
-            class="flex-1 p-3 overflow-y-auto text-sm space-y-2 scroll-smooth">
+            class="flex-1 p-4 overflow-y-auto text-base space-y-3 scroll-smooth">
         </div>
 
         <!-- INPUT -->
-        <div class="p-3 border-t bg-white dark:bg-zinc-800">
+        <div class="p-4 border-t bg-white dark:bg-zinc-800">
             <div class="flex gap-2">
                 <input id="chat-input"
-                    class="flex-1 px-3 py-2 rounded border text-sm dark:bg-zinc-700 outline-none" />
+                    class="flex-1 px-4 py-3 rounded border-2 border-gray-300 text-base dark:bg-zinc-700 dark:border-zinc-600 outline-none focus:border-brand-gold" placeholder="Escribe tu pregunta..." />
                 <button id="send-chat"
-                    class="px-3 py-2 bg-brand-gold text-white rounded">Enviar</button>
+                    class="px-4 py-3 bg-brand-gold text-white rounded font-semibold text-base hover:opacity-90 transition-opacity">Enviar</button>
             </div>
         </div>
 
@@ -342,7 +344,7 @@
 
     function appendBotMessage(text){
         const botBubble = document.createElement('div');
-        botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+        botBubble.innerHTML = `<div class="inline-block bg-gray-100 dark:bg-zinc-700 px-4 py-3 rounded-lg text-base leading-relaxed">${text}</div>`;
         messages.appendChild(botBubble);
         messages.scrollTop = messages.scrollHeight;
     }
@@ -350,19 +352,19 @@
     function appendUserMessage(text){
         const userBubble = document.createElement('div');
         userBubble.className = 'text-right';
-        userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-3 py-1.5 rounded-lg text-sm">${text}</div>`;
+        userBubble.innerHTML = `<div class="inline-block bg-brand-gold text-white px-4 py-3 rounded-lg text-base leading-relaxed">${text}</div>`;
         messages.appendChild(userBubble);
         messages.scrollTop = messages.scrollHeight;
     }
 
     function renderMenuButtons(buttons){
         const wrapper = document.createElement('div');
-        wrapper.className = 'flex flex-col gap-2 mt-2';
+        wrapper.className = 'flex flex-col gap-3 mt-3';
 
         buttons.forEach(function(btn){
             const button = document.createElement('button');
             button.type = 'button';
-            button.className = 'px-3 py-2 rounded-lg border border-gray-300 dark:border-zinc-600 text-sm bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-left';
+            button.className = 'px-4 py-3 rounded-lg border-2 border-gray-300 dark:border-zinc-600 text-base font-medium bg-white dark:bg-zinc-800 hover:bg-gray-100 dark:hover:bg-zinc-700 text-left transition-colors';
             button.textContent = btn.label;
             button.addEventListener('click', function(){
                 appendUserMessage(btn.label);
@@ -541,11 +543,12 @@
         }, 500);
     }
 
-    // Open handler: no message until user writes the greeting
+    // Open handler: always show main menu when opening
     openBtn.addEventListener('click', function(){
         modal.classList.toggle('hidden');
         if (!modal.classList.contains('hidden')) {
             if (messages.innerHTML === '') {
+                chatState.awaiting = 'menu_choice';
                 showMainMenu();
             }
             input.focus();
