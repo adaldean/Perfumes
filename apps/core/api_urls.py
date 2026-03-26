@@ -23,4 +23,6 @@ urlpatterns = [
     path('auth/registro/', RegistroView.as_view(), name='registro'),
     # Chatbot endpoint
     path('chat/', chat_api, name='chat'),
+    # Chat API
+    path('chat/', chat_api, name='chat-api'),
 ]

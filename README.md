@@ -38,7 +38,6 @@ Variables clave:
 - `ALLOWED_HOSTS=localhost,127.0.0.1`
 - `CSRF_TRUSTED_ORIGINS=http://localhost:8000`
 - `DATABASE_URL=` (vacío para SQLite local, o URL Postgres)
-- `GEMINI_API_KEY=` (habilita respuestas del chatbot con Gemini)
 
 ### 3) Migraciones y usuario admin
 ```bash
@@ -50,6 +49,88 @@ python manage.py createsuperuser
 ```bash
 python manage.py runserver
 ```
+
+## Configuración de la Base de Datos (PostgreSQL)
+
+### Requisitos Previos
+- Asegúrate de tener PostgreSQL instalado en tu sistema. En Linux Mint, puedes instalarlo con:
+  ```bash
+  sudo apt update
+  sudo apt install postgresql postgresql-contrib
+  ```
+
+### Crear la Base de Datos y el Usuario
+1. Accede a PostgreSQL:
+   ```bash
+   sudo -u postgres psql
+   ```
+
+2. Crea la base de datos:
+   ```sql
+   CREATE DATABASE perfumeria;
+   ```
+
+3. Crea el usuario con su contraseña:
+   ```sql
+   CREATE USER administrador1 WITH PASSWORD 'tu_contraseña_segura';
+   ```
+
+4. Otorga permisos al usuario sobre la base de datos:
+   ```sql
+   GRANT ALL PRIVILEGES ON DATABASE perfumeria TO administrador1;
+   ```
+
+5. Sal de PostgreSQL:
+   ```sql
+   \q
+   ```
+
+### Configurar el Acceso Local
+1. Edita el archivo `pg_hba.conf` para permitir conexiones locales con contraseña:
+   ```bash
+   sudo nano /etc/postgresql/$(ls /etc/postgresql)/main/pg_hba.conf
+   ```
+
+2. Asegúrate de que las siguientes líneas estén configuradas como `md5`:
+   ```
+   # IPv4 local connections:
+   host    all             all             127.0.0.1/32            md5
+   # IPv6 local connections:
+   host    all             all             ::1/128                 md5
+   ```
+
+3. Reinicia PostgreSQL para aplicar los cambios:
+   ```bash
+   sudo systemctl restart postgresql
+   ```
+
+### Configurar el Proyecto Django
+1. Asegúrate de que el archivo `.env` esté configurado correctamente:
+   ```env
+   POSTGRES_DB=perfumeria
+   POSTGRES_USER=administrador1
+   POSTGRES_PASSWORD=tu_contraseña_segura
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5432
+   ```
+
+2. Aplica las migraciones:
+   ```bash
+   python manage.py migrate
+   ```
+
+3. Carga los datos iniciales (opcional):
+   ```bash
+   python manage.py shell < scripts/create_sample_data.py
+   python manage.py shell < scripts/seed_more_products.py
+   ```
+
+### Verificar la Configuración
+- Inicia el servidor de desarrollo:
+  ```bash
+  python manage.py runserver
+  ```
+- Accede a la aplicación y verifica que los datos estén cargados correctamente.
 
 ## Flujo de precios y descuentos (admin)
 - `precio`: precio normal del producto.

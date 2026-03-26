@@ -18,6 +18,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from .models import Carrito, ItemCarrito, Producto
+from apps.catalog.models import Producto
 
 
 # ============================================================
@@ -421,3 +422,95 @@ def carrito_view(request):
         'total': total,
         'es_autenticado': request.user.is_authenticated,
     })
+
+
+# ============================================================
+# VISTA DEL CHATBOT (Frontend HTML)
+# ============================================================
+
+def chatbot_view(request):
+    """
+    GET /chatbot/
+    Renderiza la página del chatbot.
+    """
+    return render(request, 'chatbot.html')
+
+
+# ============================================================
+# FUNCIONES DE CHATBOT
+# ============================================================
+
+def detect_intent(message):
+    """
+    Detecta el intento del usuario.
+    """
+    keywords = {
+        "catalogo": ["dama", "mujer", "niña", "hombre", "caballero", "niño", "joven", "fragancia", "loción", "aroma"],
+        "promociones": ["oferta", "descuento", "rebaja", "promoción", "oportunidad", "barato", "económico"],
+        "producto": ["dulce", "fresco", "intenso", "floral", "cítrico", "amaderado"],
+        "compra": ["carrito", "disponibilidad", "forma de pago", "tipo de pago", "efectivo", "tarjeta", "costo", "precio"],
+        "contacto": ["ayuda", "necesidad", "asistencia", "queja", "problema", "dificultad", "duda", "hablar", "contacto", "asesor"],
+        "cierre": ["adiós", "gracias", "bye", "hasta luego", "no necesito nada"]
+    }
+
+    for intent, words in keywords.items():
+        if any(word in message.lower() for word in words):
+            return intent
+    return "unknown"
+
+def generate_response(intent, message, user):
+    """
+    Genera una respuesta basada en el intento.
+    """
+    if intent == "producto":
+        # Filtrar productos según palabras clave
+        aromas = ["dulce", "fresco", "intenso", "floral", "cítrico", "amaderado"]
+        for aroma in aromas:
+            if aroma in message.lower():
+                productos = Producto.objects.filter(tipo_aroma__icontains=aroma)[:5]
+                productos_data = [
+                    {
+                        "id": producto.id,
+                        "nombre": producto.nombre,
+                        "precio": f"{producto.precio:.2f}",
+                        "imagen": producto.imagen.url if producto.imagen else ""
+                    }
+                    for producto in productos
+                ]
+                return {
+                    "reply": f"Aquí tienes algunas opciones con aroma {aroma}:",
+                    "productos": productos_data
+                }
+        return {"reply": "No encontré productos con esas características."}
+
+    elif intent == "compra":
+        return {"reply": "Aceptamos pagos en efectivo, tarjeta y transferencias. ¿Te gustaría más información?"}
+
+    elif intent == "contacto":
+        return {"reply": "Puedes contactarnos al correo soporte@auraessence.com o al teléfono 123-456-7890."}
+
+    elif intent == "cierre":
+        return {"reply": "Gracias por visitarnos. ¡Que tengas un excelente día!"}
+
+    return {"reply": "Lo siento, no entendí tu mensaje. ¿Podrías reformularlo?"}
+
+# Modificar chatbot_view para manejar productos dinámicos
+@csrf_exempt
+def chatbot_view(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            message = data.get("message", "")
+            user = request.user if request.user.is_authenticated else None
+
+            # Detect intent
+            intent = detect_intent(message)
+
+            # Generate response
+            response = generate_response(intent, message, user)
+
+            return JsonResponse(response)
+        except Exception as e:
+            return JsonResponse({"reply": "Hubo un error procesando tu mensaje. Por favor, intenta nuevamente."}, status=500)
+
+    return JsonResponse({"reply": "Método no permitido."}, status=405)
