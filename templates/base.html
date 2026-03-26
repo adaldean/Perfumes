@@ -6,13 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Aura Essence | Perfumería de Lujo{% endblock %}</title>
-
-    <!-- Google Fonts -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
-        rel="stylesheet">
-
-    <!-- Tailwind CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -35,10 +30,7 @@
             }
         }
     </script>
-    
-
     <script>
-        // Check local storage and system preference on load
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -46,7 +38,6 @@
         }
     </script>
 
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -103,10 +94,8 @@
 <body
     class="bg-brand-light dark:bg-zinc-900 text-brand-dark dark:text-gray-100 font-sans flex flex-col min-h-screen transition-colors duration-300">
 
-    <!-- Header -->
     <header class="bg-white dark:bg-zinc-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
         <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- Logo -->
             <a href="{% url 'home' %}" class="flex items-center gap-2 group">
                 <i
                     class="fa-solid fa-spray-can-sparkles text-brand-gold text-2xl group-hover:rotate-12 transition-transform"></i>
@@ -114,14 +103,12 @@
                         class="text-brand-gold">ESSENCE</span></span>
             </a>
 
-            <!-- Navigation Desktop -->
             <nav class="hidden md:flex items-center gap-8 font-medium dark:text-gray-200">
                 <a href="{% url 'home' %}" class="hover:text-brand-gold transition-colors">Inicio</a>
                 <a href="{% url 'frontend:catalogo' %}" class="hover:text-brand-gold transition-colors">Catálogo</a>
                 <a href="{% url 'home' %}#esencia" class="hover:text-brand-gold transition-colors">Nuestra Historia</a>
             </nav>
 
-            <!-- Actions -->
             <div class="flex items-center gap-4">
                 <form action="{% url 'frontend:catalogo' %}" method="get" class="hidden sm:flex relative">
                     <input type="search" name="q" placeholder="Buscar fragancia..."
@@ -132,7 +119,6 @@
                     </button>
                 </form>
 
-                <!-- Theme Toggle -->
                 <button id="theme-toggle" type="button"
                     class="text-gray-500 dark:text-gray-400 hover:text-brand-gold dark:hover:text-brand-gold focus:outline-none text-xl transition-colors">
                     <i id="theme-toggle-dark-icon" class="fa-solid fa-moon hidden"></i>
@@ -273,16 +259,12 @@
         </div>
     </footer>
 
-<!-- CHAT WIDGET RESPONSIVE PRO -->
 <div id="chat-widget" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50">
-
-    <!-- BOTÓN -->
     <button id="open-chat"
         class="bg-black text-brand-gold px-4 py-2 sm:px-5 sm:py-3 rounded-full shadow-lg hover:scale-105 transition-all text-sm sm:text-base">
         💬 ¿Te ayudamos?
     </button>
 
-    <!-- MODAL -->
     <div id="chat-modal"
         class="hidden fixed bottom-24 right-6 sm:bottom-28 sm:right-8 z-50 
         w-96 h-[28rem] sm:w-[32rem] sm:h-[36rem] md:w-[36rem] md:h-[40rem]
@@ -291,29 +273,21 @@
         shadow-2xl overflow-hidden flex flex-col 
         transition-all duration-300 ease-out">
 
-        <!-- HEADER -->
         <div class="flex justify-between items-center px-4 py-4 bg-gray-100 dark:bg-zinc-900 border-b">
             <strong class="text-lg sm:text-xl font-semibold">Asistente Aura Essence</strong>
             <div class="flex gap-2">
-                <button id="clear-chat"
-                    class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-zinc-700">↻</button>
-                <button id="close-chat"
-                    class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-zinc-700">✖</button>
+                <button id="clear-chat" class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-zinc-700">↻</button>
+                <button id="close-chat" class="text-xs px-2 py-1 rounded bg-gray-200 dark:bg-zinc-700">✖</button>
             </div>
         </div>
-
-        <!-- MENSAJES -->
         <div id="chat-messages"
             class="flex-1 p-4 overflow-y-auto text-base space-y-3 scroll-smooth">
         </div>
 
-        <!-- INPUT -->
         <div class="p-4 border-t bg-white dark:bg-zinc-800">
             <div class="flex gap-2">
-                <input id="chat-input"
-                    class="flex-1 px-4 py-3 rounded border-2 border-gray-300 text-base dark:bg-zinc-700 dark:border-zinc-600 outline-none focus:border-brand-gold" placeholder="Escribe tu pregunta..." />
-                <button id="send-chat"
-                    class="px-4 py-3 bg-brand-gold text-white rounded font-semibold text-base hover:opacity-90 transition-opacity">Enviar</button>
+                <input id="chat-input" class="flex-1 px-4 py-3 rounded border-2 border-gray-300 text-base dark:bg-zinc-700 dark:border-zinc-600 outline-none focus:border-brand-gold" placeholder="Escribe tu pregunta..." />
+                <button id="send-chat" class="px-4 py-3 bg-brand-gold text-white rounded font-semibold text-base hover:opacity-90 transition-opacity">Enviar</button>
             </div>
         </div>
 
@@ -378,14 +352,15 @@
     }
 
     function showMainMenu(){
-        appendBotMessage('👋 ¡Hola! Bienvenido a Aura Essence. ¿En qué te puedo ayudar hoy? Por favor, elige una de las siguientes opciones:');
+        appendBotMessage('🌟 Bienvenido a Aura Essence.\n\nSoy tu asistente personal de fragancias. Aquí encontrarás perfumes de lujo seleccionados especialmente para ti.\n\n¿Qué te gustaría hacer?');
         
         const buttons = [
-            { label: '🛍️ Catálogo de Perfumes', action: () => showCatalogMenu() },
-            { label: '🎯 Recomendador de Fragancias (Quiz)', action: () => showQuizMenu() },
-            { label: '📦 Pedidos y Envíos', action: () => showOrdersMenu() },
-            { label: '❓ Preguntas Frecuentes (FAQ)', action: () => showFAQMenu() },
-            { label: '🎧 Atención Personalizada y Tiendas', action: () => showSupportMenu() }
+            { label: '🎯 Descubre Perfumes por Género', action: () => showCatalogMenu() },
+            { label: '💎 Ver Los Más Vendidos', action: () => fetchBestSellers() },
+            { label: '🧪 Quiz: Encuentra Tu Fragancia Ideal', action: () => showQuizMenu() },
+            { label: '📋 Pedidos & Envíos', action: () => showOrdersMenu() },
+            { label: '💬 Preguntas Frecuentes', action: () => showFAQMenu() },
+            { label: '👥 Hablar con un Asesor', action: () => showSupportMenu() }
         ];
 
         renderMenuButtons(buttons);
@@ -421,17 +396,13 @@
     }
 
     function showCatalogMenu(){
-        appendBotMessage('🛍️ Catálogo de Perfumes - Selecciona cómo deseas explorar:');
+        appendBotMessage('� Explora nuestras colecciones por género.\n\nCada colección está cuidadosamente seleccionada con las mejor fragancias del mercado. ¿Cuál es tu preferencia?');
         
         const buttons = [
-            { label: '👩 Para Mujer', action: () => { fetchProductosPorGenero('mujer', 'Perfumes para Mujer'); } },
-            { label: '👨 Para Hombre', action: () => { fetchProductosPorGenero('hombre', 'Perfumes para Hombre'); } },
-            { label: '⚡ Unisex', action: () => { fetchProductosPorGenero('unisex', 'Perfumes Unisex'); } },
-            { label: '🌸 Florales y Dulces', action: () => { appendBotMessage('Fragancias florales y dulces - Elegantes y sofisticadas. Contáctanos para más información.'); backToMenu(); } },
-            { label: '🌲 Amaderados y Especiados', action: () => { appendBotMessage('Fragancias amaderadas y especiadas - Cálidas y envolventes. Contáctanos para más información.'); backToMenu(); } },
-            { label: '🍋 Cítricos y Frescos', action: () => { appendBotMessage('Fragancias cítricos y frescos - Vigorizantes y refrescantes. Contáctanos para más información.'); backToMenu(); } },
-            { label: '✨ Novedades y Lanzamientos', action: () => { appendBotMessage('Nuevos lanzamientos - Suscríbete para recibir alertas sobre nuestras novedades exclusivas. Contáctanos para más información.'); backToMenu(); } },
-            { label: '⭐ Los Más Vendidos (Bestsellers)', action: () => { fetchBestSellers(); } },
+            { label: '💃 Para Mujer - Elegancia & Sofisticación', action: () => { fetchProductosPorGenero('mujer', 'Perfumes para Mujer'); } },
+            { label: '👔 Para Hombre - Poder & Seducción', action: () => { fetchProductosPorGenero('hombre', 'Perfumes para Hombre'); } },
+            { label: '✨ Unisex - Modernos & Versátiles', action: () => { fetchProductosPorGenero('unisex', 'Perfumes Unisex'); } },
+            { label: '⭐ Lo Más Vendido de cada Género', action: () => { fetchBestSellers(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
@@ -440,12 +411,12 @@
     }
 
     function showQuizMenu(){
-        appendBotMessage('🎯 Recomendador de Fragancias - ¿Cómo te gustaría descubrir el perfume ideal?');
+        appendBotMessage('🎯 Responde algunas preguntas simples y te recomendaremos el perfume perfecto para ti.\n\n¿Por dónde deseas empezar?');
         
         const buttons = [
-            { label: '📅 Por Ocasión', action: () => showOccasionQuiz() },
-            { label: '👃 Por Notas Olfativas', action: () => showOlfactiveQuiz() },
-            { label: '🎁 Regalos', action: () => showGiftQuiz() },
+            { label: '📍 Por Ocasión - ¿Cuándo lo usarás?', action: () => showOccasionQuiz() },
+            { label: '👃 Por Notas - ¿Qué aromas te atraen?', action: () => showOlfactiveQuiz() },
+            { label: '🎁 Para Regalar - Encuentra el regalo perfecto', action: () => showGiftQuiz() },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
@@ -454,13 +425,13 @@
     }
 
     function showOccasionQuiz(){
-        appendBotMessage('📅 Por Ocasión - ¿Para qué usarás el perfume?');
+        appendBotMessage('📅 Cada ocasión merece una fragancia especial.\n\nCuéntame, ¿para qué momento necesitas el perfecto aroma?');
         
         const buttons = [
-            { label: 'Uso Diario', action: () => { appendBotMessage('Perfumes para uso diario - Ligeros y versátiles que acompañan tu día. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
-            { label: 'Fiesta', action: () => { appendBotMessage('Perfumes para fiesta - Intensos y cautivadores que dejan huella. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
-            { label: 'Cita Nocturna', action: () => { appendBotMessage('Perfumes para cita nocturna - Seductores y envolventes. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
-            { label: 'Oficina', action: () => { appendBotMessage('Perfumes para oficina - Profesionales y elegantes. ¡Contáctanos para recomendaciones personalizadas!'); backToMenu(); } },
+            { label: '☀️ Uso Diario - Ligero & Fresco', action: () => { appendBotMessage('Perfecto! Recomendamos fragancias ligeras, versátiles y de larga duración que te acompañen todo el día. Nuestras opciones de cítricos y florales suaves son ideales. Visita nuestro catálogo para explorar.'); backToMenu(); } },
+            { label: '🎉 Fiesta & Eventos - Intenso & Cautivador', action: () => { appendBotMessage('Excelente! Para ocasiones especiales, recomendamos fragancias con presencia fuerte y notas profundas que dejen una impresión duradera. Nuestras fragancias amaderadas y orientales son perfectas para ti.'); backToMenu(); } },
+            { label: '💕 Cita Romántica - Seductor & Sensual', action: () => { appendBotMessage('Hermoso! Las fragancias con notas florales profundas, almízcares y amaderados suaves crean una atmósfera romántica y atractiva. Encontrarás opciones sofisticadas en nuestro catálogo.'); backToMenu(); } },
+            { label: '💼 Oficina & Profesional - Elegante & Discreto', action: () => { appendBotMessage('Perfecto! En ambientes profesionales, recomendamos fragancias sutiles, elegantes y frescas que no sean intrusivas. Los cítricos, florales suaves y minimalistas son la mejor opción.'); backToMenu(); } },
             { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
         ];
 
@@ -468,13 +439,14 @@
     }
 
     function showOlfactiveQuiz(){
-        appendBotMessage('👃 Por Notas Olfativas - ¿Qué aromas prefieres?');
+        appendBotMessage('👃 Las notas olfativas son la esencia de una buena fragancia.\n\n¿Cuáles son tus aromas favoritos?');
         
         const buttons = [
-            { label: '🌸 Vainilla', action: () => { appendBotMessage('Perfumes con vainilla - Cálidos y envolventes. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
-            { label: '🌹 Rosas', action: () => { appendBotMessage('Perfumes con rosas - Románticos y sofisticados. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
-            { label: '🎩 Cuero', action: () => { appendBotMessage('Perfumes con cuero - Audaces y elegantes. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
-            { label: '☕ Café', action: () => { appendBotMessage('Perfumes con café - Estimulantes y oscuros. ¡Tenemos opciones perfectas para ti!'); backToMenu(); } },
+            { label: '🍦 Vainilla & Gourmand - Cálido & Envolvente', action: () => { appendBotMessage('¡Excelente elección! Las fragancias con notas de vainilla, caramelo y especias son cálidas, reconfortantes y perfectas para climas fríos o tardes relajantes. Te encantarán nuestras opciones gourmand.'); backToMenu(); } },
+            { label: '🌹 Rosa & Floral - Romántico & Clásico', action: () => { appendBotMessage('Maravilloso! Las fragancias florales con rosa, peonía y flores blancas son románticas, sofisticadas y atemporales. Sin importar la estación, son siempre elegantes y siempre en tendencia.'); backToMenu(); } },
+            { label: '🌲 Amaderado & Musgo - Audaz & Elegante', action: () => { appendBotMessage('Perfecto! Las fragancias con notas amaderadas, sándalo, oud y musgo son potentes, elegantes y muy apreciadas. Ideales para hombres buscando presencia y para mujeres que prefieren fragancias profundas.'); backToMenu(); } },
+            { label: '☕ Café, Especias & Ámbar - Intrigante & Sofisticado', action: () => { appendBotMessage('Sensacional! Las fragancias con café, canela, clavo y ámbar son profundas, intrigantes y muy sofisticadas. Perfectas para quienes buscan algo único y memorable.'); backToMenu(); } },
+            { label: '🍋 Cítrico & Fresco - Vibrante & Energético', action: () => { appendBotMessage('¡Refrescante! Las fragancias cítricas con limón, bergamota y naranja son vibrantes, energéticas y perfectas para el verano o cualquier momento que necesites un boost de energía.'); backToMenu(); } },
             { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
         ];
 
@@ -482,13 +454,13 @@
     }
 
     function showGiftQuiz(){
-        appendBotMessage('🎁 Regalos - Ayudemos a elegir el perfume perfecto como regalo. ¿Para quién es?');
+        appendBotMessage('🎁 Regalar un perfume es regalar una experiencia sensorial.\n\n¿Para quién buscas el regalo perfecto?');
         
         const buttons = [
-            { label: 'Para Niños/as', action: () => { appendBotMessage('Perfumes para niños/as - Frescos y alegres. ¡Tenemos opciones encantadoras!'); backToMenu(); } },
-            { label: 'Para Adolescentes', action: () => { appendBotMessage('Perfumes para adolescentes - Modernos y trendies. ¡Tenemos opciones ideales!'); backToMenu(); } },
-            { label: 'Para Adultos', action: () => { appendBotMessage('Perfumes para adultos - Sofisticados y elegantes. ¡Tenemos opciones refinadas!'); backToMenu(); } },
-            { label: 'Para Adultos Mayores', action: () => { appendBotMessage('Perfumes para adultos mayores - Clásicos y elegantes. ¡Tenemos opciones atemporales!'); backToMenu(); } },
+            { label: '👧👦 Para Niños - Divertido & Seguro', action: () => { appendBotMessage('¡Perfecto! Para los más pequeños recomendamos fragancias ligeras, frescos y divertidos con concentraciones bajas y notas dulces que les encantarán. Seguros y deliciosos.'); backToMenu(); } },
+            { label: '👨‍🎓👩‍🎓 Para Adolescentes - Trendy & Moderno', action: () => { appendBotMessage('Excelente! Los teens buscan fragancias frescas, versátiles y con personalidad. Recomendamos cítricos, florales mezclados con toques gourmand y amaderados ligeros que están en tendencia.'); backToMenu(); } },
+            { label: '💼👗 Para Adultos - Sofisticado & Refinado', action: () => { appendBotMessage('Magnífico! Para adultos, los perfumes de calidad con notas complejas, larga duración y presencia son ideales. Nuestras opciones orientales, amaderadas y florales sofisticadas son impecables.'); backToMenu(); } },
+            { label: '👴👵 Para Personas Mayores - Clásico & Elegante', action: () => { appendBotMessage('Hermoso! Para regalar a personas mayores, las fragancias clásicas, elegantes y atemporales are perfectas. Los florales sofisticados, frescos limpios y amaderados suaves son muy apreciados.'); backToMenu(); } },
             { label: '⬅️ Volver al Quiz', action: () => showQuizMenu() }
         ];
 
@@ -496,12 +468,13 @@
     }
 
     function showOrdersMenu(){
-        appendBotMessage('📦 Pedidos y Envíos - ¿Cómo podemos ayudarte?');
+        appendBotMessage('📦 Información sobre tus pedidos y envíos.\n\n¿En qué puedo ayudarte?');
         
         const buttons = [
-            { label: '🔍 Rastrear mi pedido', action: () => { appendBotMessage('Para rastrear tu pedido, por favor proporciona tu número de orden o correo electrónico. Un agente te ayudará en breve.'); backToMenu(); } },
-            { label: '🚚 Costos y tiempos de envío', action: () => { appendBotMessage('Envíos a nivel nacional e internacional. Los costos y tiempos varían según tu ubicación. ¡Contáctanos para más detalles!'); backToMenu(); } },
-            { label: '↩️ Cambios y devoluciones', action: () => { appendBotMessage('Tenemos políticas flexibles de cambios y devoluciones. Los perfumes abiertos pueden ser intercambiados según nuestras políticas. ¡Contáctanos para más información!'); backToMenu(); } },
+            { label: '🔍 Rastrear Pedido', action: () => { appendBotMessage('Para rastrear tu pedido:\n1. Busca el email de confirmación de tu compra\n2. Haz clic en el enlace de rastreo incluido\n3. O contacta nuestro equipo con tu número de orden\n\nNuestro equipo está disponible para asistirte.'); backToMenu(); } },
+            { label: '🚚 Envíos & Entregas', action: () => { appendBotMessage('Información de envíos:\n• Nacional: 3-5 días hábiles (Gratis en compras >$50)\n• Internacional: 7-15 días según destino\n• Embalaje especial para proteger tus fragancias\n• Rastreo disponible en todos los pedidos\n\n¿Tienes más dudas? Contáctanos.'); backToMenu(); } },
+            { label: '↩️ Cambios & Devoluciones', action: () => { appendBotMessage('Políticas de devolución:\n✓ Perfumes sellados: Devolución completa\n✓ Perfumes abiertos: Cambio por otro aroma\n✓ Plazo: 30 días desde la compra\n✓ Ambiente asegurado y reembolso seguro\n\nNecesitas más detalles? Habla con nuestro equipo.'); backToMenu(); } },
+            { label: '💳 Métodos de Pago', action: () => { appendBotMessage('Aceptamos todos los métodos:\n💳 Tarjetas de crédito/débito (Visa, MC, Amex)\n🏦 Transferencias bancarias\n📱 Billeteras digitales (PayPal, etc.)\n🔒 Pagos seguros con encriptación SSL\n\n¡Tu compra está 100% protegida!'); backToMenu(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
@@ -510,12 +483,14 @@
     }
 
     function showFAQMenu(){
-        appendBotMessage('❓ Preguntas Frecuentes (FAQ) - Elige una pregunta:');
+        appendBotMessage('💬 Respuestas a preguntas que muchos se hacen.\n\n¿Cuál es tu duda?');
         
         const buttons = [
-            { label: '¿Venden muestras o decants?', action: () => { appendBotMessage('Sí, ofrecemos muestras y decants de nuestras fragancias. Contáctanos para disponibilidad y precios.'); backToMenu(); } },
-            { label: '¿Cómo asegurar que el perfume dure más tiempo?', action: () => { appendBotMessage('Para prolongar la duración: aplica en zonas pulso (cuello, muñecas, detrás de orejas), guarda en lugar fresco y oscuro, y evita frotarte. ¡Durarán más tiempo!'); backToMenu(); } },
-            { label: '¿Cuáles son los métodos de pago?', action: () => { appendBotMessage('Aceptamos tarjetas de crédito, débito, transferencias bancarias y otros métodos digitales. ¡Consulta nuestros términos!'); backToMenu(); } },
+            { label: '🧪 ¿Venden Muestras o Decants?', action: () => { appendBotMessage('¡Sí! Ofrecemos:\n🧴 Muestras miniatura (5-10ml) de fragancias seleccionadas\n💧 Decants personalizados de cualquier perfume\n📦 Perfecto para probar antes de comprar el full size\n\nContacta para disponibilidad y precios especiales.'); backToMenu(); } },
+            { label: '⏱️ ¿Cuánto Dura un Perfume?', action: () => { appendBotMessage('La duración depende de:\n📍 Concentración (EDP dura más que EDT)\n🌡️ Temperatura corporal\n📍 Aplicación correcta en puntos de pulso\n\nConsejos para alargar duración:\n• Aplica en cuello, muñecas, detrás de orejas\n• Guarda en lugar fresco y oscuro\n• Evita frotar las muñecas (rompe las moléculas)\n• Hidratea tu piel antes de aplicar\n\n¡Algunos perfumes duran 8+ horas!'); backToMenu(); } },
+            { label: '🎀 ¿Hay descuentos o promociones?', action: () => { appendBotMessage('Mantente atento a nuestras ofertas:\n🎉 Descuentos por volumen en compras grandes\n💌 Newsletter exclusiva con promociones especiales\n🎁 Regalos al alcanzar ciertos montos\n👑 Programa de lealtad para clientes frecuentes\n\nSuscríbete para no perder nuestras ofertas.'); backToMenu(); } },
+            { label: '👃 ¿Cómo Elegir mi Fragancia Ideal?', action: () => { appendBotMessage('Guía para elegir:\n1️⃣ Considera tu ocasión (diario, fiesta, trabajo)\n2️⃣ Prueba en un punto de pulso\n3️⃣ Espera 15 minutos para el aroma real\n4️⃣ Piensa en notas que ya te gustan\n5️⃣ Prueba múltiples fragancias (máx 3 a la vez)\n\nO usa nuestro Quiz - ¡es muy preciso!'); backToMenu(); } },
+            { label: '🌍 ¿Hacen Envíos Internacionales?', action: () => { appendBotMessage('¡Sí, enviamos a muchos países!\n🌏 Envíos internacionales 7-15 días\n📦 Empaque seguro con protección\n🛂 Aranceles según destino\n📍 Rastreo completo\n\nContacta para tu país específico y costos.'); backToMenu(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
@@ -524,11 +499,13 @@
     }
 
     function showSupportMenu(){
-        appendBotMessage('🎧 Atención Personalizada y Tiendas - ¿Cómo te podemos servir?');
+        appendBotMessage('👥 Nuestro equipo de expertos en fragancias está aquí para brindarte atención personalizada.\n\n¿Cómo podemos ayudarte?');
         
         const buttons = [
-            { label: '🏪 Ubicación de sucursales', action: () => { appendBotMessage('Tenemos sucursales en diversas ubicaciones con directores especializados. ¡Haz clic aquí o contáctanos para direcciones y horarios!'); backToMenu(); } },
-            { label: '👤 Hablar con un asesor', action: () => { appendBotMessage('Un agente especialista se pondrá en contacto contigo pronto para brindarte asesoría personalizada. ¡Gracias por tu interés!'); backToMenu(); } },
+            { label: '📞 Contactar con Asesor Especializado', action: () => { appendBotMessage('¡Perfecto! Nuestros asesores especializados están disponibles para:\n💬 Recomendaciones personalizadas\n🎯 Ayuda en la selección\n❓ Responder dudas específicas\n\nHaz clic aquí o envíanos un mensaje - te responderemos en menos de 2 horas en horario laboral.'); backToMenu(); } },
+            { label: '🏪 Ubicaciones de Tiendas', action: () => { appendBotMessage('Visita nuestras sucursales:\n📍 Centro: Av. Principal 123 (Metro Centro)\n📍 Norte: Plaza Mayor 456 (Zona Posh)\n📍 Sur: Centro Comercial 789\n\nHorarios: Lunes-Viernes 10am-8pm | Sábado 10am-6pm | Domingo 11am-5pm\n\nEn tienda puedes probar fragancias y recibir asesoría completa.'); backToMenu(); } },
+            { label: '📧 Email o Redes Sociales', action: () => { appendBotMessage('Contáctanos por:\n📧 Email: asesor@auraessence.com\n📱 WhatsApp: +1 (555) 123-4567\n👍 Facebook: /AuraEssencePerfumes\n📸 Instagram: @auraessence\n\nTe responderemos rápidamente con todas tus respuestas.'); backToMenu(); } },
+            { label: '💍 Solicitar Muestrario Personalizado', action: () => { appendBotMessage('¿Quieres recibir muestras seleccionadas en casa?\n✓ Elige tus aromas favoritos\n✓ Recibe 5-10 muestras según tus preferencias\n✓ Decide antes de comprar el full size\n✓ Envío a tu domicilio\n\nContacta con nuestro equipo para detalles y costos.'); backToMenu(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
 
@@ -565,8 +542,12 @@
 
     function backToMenu(){
         setTimeout(() => {
-            appendBotMessage('¿Hay algo más en lo que pueda ayudarte?');
-            showMainMenu();
+            appendBotMessage('✨ ¿Hay algo más en lo que pueda ayudarte?');
+            const buttons = [
+                { label: '🔙 Volver al Menú', action: () => showMainMenu() },
+                { label: '❌ Cerrar Chat', action: () => { closeBtn.click(); } }
+            ];
+            renderMenuButtons(buttons);
         }, 500);
     }
 
