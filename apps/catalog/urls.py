@@ -1,16 +1,12 @@
 from django.urls import path
 from . import views
-from . import api_views
-from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
-router.register(r'productos', api_views.ProductoViewSet)
-
-app_name = 'frontend'
+app_name = 'frontend' # El nombre de la app se establece como 'frontend' para coincidir con el uso en base.html (ej. 'frontend:catalogo')
 
 urlpatterns = [
     path('', views.catalogo, name='catalogo'),
     path('producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),
-    path('api/best-sellers/', api_views.best_sellers, name='best_sellers'),
-    path('api/genero/<str:genero>/', api_views.productos_por_genero, name='productos_por_genero'),
-] + router.urls
+    path('api/genero/<str:genero_param>/', views.api_productos_por_genero, name='api_productos_por_genero'),
+    path('api/categoria/<str:categoria_param>/', views.api_productos_por_categoria, name='api_productos_por_categoria'),
+    path('api/best-sellers/', views.api_best_sellers, name='api_best_sellers'),
+]

@@ -293,9 +293,8 @@
 
     </div>
 </div>
-
 <script>
-(function(){
+    (function(){
     // helpers
     function getCookie(name) {
         const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
@@ -333,8 +332,8 @@
     let chatState = JSON.parse(localStorage.getItem('chatState')) || { 
         awaiting: 'hello', 
         currentMenu: 'main', 
-        initialized: false,
-        messagesCount: 0
+        initialized: false, // Rastrea si el modal del chat ha sido abierto e inicializado en la sesión actual del navegador
+        hasInitialGreetingDisplayed: false // Rastrea si el bot ha mostrado su mensaje de bienvenida inicial y el menú principal
     };
 
     function saveChatState() {
@@ -422,6 +421,34 @@
             });
     }
 
+    function fetchProductosPorCategoria(categorySlug, label){
+        appendBotMessage(`🔍 Buscando ${label}...`);
+        fetch(`/catalogo/api/categoria/${categorySlug}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    appendBotMessage(`Aún no hay perfumes disponibles en la categoría "${label}", pero puedes explorar otras.`);
+                    showCatalogMenu();
+                    return;
+                }
+                let html = `<strong>💎 ${label}</strong><br>`;
+                data.forEach((producto, idx) => {
+                    // Asumiendo que 'precio' ya es un float desde la API
+                    html += `${idx + 1}. <a href="/catalogo/producto/${producto.id}/" class="text-brand-gold hover:underline">${producto.nombre}</a> - $${parseFloat(producto.precio).toFixed(2)}<br>`;
+                });
+                html += '<br>Haz clic en un producto para verlo.';
+                appendBotMessage(html);
+                chatState.currentMenu = 'products';
+                chatState.awaiting = 'menu_choice';
+                saveChatState();
+            })
+            .catch(err => {
+                console.error(`Error al obtener productos de la categoría ${label}`, err);
+                appendBotMessage('No fue posible cargar los productos de esta categoría ahora.');
+                showCatalogMenu();
+            });
+    }
+
     function showCatalogMenu(){
         appendBotMessage('🎀 Explora nuestras colecciones por género y notas olfativas.\n\nCada colección está cuidadosamente seleccionada con las mejores fragancias del mercado. ¿Cuál es tu preferencia?');
         
@@ -429,10 +456,10 @@
             { label: '💃 Para Mujer - Elegancia & Sofisticación', action: () => { fetchProductosPorGenero('mujer', 'Perfumes para Mujer'); } },
             { label: '👔 Para Hombre - Poder & Seducción', action: () => { fetchProductosPorGenero('hombre', 'Perfumes para Hombre'); } },
             { label: '✨ Unisex - Modernos & Versátiles', action: () => { fetchProductosPorGenero('unisex', 'Perfumes Unisex'); } },
-            { label: '🌸 Florales - Románticos & Elegantes', action: () => { appendBotMessage('🌸 Fragancias florales. Las flores son la esencia de la elegancia y la sofisticación. Explora nuestro catálogo para encuentra tu favorita.'); backToMenu(); } },
-            { label: '🌲 Amaderados - Cálidos & Profundos', action: () => { appendBotMessage('🌲 Fragancias amaderadas. Notas de madera que evocan naturaleza, calidez y profundidad. Perfectas para quien busca sofisticación. Descubre nuestras opciones.'); backToMenu(); } },
-            { label: '🍋 Cítricos - Frescos & Vibrantes', action: () => { appendBotMessage('🍋 Fragancias cítricas. Aromas frescos y energéticos que iluminan el día. Ideales para cualquier momento. Explora nuestra colección refrescante.'); backToMenu(); } },
-            { label: '🌹 Orientales - Sensuales & Misteriosos', action: () => { appendBotMessage('🌹 Fragancias orientales. Notas profundas, envolventes y sofisticadas. Para ocasiones especiales y noches memorables. Descubre la magia oriental.'); backToMenu(); } },
+            { label: '🌸 Florales - Románticos & Elegantes', action: () => { fetchProductosPorCategoria('floral', 'Fragancias Florales'); } },
+            { label: '🌲 Amaderados - Cálidos & Profundos', action: () => { fetchProductosPorCategoria('amaderado', 'Fragancias Amaderadas'); } },
+            { label: '🍋 Cítricos - Frescos & Vibrantes', action: () => { fetchProductosPorCategoria('citrico', 'Fragancias Cítricas'); } },
+            { label: '🌹 Orientales - Sensuales & Misteriosos', action: () => { fetchProductosPorCategoria('oriental', 'Fragancias Orientales'); } },
             { label: '⭐ Lo Más Vendido', action: () => { fetchBestSellers(); } },
             { label: '⬅️ Volver al Menú Principal', action: () => showMainMenu() }
         ];
@@ -456,6 +483,9 @@
         chatState.currentMenu = 'quiz';
         saveChatState();
     }
+
+    // --- FIX START: This code was outside a function ---
+    function showOccasionQuiz() {
         appendBotMessage('📅 Cada ocasión merece una fragancia especial.\n\nCuéntame, ¿para qué momento necesitas el perfecto aroma?');
         
         const buttons = [
@@ -468,6 +498,7 @@
 
         renderMenuButtons(buttons);
     }
+    // --- FIX END ---
 
     function showOlfactiveQuiz(){
         appendBotMessage('👃 Las notas olfativas son la esencia de una buena fragancia.\n\n¿Cuáles son tus aromas favoritos?');
@@ -598,6 +629,10 @@
                 chatState.initialized = true;
                 chatState.awaiting = 'menu_choice';
                 showMainMenu();
+                chatState.hasInitialGreetingDisplayed = true; // Mark that the initial greeting has been displayed
+            } else if (!chatState.hasInitialGreetingDisplayed) { // If initialized but greeting not shown (e.g., localStorage issue)
+                showMainMenu();
+                chatState.hasInitialGreetingDisplayed = true;
             }
             input.focus();
         }
@@ -612,19 +647,45 @@
         const lower = text.toLowerCase();
         const normalized = lower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-        const hasHola = /\b(hola|buenos|buenas|hey|yo|qué tal|que tal)\b/.test(lower);
-        const hasSalir = /\b(salir|adios|adiós|hasta|chao|si|gracias|ok)\b/.test(lower);
+        // --- Priorizar intenciones específicas, incluso si "hola" está presente ---
 
-        if (hasHola && chatState.messagesCount === 0) {
-            const saludoRandom = saludos[Math.floor(Math.random() * saludos.length)];
-            appendBotMessage(saludoRandom + '\n\n¿Qué te gustaría hacer?');
-            chatState.awaiting = 'menu_choice';
-            chatState.messagesCount++;
+        // Más Vendidos
+        if (normalized.includes('mas vendido') || normalized.includes('más vendidos') || normalized.includes('bestseller') || normalized.includes('top ventas') || normalized.includes('populares')) {
+            appendBotMessage('¡Claro! Aquí tienes nuestros productos más vendidos:');
+            fetchBestSellers();
             saveChatState();
-            showMainMenu();
             return;
         }
 
+        // Asesor/Soporte
+        if (normalized.includes('asesor') || normalized.includes('soporte') || normalized.includes('ayuda') || normalized.includes('contacto') || normalized.includes('hablar con alguien') || normalized.includes('atencion al cliente')) {
+            appendBotMessage('¡Por supuesto! Aquí te muestro cómo puedes contactar a un asesor o encontrar información de soporte:');
+            showSupportMenu();
+            saveChatState();
+            return;
+        }
+
+        // --- Manejo genérico de "hola" (si no se encontró ninguna intención específica) ---
+        const hasHola = /\b(hola|buenos|buenas|hey|yo|qué tal|que tal)\b/.test(lower); // Definir hasHola aquí
+        if (hasHola) { // Verificar "hola" genérico solo si no se ha encontrado una intención específica
+            if (!chatState.hasInitialGreetingDisplayed) {
+                const saludoRandom = saludos[Math.floor(Math.random() * saludos.length)];
+                appendBotMessage(saludoRandom + '\n\n¿Qué te gustaría hacer?');
+                chatState.awaiting = 'menu_choice';
+                chatState.hasInitialGreetingDisplayed = true;
+                saveChatState();
+                showMainMenu(); // Show main menu after initial greeting
+                return;
+            } else {
+                appendBotMessage('¡Hola de nuevo! ¿En qué más puedo ayudarte?');
+                showMainMenu(); // Show main menu again for convenience
+                saveChatState();
+                return;
+            }
+        }
+
+        // --- Lógica existente para otras intenciones (sin prefijo "hola", y si no se ha coincidido con una intención específica o un "hola" genérico) ---
+        const hasSalir = /\b(salir|adios|adiós|hasta|chao|si|gracias|ok)\b/.test(lower); // Definir hasSalir aquí
         if (hasSalir && (normalized.includes('salir') || normalized.includes('adios') || normalized.includes('adiós') || normalized.includes('hasta') || normalized.includes('chao'))) {
             const despedidaRandom = despedidas[Math.floor(Math.random() * despedidas.length)];
             appendBotMessage(despedidaRandom);
@@ -691,18 +752,6 @@
             return;
         }
 
-        if (normalized.includes('asesor') || normalized.includes('tienda') || normalized.includes('sucursal') || normalized.includes('ubicacion') || normalized.includes('ubicación') || normalized.includes('direcci') || normalized.includes('horario') || normalized.includes('contacto')) {
-            showSupportMenu();
-            saveChatState();
-            return;
-        }
-
-        if (normalized.includes('mas vendido') || normalized.includes('bestseller') || normalized.includes('los mas vendidos') || normalized.includes('top ventas') || normalized.includes('más vendidos')) {
-            fetchBestSellers();
-            saveChatState();
-            return;
-        }
-
         appendBotMessage('❓ No estoy seguro de tu pregunta. Aquí están las opciones disponibles:');
         showMainMenu();
         saveChatState();
@@ -713,11 +762,12 @@
         chatState.awaiting = 'hello';
         chatState.currentMenu = 'main';
         chatState.initialized = false;
-        chatState.messagesCount = 0;
+        chatState.hasInitialGreetingDisplayed = false; // Reset greeting flag
         input.value = '';
         input.focus();
         showMainMenu();
         chatState.initialized = true;
+        chatState.hasInitialGreetingDisplayed = true; // Mark as displayed after showing main menu
         saveChatState();
     });
 

@@ -71,16 +71,14 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    # Usar PostgreSQL si DATABASE_URL está configurado
     DATABASES = {
         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            ssl_require=False  # Cambiar a True en producción con SSL
+            ssl_require=False
         )
     }
 else:
-    # Fallback a SQLite si no hay DATABASE_URL
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

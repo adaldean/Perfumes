@@ -15,10 +15,8 @@ from django.db import transaction
 import json
 import logging
 
-logger = logging.getLogger(__name__)
-
-from .models import Carrito, ItemCarrito, Producto
-from apps.catalog.models import Producto
+logger = logging.getLogger(__name__) # Inicializa el logger
+from apps.catalog.models import Producto, Categoria # Importa Categoria para usarla en generate_response
 
 
 # ============================================================
@@ -441,20 +439,36 @@ def chatbot_view(request):
 # ============================================================
 
 def detect_intent(message):
-    """
-    Detecta el intento del usuario.
-    """
+    """Detecta el intento del usuario."""
     keywords = {
-        "catalogo": ["dama", "mujer", "niña", "hombre", "caballero", "niño", "joven", "fragancia", "loción", "aroma"],
+        "catalogo": ["dama", "mujer", "niña", "hombre", "caballero", "niño", "joven", "fragancia", "loción", "aroma", "perfume", "productos", "catalogo", "catálogo"],
         "promociones": ["oferta", "descuento", "rebaja", "promoción", "oportunidad", "barato", "económico"],
-        "producto": ["dulce", "fresco", "intenso", "floral", "cítrico", "amaderado"],
+        "producto": ["dulce", "fresco", "intenso", "floral", "cítrico", "amaderado", "oriental", "gourmand", "almizcle", "especiado"],
+        "best_sellers": ["mas vendido", "más vendidos", "bestseller", "top ventas", "populares"], # Nuevo intento para "más vendidos"
         "compra": ["carrito", "disponibilidad", "forma de pago", "tipo de pago", "efectivo", "tarjeta", "costo", "precio"],
-        "contacto": ["ayuda", "necesidad", "asistencia", "queja", "problema", "dificultad", "duda", "hablar", "contacto", "asesor"],
-        "cierre": ["adiós", "gracias", "bye", "hasta luego", "no necesito nada"]
+        "contacto": ["ayuda", "necesidad", "asistencia", "queja", "problema", "dificultad", "duda", "hablar", "contacto", "asesor", "soporte", "atención al cliente"], # Palabras clave expandidas
+        "cierre": ["adiós", "gracias", "bye", "hasta luego", "no necesito nada", "chao", "salir"]
     }
 
+    # Normalizar el mensaje: quitar acentos y convertir a minúsculas
+    import unicodedata
+    normalized_message = unicodedata.normalize('NFKD', message).encode('ascii', 'ignore').decode('ascii').lower()
+    
+    # Primero, buscar frases de varias palabras para priorizar coincidencias específicas
     for intent, words in keywords.items():
-        if any(word in message.lower() for word in words):
+        for phrase in words:
+            if ' ' in phrase: # Si es una frase de varias palabras
+                if phrase in normalized_message:
+                    return intent
+
+    # Luego, buscar palabras individuales
+    normalized_words = normalized_message.split()
+    for intent, words in keywords.items():
+        for word in words:
+            if ' ' not in word: # Si es una sola palabra
+                if word in normalized_words:
+                    return intent
+    
             return intent
     return "unknown"
 
@@ -463,11 +477,34 @@ def generate_response(intent, message, user):
     Genera una respuesta basada en el intento.
     """
     if intent == "producto":
-        # Filtrar productos según palabras clave
-        aromas = ["dulce", "fresco", "intenso", "floral", "cítrico", "amaderado"]
-        for aroma in aromas:
-            if aroma in message.lower():
-                productos = Producto.objects.filter(tipo_aroma__icontains=aroma)[:5]
+        aroma_keywords = {
+            "floral": ["floral", "flores", "rosa", "jazmín"],
+            "amaderado": ["amaderado", "madera", "sándalo", "oud"],
+            "cítrico": ["cítrico", "limón", "naranja", "bergamota"],
+            "oriental": ["oriental", "especias", "ámbar", "vainilla"],
+            "dulce": ["dulce", "gourmand"],
+            "fresco": ["fresco", "limpio", "acuático"],
+            "intenso": ["intenso", "fuerte", "profundo"],
+        }
+        
+        found_aroma_category = None
+        for category_name, keywords in aroma_keywords.items():
+            if any(keyword in message.lower() for keyword in keywords):
+                found_aroma_category = category_name
+                break
+
+        if found_aroma_category:
+            # Intenta encontrar una categoría coincidente en la base de datos
+            categoria_obj = Categoria.objects.filter(Q(nombre__iexact=found_aroma_category) | Q(slug__iexact=found_aroma_category)).first()
+            
+            productos = Producto.objects.none() # Inicializa un queryset vacío
+            if categoria_obj:
+                productos = Producto.objects.filter(Q(categoria=categoria_obj) | Q(categorias_secundarias=categoria_obj)).distinct()[:5]
+            else:
+                # Fallback para descripciones generales de aroma si no es un nombre de categoría directo
+                productos = Producto.objects.filter(descripcion__icontains=found_aroma_category).distinct()[:5]
+
+            if productos.exists():
                 productos_data = [
                     {
                         "id": producto.id,
@@ -477,17 +514,38 @@ def generate_response(intent, message, user):
                     }
                     for producto in productos
                 ]
-                return {
-                    "reply": f"Aquí tienes algunas opciones con aroma {aroma}:",
+                return { # Cambiado de 'aroma' a 'found_aroma_category'
+                    "reply": f"Aquí tienes algunas opciones con aroma {found_aroma_category}:",
                     "productos": productos_data
                 }
-        return {"reply": "No encontré productos con esas características."}
+            else:
+                return {"reply": f"No encontré productos con esas características de aroma: {found_aroma_category}."}
+        return {"reply": "No encontré productos con esas características de aroma."}
+
+    elif intent == "best_sellers": # Manejador para el nuevo intento "best_sellers"
+        productos_list = Producto.objects.filter(activo=True).order_by('-creado_en')[:5] # Limitar a 5 para el chatbot
+        if productos_list.exists():
+            productos_data = [
+                {
+                    "id": producto.id,
+                    "nombre": producto.nombre,
+                    "precio": f"{producto.precio:.2f}",
+                    "imagen": producto.imagen.url if producto.imagen else ""
+                }
+                for producto in productos_list
+            ]
+            return {
+                "reply": "Aquí tienes algunos de nuestros productos más vendidos:",
+                "productos": productos_data
+            }
+        else:
+            return {"reply": "Lo siento, no pude encontrar productos más vendidos en este momento."}
 
     elif intent == "compra":
         return {"reply": "Aceptamos pagos en efectivo, tarjeta y transferencias. ¿Te gustaría más información?"}
 
     elif intent == "contacto":
-        return {"reply": "Puedes contactarnos al correo soporte@auraessence.com o al teléfono 123-456-7890."}
+        return {"reply": "Puedes contactarnos al correo soporte@auraessence.com o al teléfono 123-456-7890. Si deseas hablar con un asesor, por favor, indícanos tu nombre y número de contacto para que podamos comunicarnos contigo."}
 
     elif intent == "cierre":
         return {"reply": "Gracias por visitarnos. ¡Que tengas un excelente día!"}

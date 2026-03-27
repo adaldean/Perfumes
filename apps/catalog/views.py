@@ -3,6 +3,7 @@ import logging
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 from .models import Producto, Categoria
+from django.http import JsonResponse
 
 def catalogo(request):
     """Vista que renderiza el catálogo adaptado a la perfumería."""
@@ -125,3 +126,80 @@ def detalle_producto(request, producto_id):
         'relacionados': relacionados
     }
     return render(request, 'catalogo/detalle.html', context)
+
+
+def api_productos_por_genero(request, genero_param):
+    """
+    API que retorna productos filtrados por género.
+    """
+    productos_list = Producto.objects.filter(activo=True, genero=genero_param).select_related('marca', 'categoria').prefetch_related('categorias_secundarias').order_by('-id')
+    
+    products_data = []
+    for producto in productos_list[:8]: # Limitar a 8 productos para la visualización del chatbot
+        products_data.append({
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio': float(producto.precio_oferta if producto.precio_oferta else producto.precio),
+            'imagen': producto.imagen.url if producto.imagen else '/static/img/placeholder.jpg', # Asumiendo un placeholder por defecto
+            'marca': producto.marca.nombre if producto.marca else '',
+            'genero': producto.get_genero_display(),
+            'categoria_principal': producto.categoria.nombre if producto.categoria else '',
+            'categorias_secundarias': [c.nombre for c in producto.categorias_secundarias.all()]
+        })
+    return JsonResponse(products_data, safe=False)
+
+
+def api_productos_por_categoria(request, categoria_param):
+    """
+    API que retorna productos filtrados por categoría (nombre o slug).
+    """
+    productos_list = Producto.objects.filter(activo=True).select_related('marca', 'categoria').prefetch_related('categorias_secundarias').order_by('-id')
+
+    # Construir un objeto Q para filtrar por categorías principales o secundarias
+    category_filter = Q(categoria__slug__iexact=categoria_param) | \
+                      Q(categoria__nombre__iexact=categoria_param) | \
+                      Q(categorias_secundarias__slug__iexact=categoria_param) | \
+                      Q(categorias_secundarias__nombre__iexact=categoria_param)
+    
+    productos_list = productos_list.filter(category_filter).distinct()
+
+    products_data = []
+    for producto in productos_list[:8]: # Limitar a 8 productos para la visualización del chatbot
+        products_data.append({
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio': float(producto.precio_oferta if producto.precio_oferta else producto.precio),
+            'imagen': producto.imagen.url if producto.imagen else '/static/img/placeholder.jpg', # Asumiendo un placeholder por defecto
+            'marca': producto.marca.nombre if producto.marca else '',
+            'genero': producto.get_genero_display(),
+            'categoria_principal': producto.categoria.nombre if producto.categoria else '',
+            'categorias_secundarias': [c.nombre for c in producto.categorias_secundarias.all()]
+        })
+    
+    return JsonResponse(products_data, safe=False)
+
+
+def api_best_sellers(request):
+    """
+    API que retorna los productos más vendidos.
+    (Placeholder: actualmente retorna los 8 productos más recientes)
+    Para una implementación real, se necesitaría un modelo de ventas/pedidos
+    para calcular los más vendidos.
+    """
+    # Placeholder: Retorna los 8 productos más recientes como "best sellers"
+    # En una implementación real, esto se basaría en datos de ventas.
+    productos_list = Producto.objects.filter(activo=True).order_by('-creado_en')[:8] # O por conteo de ventas
+    
+    products_data = []
+    for producto in productos_list:
+        products_data.append({
+            'id': producto.id,
+            'nombre': producto.nombre,
+            'precio': float(producto.precio_oferta if producto.precio_oferta else producto.precio),
+            'imagen': producto.imagen.url if producto.imagen else '/static/img/placeholder.jpg',
+            'marca': producto.marca.nombre if producto.marca else '',
+            'genero': producto.get_genero_display(),
+            'categoria_principal': producto.categoria.nombre if producto.categoria else '',
+            'categorias_secundarias': [c.nombre for c in producto.categorias_secundarias.all()]
+        })
+    return JsonResponse(products_data, safe=False)

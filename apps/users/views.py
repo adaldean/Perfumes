@@ -39,13 +39,8 @@ def login_view(request):
         
         if user is not None:
             login(request, user)
-            
-            # Crear carrito si no existe
             Carrito.objects.get_or_create(usuario=user)
             
-            # TODO: Migrar carrito de sesión (requiere lógica especial para importar desde orders)
-            
-            # Redirigir al admin si es superusuario o staff
             if user.is_superuser or user.is_staff:
                 if not request.GET.get('next'):
                     return redirect('/admin/')
