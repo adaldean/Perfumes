@@ -1,0 +1,771 @@
+/* ====================================
+   SISTEMA DE ACCESIBILIDAD
+   ==================================== */
+
+/* Variables CSS para tema accesible */
+:root {
+    --acc-primary: #D4AF37;
+    --acc-dark: #1A1A1A;
+    --acc-light: #F5F5F5;
+    --acc-border: #CCCCCC;
+    --acc-focus: #FF6B35;
+    --acc-success: #2ECC71;
+    --acc-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* ====================================
+   PANEL DE ACCESIBILIDAD
+   ==================================== */
+
+.accessibility-panel {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 9999;
+    pointer-events: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.accessibility-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: linear-gradient(135deg, var(--acc-primary), #C5A028);
+    color: var(--acc-dark);
+    border: 2px solid var(--acc-dark);
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.accessibility-toggle:hover,
+.accessibility-toggle:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    outline: 3px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+.accessibility-toggle:active {
+    transform: translateY(0);
+}
+
+/* ====================================
+   MENÚ DE ACCESIBILIDAD
+   ==================================== */
+
+.accessibility-menu {
+    position: absolute;
+    top: 52px;
+    right: -15px;
+    background: white;
+    border: 3px solid var(--acc-dark);
+    border-radius: 8px;
+    padding: 20px;
+    min-width: 340px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+    color: var(--acc-dark);
+    z-index: 9999;
+}
+
+.accessibility-menu[hidden] {
+    display: none;
+}
+
+.accessibility-title {
+    margin: 0 0 16px 0;
+    font-size: 18px;
+    font-weight: bold;
+    color: #000000;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--acc-primary);
+}
+
+.accessibility-option {
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #FFFFFF;
+    border-radius: 6px;
+    border: 2px solid var(--acc-border);
+    color: #000000;
+}
+
+.accessibility-option > label:not(input) {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.accessibility-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 600;
+    color: #000000;
+}
+
+.accessibility-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--acc-primary);
+}
+
+.accessibility-option input[type="checkbox"]:focus {
+    outline: 2px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+/* ====================================
+   CONTROLES DE ZOOM
+   ==================================== */
+
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.zoom-btn {
+    padding: 8px 12px;
+    background: white;
+    border: 2px solid var(--acc-dark);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    color: #000000;
+}
+
+.zoom-btn:hover,
+.zoom-btn:focus {
+    background: var(--acc-primary);
+    color: var(--acc-dark);
+    outline: 2px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+.zoom-btn.reset {
+    flex-grow: 1;
+    background: var(--acc-primary);
+}
+
+.zoom-display {
+    min-width: 50px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    background: white;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--acc-border);
+    color: #000000;
+}
+
+/* ====================================
+   BOTONES DE CONTROL
+   ==================================== */
+
+.control-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--acc-primary);
+    color: #000000;
+    border: 2px solid var(--acc-dark);
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.control-btn:hover,
+.control-btn:focus {
+    background: linear-gradient(135deg, var(--acc-primary), #FFD700);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    outline: 2px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+.control-btn.danger {
+    background: #E74C3C;
+    color: white;
+}
+
+.control-btn.danger:hover {
+    background: #C0392B;
+}
+
+/* ====================================
+   INFORMACIÓN Y AYUDA
+   ==================================== */
+
+.accessibility-info {
+    margin-top: 16px;
+    padding: 12px;
+    background: #E8F4F8;
+    border-left: 4px solid var(--acc-primary);
+    border-radius: 4px;
+    font-size: 12px;
+    color: #000000;
+}
+
+.accessibility-info p {
+    margin: 0 0 8px 0;
+    font-weight: bold;
+    color: #000000;
+}
+
+.accessibility-info ul {
+    margin: 0;
+    padding-left: 20px;
+    list-style-type: disc;
+}
+
+.accessibility-info li {
+    margin: 4px 0;
+    color: #000000;
+}
+
+/* ====================================
+   ENLACES DE SALTO (SKIP LINKS)
+   ==================================== */
+
+.skip-links {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    z-index: 10001;
+}
+
+.skip-link {
+    display: block;
+    padding: 8px 12px;
+    background: var(--acc-primary);
+    color: var(--acc-dark);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid var(--acc-dark);
+    margin-bottom: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+/* ====================================
+   ACCESIBILIDAD DE LECTORES DE PANTALLA
+   ==================================== */
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ====================================
+   MODO DE CONTRASTE ALTO
+   ==================================== */
+
+body.high-contrast {
+    background: white !important;
+    color: black !important;
+}
+
+body.high-contrast * {
+    background: white !important;
+    color: black !important;
+    border-color: black !important;
+}
+
+body.high-contrast a {
+    color: #0000EE !important;
+    text-decoration: underline !important;
+}
+
+body.high-contrast button,
+body.high-contrast input[type="button"],
+body.high-contrast input[type="submit"] {
+    background: black !important;
+    color: white !important;
+    border: 3px solid black !important;
+}
+
+body.high-contrast button:focus,
+body.high-contrast input[type="button"]:focus,
+body.high-contrast input[type="submit"]:focus {
+    outline: 3px solid yellow !important;
+    outline-offset: 2px !important;
+}
+
+body.high-contrast .accessibility-panel,
+body.high-contrast .accessibility-menu {
+    background: white !important;
+    color: black !important;
+    border: 3px solid black !important;
+}
+
+body.high-contrast .accessibility-toggle {
+    background: black !important;
+    color: white !important;
+}
+
+/* ====================================
+   MODO LECTURA
+   ==================================== */
+
+body.reading-mode {
+    line-height: 1.8 !important;
+}
+
+body.reading-mode * {
+    line-height: 1.8 !important;
+}
+
+body.reading-mode p,
+body.reading-mode li,
+body.reading-mode td,
+body.reading-mode th {
+    letter-spacing: 0.05em !important;
+}
+
+body.reading-mode main,
+body.reading-mode article {
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    padding: 40px 20px !important;
+}
+
+body.reading-mode nav,
+body.reading-mode .sidebar,
+body.reading-mode .ads {
+    display: none !important;
+}
+
+/* ====================================
+   FOCUS VISIBLE - Navegación por teclado
+   ==================================== */
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+    outline: 3px solid var(--acc-focus) !important;
+    outline-offset: 2px !important;
+}
+
+/* ====================================
+   MEJORIAS DE ESTILOS PARA ACCESIBILIDAD
+   ==================================== */
+
+/* Hacer botones más grandes y fáciles de clickear */
+button,
+input[type="button"],
+input[type="submit"],
+a.btn {
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+}
+
+/* Mejorar legibilidad de inputs */
+input,
+textarea,
+select {
+    padding: 12px !important;
+    font-size: 16px !important;
+    border: 2px solid var(--acc-border) !important;
+    border-radius: 4px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid var(--acc-focus) !important;
+    outline-offset: 2px !important;
+}
+
+/* Mejorar iconos - hacerlos accesibles */
+[class*="fa-"]::before {
+    aria-hidden: true;
+}
+
+/* ====================================
+   SIDEBAR DE ACCESIBILIDAD (NUEVO)
+   ==================================== */
+
+.accessibility-sidebar {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.guided-reading-container {
+    position: relative;
+}
+
+.accessibility-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--acc-primary), #C5A028);
+    border: 2px solid var(--acc-dark);
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    position: relative;
+}
+
+.accessibility-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+    outline: 2px solid var(--acc-focus);
+}
+
+.accessibility-btn:focus {
+    outline: 3px solid var(--acc-focus);
+    outline-offset: 2px;
+}
+
+.accessibility-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    right: 60px;
+    background: var(--acc-dark);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: -1;
+}
+
+.accessibility-btn:hover::after {
+    opacity: 1;
+}
+
+/* MENÚ DESPLEGABLE */
+.speed-dropdown-menu {
+    position: absolute;
+    bottom: 60px;
+    right: 0;
+    background: white;
+    border: 2px solid var(--acc-dark);
+    border-radius: 8px;
+    padding: 12px;
+    min-width: 280px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    opacity: 0;
+    z-index: 10000;
+}
+
+.speed-dropdown-menu.show {
+    max-height: 500px;
+    opacity: 1;
+}
+
+.dropdown-header {
+    font-weight: bold;
+    font-size: 13px;
+    color: var(--acc-dark);
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
+
+.dropdown-header:first-child {
+    margin-top: 0;
+}
+
+.speed-option {
+    width: 100%;
+    padding: 10px 12px;
+    background: #f5f5f5;
+    border: 1px solid var(--acc-border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.2s ease;
+    margin-bottom: 6px;
+    color: var(--acc-dark);
+}
+
+.speed-option:hover {
+    background: var(--acc-primary);
+    border-color: var(--acc-dark);
+}
+
+.speed-option.active {
+    background: var(--acc-primary);
+    border-color: var(--acc-dark);
+    font-weight: bold;
+}
+
+.speed-value {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--acc-border);
+    margin: 8px 0;
+}
+
+.pause-select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--acc-border);
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    background: white;
+    color: var(--acc-dark);
+}
+
+.pause-select:focus {
+    outline: 2px solid var(--acc-focus);
+}
+
+.start-reading-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--acc-success);
+    color: white;
+    border: 2px solid var(--acc-dark);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.start-reading-btn:hover {
+    background: #27ae60;
+    transform: translateY(-1px);
+}
+
+/* NOTIFICACIONES */
+.reading-loading {
+    position: fixed;
+    bottom: 100px;
+    right: 20px;
+    background: var(--acc-dark);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: bold;
+    z-index: 10001;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* PALABRAS DESTACADAS */
+.guided-word {
+    transition: all 0.1s ease;
+}
+
+.highlight-word {
+    background: var(--acc-primary);
+    color: var(--acc-dark);
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-weight: bold;
+}
+
+.accessibility-btn.reading-active {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(212, 175, 55, 0.6);
+    }
+}
+
+/* ====================================
+   RESPONSIVE - Accesibilidad en móvil
+   ==================================== */
+
+@media (max-width: 768px) {
+    .accessibility-sidebar {
+        right: 10px;
+        bottom: 10px;
+        gap: 6px;
+    }
+
+    .accessibility-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 20px;
+    }
+
+    .speed-dropdown-menu {
+        right: -10px;
+        bottom: 54px;
+        min-width: calc(100vw - 30px);
+        max-width: 320px;
+    }
+
+    .accessibility-reading-loading {
+        bottom: 80px;
+        right: 10px;
+    }
+
+    .accessibility-panel {
+        top: 75px;
+        right: 10px;
+    }
+
+    .accessibility-menu {
+        position: fixed;
+        top: 75px;
+        right: 10px;
+        left: 10px;
+        min-width: auto;
+        max-width: calc(100vw - 20px);
+        max-height: 60vh;
+        border-radius: 12px;
+    }
+
+    .accessibility-toggle {
+        padding: 10px 14px;
+        font-size: 13px;
+        gap: 6px;
+    }
+
+    button,
+    input[type="button"],
+    input[type="submit"] {
+        min-height: 48px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* ====================================
+   ANIMACIONES ACCESIBLES
+   ==================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .accessibility-toggle:hover {
+        transform: none;
+    }
+
+    .control-btn:hover {
+        transform: none;
+    }
+}
+
+/* ====================================
+   SCROLLBAR PERSONALIZADO
+   ==================================== */
+
+.accessibility-menu::-webkit-scrollbar {
+    width: 8px;
+}
+
+.accessibility-menu::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.accessibility-menu::-webkit-scrollbar-thumb {
+    background: var(--acc-primary);
+    border-radius: 4px;
+}
+
+.accessibility-menu::-webkit-scrollbar-thumb:hover {
+    background: #C5A028;
+}
+
+/* Firefox */
+.accessibility-menu {
+    scrollbar-color: var(--acc-primary) #f1f1f1;
+    scrollbar-width: thin;
+}
+
+/* ====================================
+   IMPRESIÓN
+   ==================================== */
+
+@media print {
+    .accessibility-panel {
+        display: none;
+    }
+
+    .skip-links {
+        display: none;
+    }
+}
