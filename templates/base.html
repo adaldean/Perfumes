@@ -89,6 +89,9 @@
         footer, footer a { color: #e6efe9 !important; }
         footer a:hover { color: var(--brand-gold) !important; }
     </style>
+
+    <!-- Accesibilidad CSS -->
+    <link rel="stylesheet" href="{% static 'css/accessibility.css' %}">
 </head>
 
 <body
@@ -780,6 +783,9 @@
     input.addEventListener('keydown', function(e){ if(e.key==='Enter') sendMessage(); });
 })();
 </script>
+
+<!-- Script de Accesibilidad -->
+<script src="{% static 'js/accessibility.js' %}"></script>
 </body>
 
 </html>
