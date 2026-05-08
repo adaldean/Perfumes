@@ -1,0 +1,311 @@
+
+        /* Verificar que las variables CSS están disponibles */
+        :root {
+            --primary: #FFD14D  !important;
+            --primary-dark: #FFD14D !important;
+            --accent: #e8663d !important;
+            --accent-light: #f5a97e !important;
+            --bg-main: #f8f9fa !important;
+            --bg-card: #ffffff !important;
+            --bg-hover: #f0f4f8 !important;
+            --text-primary: #1a1a1a !important;
+            --text-secondary: #666666 !important;
+            --text-light: #999999 !important;
+            --border-color: #e8e8e8 !important;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08) !important;
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1) !important;
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12) !important;
+        }
+        
+        .dark-mode {
+            --primary: #FFD14D!important;
+            --primary-dark: #FFD14D!important;
+            --accent: #f39c12 !important;
+            --bg-main: #1a1a1a !important;
+            --bg-card: #252525 !important;
+            --bg-hover: #2d2d2d !important;
+            --text-primary: #ecf0f1 !important;
+            --text-secondary: #bdc3c7 !important;
+            --text-light: #95a5a6 !important;
+            --border-color: #404040 !important;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3) !important;
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4) !important;
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.5) !important;
+        }
+   
+        /* Layout principal */
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            background-color: var(--bg-main);
+        }
+
+        /* Contenedor del formulario */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Usa la clase filter-card para consistencia */
+        .auth-wrapper .filter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin: 0 0 10px 0;
+            font-weight: 700;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Grupos de formulario */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+            font-family: 'Lato', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-light);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(27, 139, 127, 0.1);
+        }
+
+        /* Mensajes de error */
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-message::before {
+            content: "⚠";
+            font-weight: bold;
+        }
+
+        .alert-error {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .dark-mode .alert-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #ff6b6b;
+        }
+
+        /* Botones - Usar clase estándar del sistema */
+        .add-to-cart-btn {
+            width: 100%;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-to-cart-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(233, 233, 7, 0.828);
+        }
+
+        .add-to-cart-btn:active {
+            transform: translateY(0);
+        }
+
+        .dark-mode .add-to-cart-btn {
+            background: var(--primary);
+        }
+
+        .dark-mode .add-to-cart-btn:hover {
+            background: #000000;
+        }
+
+        /* Footer de autenticación */
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: var(--accent);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0;
+            color: var(--text-secondary);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divider span {
+            padding: 0 10px;
+            font-size: 0.9rem;
+        }
+
+        .google-btn {
+            width: 100%;
+            padding: 12px;
+            background: white;
+            color: #757575;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: 'Lato', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .google-btn:hover {
+            background-color: #f1f1f1;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .google-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            main {
+                padding: 30px 20px;
+            }
+
+            .auth-wrapper .filter-card {
+                padding: 35px 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            main {
+                padding: 20px 15px;
+            }
+
+            .auth-wrapper .filter-card {
+                padding: 30px 20px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                padding: 15px 10px;
+            }
+
+            .auth-wrapper .filter-card {
+                padding: 25px 15px;
+            }
+
+            .auth-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .add-to-cart-btn {
+                padding: 11px 20px;
+                font-size: 0.95rem;
+            }
+        }
+    

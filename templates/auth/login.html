@@ -7,280 +7,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión | Aura Essence</title>
+    
     <link
-        href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&family=Montserrat:wght@400;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
         rel="stylesheet">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}">
-    <style>
-        /* Layout principal */
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        main {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            background: linear-gradient(135deg, rgba(38, 112, 106, 0.05) 0%, var(--bg-gradient));
-        }
-
-        /* Contenedor del formulario */
-        .auth-wrapper {
-            width: 100%;
-            max-width: 420px;
-        }
-
-        /* Usa la clase filter-card para consistencia */
-        .auth-wrapper .filter-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 30px;
-            box-shadow: var(--shadow);
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .auth-header h1 {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.8rem;
-            color: var(--text-main);
-            margin: 0 0 10px 0;
-            font-weight: 700;
-        }
-
-        .auth-header p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        /* Grupos de formulario */
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 0.9rem;
-            font-family: 'Jost', sans-serif;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.95rem;
-            color: var(--text-main);
-            font-family: 'Jost', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(38, 112, 106, 0.1);
-        }
-
-        /* Mensajes de error */
-        .error-message {
-            color: #e74c3c;
-            font-size: 0.85rem;
-            margin-top: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .error-message::before {
-            content: "⚠";
-            font-weight: bold;
-        }
-
-        .alert-error {
-            background: rgba(231, 76, 60, 0.1);
-            border-left: 4px solid #e74c3c;
-            color: #c0392b;
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
-        }
-
-        .dark-mode .alert-error {
-            background: rgba(231, 76, 60, 0.2);
-            color: #ff6b6b;
-        }
-
-        /* Botones - Usar clase estándar del sistema */
-        .add-to-cart-btn {
-            width: 100%;
-            padding: 12px 24px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            font-family: 'Jost', sans-serif;
-            margin-bottom: 16px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .add-to-cart-btn:hover {
-            background: #1e5250;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(38, 112, 106, 0.25);
-        }
-
-        .add-to-cart-btn:active {
-            transform: translateY(0);
-        }
-
-        .dark-mode .add-to-cart-btn {
-            background: var(--primary);
-        }
-
-        .dark-mode .add-to-cart-btn:hover {
-            background: #6ec8c0;
-        }
-
-        /* Footer de autenticación */
-        .auth-footer {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .auth-footer a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s ease;
-        }
-
-        .auth-footer a:hover {
-            color: var(--accent);
-        }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 20px 0;
-            color: var(--text-muted);
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .divider span {
-            padding: 0 10px;
-            font-size: 0.9rem;
-        }
-
-        .google-btn {
-            width: 100%;
-            padding: 12px;
-            background: white;
-            color: #757575;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            font-family: 'Jost', sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .google-btn:hover {
-            background-color: #f1f1f1;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .google-btn img {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            main {
-                padding: 30px 20px;
-            }
-
-            .auth-wrapper .filter-card {
-                padding: 35px 25px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            main {
-                padding: 20px 15px;
-            }
-
-            .auth-wrapper .filter-card {
-                padding: 30px 20px;
-            }
-
-            .auth-header h1 {
-                font-size: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            main {
-                padding: 15px 10px;
-            }
-
-            .auth-wrapper .filter-card {
-                padding: 25px 15px;
-            }
-
-            .auth-header h1 {
-                font-size: 1.4rem;
-            }
-
-            .add-to-cart-btn {
-                padding: 11px 20px;
-                font-size: 0.95rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/estilo.css' %}?v=1">
+    <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}">
 </head>
-
 <body>
     <!-- Header -->
     {% include 'header.html' %}
@@ -322,6 +57,11 @@
                 <div class="divider">
                     <span>O</span>
                 </div>
+
+                <a href="{% provider_login_url 'google' %}" class="google-btn">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                    Iniciar sesión con Google
+                </a>
                 {% endif %}
 
                 <div class="auth-footer">
@@ -333,7 +73,48 @@
     </main>
 
     <!-- Footer -->
-    {% include 'footer.html' %}
+        <footer class="bg-brand-dark text-white pt-10 pb-6 mt-auto">
+        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div>
+                <h3 class="font-serif text-xl font-bold mb-4 text-brand-gold">Aura Essence</h3>
+                <p class="text-gray-400 text-sm leading-relaxed">Capturamos momentos en frascos. Alta perfumería
+                    seleccionada para quienes buscan dejar una huella inolvidable.</p>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Explorar</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">Colección 2026</a></li>
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">Best Sellers</a></li>
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">Nichos Exclusivos</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Ayuda</h4>
+                <ul class="space-y-2 text-sm text-gray-400">
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">Envíos y Devoluciones</a></li>
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">FAQ</a></li>
+                    <li><a href="#" class="hover:text-brand-gold transition-colors">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
+                <div class="flex gap-4">
+                    <a href="https://instagram.com" target="_blank"
+                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
+                            class="fa-brands fa-instagram"></i></a>
+                    <a href="https://facebook.com" target="_blank"
+                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
+                            class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://tiktok.com" target="_blank"
+                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
+                            class="fa-brands fa-tiktok"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="container mx-auto px-4 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
+            <p>&copy; 2026 Aura Essence. Todos los derechos reservados.</p>
+        </div>
+    </footer>
 
     <!-- Script para dark mode global -->
     <script>
