@@ -10,6 +10,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('registro/', views.registro_view, name='registro'),
+    path('activar-cuenta/<uidb64>/<token>/', views.activar_cuenta_view, name='activar_cuenta'),
     path('cambiar-password/', views.ForcedPasswordChangeView.as_view(), name='password_change'),
     path('cambiar-password/hecho/', views.ForcedPasswordChangeDoneView.as_view(), name='password_change_done'),
     path('gestion_clientes/', admin_views.gestion_usuarios_view, name='gestion_clientes'),

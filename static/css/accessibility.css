@@ -246,6 +246,23 @@
     color: #000000;
 }
 
+.accessibility-shortcuts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.accessibility-shortcuts .skip-link {
+    position: static;
+    top: auto;
+    left: auto;
+    z-index: auto;
+    display: block;
+    width: 100%;
+    margin: 0;
+    text-align: center;
+}
+
 /* ====================================
    ENLACES DE SALTO (SKIP LINKS)
    ==================================== */
@@ -350,26 +367,6 @@ body.reading-mode {
 
 body.reading-mode * {
     line-height: 1.8 !important;
-}
-
-body.reading-mode p,
-body.reading-mode li,
-body.reading-mode td,
-body.reading-mode th {
-    letter-spacing: 0.05em !important;
-}
-
-body.reading-mode main,
-body.reading-mode article {
-    max-width: 800px !important;
-    margin: 0 auto !important;
-    padding: 40px 20px !important;
-}
-
-body.reading-mode nav,
-body.reading-mode .sidebar,
-body.reading-mode .ads {
-    display: none !important;
 }
 
 /* ====================================

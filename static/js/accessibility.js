@@ -114,6 +114,16 @@ class AccessibilityManager {
                     </button>
                 </div>
 
+                <!-- Navegación rápida -->
+                <div class="accessibility-option">
+                    <label>Accesos Rápidos</label>
+                    <div class="accessibility-shortcuts">
+                        <a href="#main-content" class="skip-link">Ir al contenido principal</a>
+                        <a href="#navigation" class="skip-link">Ir a navegación</a>
+                        <a href="#footer" class="skip-link">Ir al pie de página</a>
+                    </div>
+                </div>
+
                 <!-- Info Accesibilidad -->
                 <div class="accessibility-info">
                     <p>💡 <strong>Atajo de teclado:</strong></p>
@@ -484,17 +494,6 @@ class AccessibilityManager {
      * Agrega enlaces de salto (skip links)
      */
     setupSkipLinks() {
-        if (this.skipLinksAdded) return;
-
-        const skipLinksHTML = `
-            <div class="skip-links">
-                <a href="#main-content" class="skip-link">Ir al contenido principal</a>
-                <a href="#navigation" class="skip-link">Ir a navegación</a>
-                <a href="#footer" class="skip-link">Ir al pie de página</a>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('afterbegin', skipLinksHTML);
         this.skipLinksAdded = true;
     }
 

@@ -14,7 +14,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/estilo.css' %}?v=1">
-    <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}?v=login-style-2026-05-08">
 </head>
 <body>
     <!-- Header -->
@@ -27,6 +27,12 @@
                     <h1>Inicia Sesión</h1>
                     <p>Accede a tu cuenta Aura Essence</p>
                 </div>
+
+                {% if success %}
+                <div class="alert-success">
+                    <strong>Listo:</strong> {{ success }}
+                </div>
+                {% endif %}
 
                 {% if error %}
                 <div class="alert-error">
@@ -72,49 +78,7 @@
         </div>
     </main>
 
-    <!-- Footer -->
-        <footer class="bg-brand-dark text-white pt-10 pb-6 mt-auto">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-                <h3 class="font-serif text-xl font-bold mb-4 text-brand-gold">Aura Essence</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Capturamos momentos en frascos. Alta perfumería
-                    seleccionada para quienes buscan dejar una huella inolvidable.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Explorar</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Colección 2026</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Best Sellers</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Nichos Exclusivos</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Ayuda</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Envíos y Devoluciones</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">FAQ</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Contacto</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
-                <div class="flex gap-4">
-                    <a href="https://instagram.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-instagram"></i></a>
-                    <a href="https://facebook.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://tiktok.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-tiktok"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
-            <p>&copy; 2026 Aura Essence. Todos los derechos reservados.</p>
-        </div>
-    </footer>
+    {% include 'footer.html' %}
 
     <!-- Script para dark mode global -->
     <script>
