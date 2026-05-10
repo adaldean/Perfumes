@@ -1,31 +1,24 @@
 import random
+import requests
 from datetime import timedelta
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, send_mail
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils import timezone
+from django.conf import settings
+from django.contrib import messages
 
 from apps.orders.models import Carrito
-
-from .models import UserProfile
-from django.urls import reverse_lazy
-from django.conf import settings
-from django.core.mail import send_mail
-from django.utils import timezone
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.contrib.auth.tokens import default_token_generator
-from django.contrib import messages
-import requests
 from .forms import RegistroForm
+from .models import UserProfile, EmailOTP
 from allauth.account.adapter import get_adapter
 
 
@@ -88,7 +81,6 @@ def _send_otp_email(user, code):
 
 
 def _create_pending_otp(request, user, next_url):
-    from .models import EmailOTP
     EmailOTP.objects.filter(user=user, is_used=False, expires_at__gte=timezone.now()).update(is_used=True)
     code = _generate_otp_code()
     EmailOTP.objects.create(
