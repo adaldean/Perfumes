@@ -13,12 +13,10 @@
         rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}?v=1">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}?v=login-style-2026-05-08">
 </head>
 <body>
-    <!-- Header -->
-    {% include 'header.html' %}
 
     <main>
         <div class="auth-wrapper">
@@ -40,6 +38,12 @@
                 </div>
                 {% endif %}
 
+                {% if info %}
+                <div class="alert-info" style="background: rgba(52, 152, 219, 0.1); border-left: 4px solid #3498db; color: #2980b9; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem;">
+                    <strong>Información:</strong> {{ info }}
+                </div>
+                {% endif %}
+
                 <form method="POST">
                     {% csrf_token %}
 
@@ -54,31 +58,32 @@
                         <input type="password" id="password" name="password" placeholder="••••••••" required>
                     </div>
 
+                    <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
+                    </div>
+
                     <button type="submit" class="add-to-cart-btn">
                         <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                     </button>
                 </form>
 
-                {% if google_login_available %}
-                <div class="divider">
-                    <span>O</span>
-                </div>
-
-                <a href="{% provider_login_url 'google' %}" class="google-btn">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                    Iniciar sesión con Google
-                </a>
-                {% endif %}
-
                 <div class="auth-footer">
-                    ¿No tienes cuenta?
+                    <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: #666;">
+                        ¿Olvidaste tu contraseña? <a href="{% url 'account_reset_password' %}" style="color: var(--brand-gold);">Recupérala</a>
+                    </div>
+                    <div class="divider"></div>
+                    ¿No tienes cuenta? 
                     <a href="{% url 'auth:registro' %}">Regístrate aquí</a>
+
+                    <div style="margin-top: 1.5rem;">
+                        <a href="{% url 'frontend:catalogo' %}" style="display: block; text-align: center; padding: 12px; border: 1.5px solid #ececec; border-radius: 10px; color: #555; text-decoration: none; font-size: 0.9rem; transition: all 0.3s; background: #fff;">
+                            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Volver al catálogo
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
-
-    {% include 'footer.html' %}
 
     <!-- Script para dark mode global -->
     <script>

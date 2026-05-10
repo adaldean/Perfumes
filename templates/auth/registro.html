@@ -12,13 +12,11 @@
         rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/estilo.css' %}?v=1">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <link rel="stylesheet" href="{% static 'css/estilo_registro.css' %}">
     <link rel="stylesheet" href="{% static 'css/estilo_login.css' %}?v=login-style-2026-05-08">
-
-   </head>
-
+</head>
 <body>
-    {% include 'header.html' %}
     <main>
         <div class="auth-wrapper">
             <div class="filter-card">
@@ -85,70 +83,34 @@
                         {% endif %}
                     </div>
 
+                    <div class="form-group" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                        <div class="g-recaptcha" data-sitekey="{{ recaptcha_public_key }}"></div>
+                        {% if errores.captcha %}
+                        <div class="error-message" style="width: 100%;">{{ errores.captcha }}</div>
+                        {% endif %}
+                    </div>
+
                     <button type="submit" class="add-to-cart-btn">
                         <i class="fas fa-user-plus"></i> Crear Cuenta
                     </button>
                 </form>
-
-                <div class="divider">
-                    <span>O</span>
-                </div>
-
-                <a href="{% provider_login_url 'google' %}" class="google-btn">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                    Registrarse con Google
-                </a>
+                
+                <div class="divider"></div>
 
                 <div class="auth-footer">
                     ¿Ya tienes cuenta?
                     <a href="{% url 'auth:login' %}">Inicia sesión aquí</a>
+
+                    <div style="margin-top: 1.5rem;">
+                        <a href="{% url 'frontend:catalogo' %}" style="display: block; text-align: center; padding: 12px; border: 1.5px solid #ececec; border-radius: 10px; color: #555; text-decoration: none; font-size: 0.9rem; transition: all 0.3s; background: #fff;">
+                            <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Volver al catálogo
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-        <footer class="bg-brand-dark text-white pt-10 pb-6 mt-auto">
-        <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-                <h3 class="font-serif text-xl font-bold mb-4 text-brand-gold">Aura Essence</h3>
-                <p class="text-gray-400 text-sm leading-relaxed">Capturamos momentos en frascos. Alta perfumería
-                    seleccionada para quienes buscan dejar una huella inolvidable.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Explorar</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Colección 2026</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Best Sellers</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Nichos Exclusivos</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Ayuda</h4>
-                <ul class="space-y-2 text-sm text-gray-400">
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Envíos y Devoluciones</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">FAQ</a></li>
-                    <li><a href="#" class="hover:text-brand-gold transition-colors">Contacto</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-4 uppercase text-sm tracking-wider">Síguenos</h4>
-                <div class="flex gap-4">
-                    <a href="https://instagram.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-instagram"></i></a>
-                    <a href="https://facebook.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-facebook-f"></i></a>
-                    <a href="https://tiktok.com" target="_blank"
-                        class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-brand-gold hover:text-white transition-colors"><i
-                            class="fa-brands fa-tiktok"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="container mx-auto px-4 pt-6 border-t border-gray-800 text-center text-xs text-gray-500">
-            <p>&copy; 2026 Aura Essence. Todos los derechos reservados.</p>
-        </div>
-    </footer>
 
     <!-- Script para dark mode global -->
     <script>
@@ -176,6 +138,14 @@
                     e.preventDefault();
                     alert('Las contraseñas no coinciden');
                     pwd2.focus();
+                    return false;
+                }
+                
+                // Validar que el reCAPTCHA esté marcado en el cliente
+                const recaptchaResponse = grecaptcha.getResponse();
+                if (recaptchaResponse.length === 0) {
+                    e.preventDefault();
+                    alert('Por favor, completa el reCAPTCHA antes de crear tu cuenta.');
                     return false;
                 }
                 // permitir envío

@@ -1,6 +1,6 @@
 from django.urls import path, include
-from . import views, admin_views
-from . import api_views
+from apps.users import views, admin_views
+from apps.users import api_views
 from apps.orders import views as order_views
 from apps.orders import api_views as order_api_views
 
@@ -9,8 +9,8 @@ app_name = 'auth'
 urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('registro/', views.registro_view, name='registro'),
-    path('activar-cuenta/<uidb64>/<token>/', views.activar_cuenta_view, name='activar_cuenta'),
+    path('registro/', views.signup_view, name='registro'),  # Cambiado a signup_view
+    path('activate/<uidb64>/<token>/', views.activate_view, name='activate'),
     path('cambiar-password/', views.ForcedPasswordChangeView.as_view(), name='password_change'),
     path('cambiar-password/hecho/', views.ForcedPasswordChangeDoneView.as_view(), name='password_change_done'),
     path('gestion_clientes/', admin_views.gestion_usuarios_view, name='gestion_clientes'),
@@ -18,5 +18,5 @@ urlpatterns = [
     path('carrito/', order_views.carrito_view, name='carrito'),
     path('api/carrito/', order_api_views.carrito_api, name='carrito_api'),
     path('api/carrito/mercadopago/', order_api_views.CrearPagoView.as_view({'post': 'crear_preferencia_mp'}), name='pago_mp'),
-    path('perfil/', views.perfil_view, name='perfil'),
+    path('perfil/', views.perfil_view, name='perfil')
 ]
