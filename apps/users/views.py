@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
@@ -161,8 +161,7 @@ def login_view(request):
                         'google_login_available': _google_login_available(request),
                         'recaptcha_public_key': getattr(settings, 'RECAPTCHA_PUBLIC_KEY', ''),
                     })
-
-            from apps.orders.models import Carrito
+            
             if not user.is_active:
                 return render(request, 'auth/login.html', {
                     'error': 'Tu cuenta está pendiente de verificación. Revisa tu correo para activarla.',
@@ -304,7 +303,7 @@ def _send_activation_email(request, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
     activation_link = request.build_absolute_uri(
-        reverse_lazy('auth:activate', kwargs={'uidb64': uid, 'token': token})
+        reverse('auth:activate', kwargs={'uidb64': uid, 'token': token})
     )
     
     subject = 'Aura Essence: Activa tu cuenta'

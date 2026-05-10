@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
@@ -10,6 +10,16 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile({self.user.username})"
+
+class EmailOTP(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='otps')
+    code = models.CharField(max_length=6)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_used = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"OTP({self.user.username} - {self.code})"
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
