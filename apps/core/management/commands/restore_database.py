@@ -2,6 +2,7 @@ from pathlib import Path
 import os
 
 from django.apps import apps
+from django.conf import settings
 from django.core.management import call_command
 from django.core.management.base import BaseCommand, CommandError
 
@@ -37,11 +38,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         fixture_path = Path(options["fixture"])
         force = options["force"]
+        fallback_path = settings.BASE_DIR / "backups" / fixture_path.name
 
-        if not fixture_path.exists():
-            fallback_path = Path("backups") / "db_backup.json"
-            if fallback_path.exists():
-                fixture_path = fallback_path
+        if not fixture_path.exists() and fallback_path.exists():
+            fixture_path = fallback_path
 
         if not fixture_path.exists():
             raise CommandError(f"No se encontró el fixture de respaldo: {fixture_path}")

@@ -3,6 +3,7 @@ import json
 import os
 
 from django.apps import apps
+from django.conf import settings
 from django.core import serializers
 from django.core.management.base import BaseCommand, CommandError
 from django.db import connection
@@ -32,8 +33,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         output_path = Path(options["output"])
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        fallback_path = settings.BASE_DIR / "backups" / output_path.name
         fail_on_empty = options["fail_on_empty"]
+
+        try:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+        except (PermissionError, FileNotFoundError):
+            output_path = fallback_path
+            output_path.parent.mkdir(parents=True, exist_ok=True)
 
         existing_tables = set(connection.introspection.table_names())
         objects = []
@@ -74,8 +81,14 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING(message))
             return
 
-        with output_path.open("w", encoding="utf-8") as file_handle:
-            json.dump(objects, file_handle, ensure_ascii=False, indent=2)
+        try:
+            with output_path.open("w", encoding="utf-8") as file_handle:
+                json.dump(objects, file_handle, ensure_ascii=False, indent=2)
+        except (PermissionError, FileNotFoundError):
+            output_path = fallback_path
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with output_path.open("w", encoding="utf-8") as file_handle:
+                json.dump(objects, file_handle, ensure_ascii=False, indent=2)
 
         self.stdout.write(self.style.SUCCESS(f"Respaldo generado en {output_path}"))
         self.stdout.write(self.style.SUCCESS("Modelos exportados:"))
