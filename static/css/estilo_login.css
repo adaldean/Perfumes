@@ -68,6 +68,8 @@ body::after{
     background:rgba(15,15,15,0.75);
     backdrop-filter:blur(12px);
     border-bottom:1px solid rgba(255,255,255,0.04);
+    /* Respect top safe area on iOS devices with notch */
+    padding-top: calc(22px + env(safe-area-inset-top, 0px));
 }
 
 .logo-texto{
@@ -380,6 +382,11 @@ body::after{
 
     .logo-texto{
         font-size:1.3rem;
+    }
+
+    /* Reduce header padding on small screens and account for notch */
+    .header-principal{
+        padding: calc(12px + env(safe-area-inset-top, 0px)) 14px;
     }
 
     .form-header h2{

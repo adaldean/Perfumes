@@ -813,30 +813,32 @@ select:focus {
 
 @media (max-width: 480px) {
     .accessibility-panel {
-        top: 58px;
-        right: 5px;
+        /* Respect the device safe area (notch) and keep panel below header */
+        top: calc(58px + env(safe-area-inset-top, 0px));
+        right: 6px;
         z-index: 9998;
     }
-    
+
     .accessibility-toggle {
-        padding: 8px 11px;
-        font-size: 11px;
-        gap: 5px;
+        padding: 8px 10px !important;
+        font-size: 11px !important;
+        gap: 6px !important;
+        border-radius: 32px !important;
     }
-    
+
     .accessibility-toggle i {
         font-size: 14px;
     }
-    
+
     .accessibility-menu {
-        top: 58px;
-        right: 5px;
-        left: 5px;
-        max-width: calc(100vw - 10px);
-        max-height: 70vh;
-        padding: 10px;
-        border-radius: 10px;
-        z-index: 9999;
+        top: calc(58px + env(safe-area-inset-top, 0px)) !important;
+        right: 6px !important;
+        left: 6px !important;
+        max-width: calc(100vw - 12px) !important;
+        max-height: 72vh !important;
+        padding: 10px !important;
+        border-radius: 10px !important;
+        z-index: 9999 !important;
     }
     
     .accessibility-title {
