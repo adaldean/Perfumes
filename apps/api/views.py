@@ -15,11 +15,9 @@ import hmac
 import hashlib
 from django.contrib.auth import get_user_model
 
-from apps.catalog.models import Producto
+from apps.catalog.models import Producto, Categoria
 from apps.orders.models import Pedido, DetallePedido, Pago
 
-# Eliminar la línea incorrecta
-# from .models import Producto, Pedido, DetallePedido, Pago
 from .serializers import (
     ProductoSerializer, 
     RegistroSerializer, 
@@ -108,12 +106,7 @@ def catalogo(request):
 
     # Intentar obtener categorías desde la tabla si existe
     categorias_qs = []
-    try:
-        from apps.api import models as api_models
-        from apps.api.models import Categoria  # Importación directa recomendada
-        categorias_qs = Categoria.objects.all()
-    except Exception:
-        pass  # Si falla, simplemente lista vacía
+    categorias_qs = Categoria.objects.filter(padre__isnull=True)
 
     context = {
         'productos': productos,
