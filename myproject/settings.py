@@ -78,14 +78,12 @@ if DATABASE_URL:
         'default': dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            ssl_require=True,
-            settings_metadata={
-                'OPTIONS': {
-                    'sslmode': 'require',
-                }
-            }
+            ssl_require=True
         )
     }
+    # Asegurar que sslmode sea 'require' para PostgreSQL en Render
+    if DATABASES['default'].get('ENGINE') == 'django.db.backends.postgresql':
+        DATABASES['default'].setdefault('OPTIONS', {})['sslmode'] = 'require'
 else:
     DATABASES = {
         'default': {
