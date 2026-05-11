@@ -73,12 +73,16 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    db_config = dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-    DATABASES = {'default': db_config}
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+        )
+    }
+    # Configuración específica para evitar fallos de SSL en Render
+    DATABASES['default']['OPTIONS'] = {
+        'sslmode': 'require',
+    }
 else:
     DATABASES = {
         'default': {
