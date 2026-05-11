@@ -15,7 +15,7 @@ services:
       - key: CSRF_TRUSTED_ORIGINS
         value: https://*.onrender.com
       - key: DATABASE_URL
-        value: "postgresql://aura_essence_user:zOxrKcUTQ393OMWyjXa1VS35txSgrg3m@dpg-d6fovu15pdvs73flpueg-a.oregon-postgres.render.com/aura_essence_wzwi?sslmode=require"
+        value: "postgresql://aura_essence_user:zOxrKcUTQ393OMWyjXa1VS35txSgrg3m@dpg-d6fovu15pdvs73flpueg-a.oregon-postgres.render.com/aura_essence_wzwi"
       - key: PYTHON_VERSION
         value: 3.11.8
       - key: ADMIN_USERNAME

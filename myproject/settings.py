@@ -73,16 +73,12 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    db_config = dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-    )
-    # Disable SSL certificate verification for psycopg2 on Render
-    db_config.setdefault('OPTIONS', {})
-    db_config['OPTIONS']['sslmode'] = 'require'
-    db_config['OPTIONS']['connect_timeout'] = 10
-    
-    DATABASES = {'default': db_config}
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+        )
+    }
 else:
     DATABASES = {
         'default': {
