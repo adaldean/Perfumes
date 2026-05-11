@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'rest_framework',
+    'django_recaptcha',
     'corsheaders',
     'django_extensions',
     'rest_framework_simplejwt',
@@ -73,13 +74,16 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=DATABASE_URL,
-            conn_max_age=600,
-            ssl_require=True
-        )
-    }
+    db_from_env = dj_database_url.config(
+        default=DATABASE_URL,
+        conn_max_age=600,
+        ssl_require=True
+    )
+    # Render requiere sslmode=require para conexiones internas/externas seguras
+    db_from_env.setdefault('OPTIONS', {})
+    db_from_env['OPTIONS']['sslmode'] = 'require'
+    
+    DATABASES = {'default': db_from_env}
 else:
     DATABASES = {
         'default': {
