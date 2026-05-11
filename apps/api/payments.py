@@ -48,13 +48,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 def _asegurar_configuracion_stripe():
-    """Verifica la configuración de Stripe antes de usar la API."""
-    secret_key = getattr(settings, 'STRIPE_SECRET_KEY', '')
+    """Verifica y establece la configuración de Stripe de forma perezosa."""
+    secret_key = getattr(settings, 'STRIPE_SECRET_KEY', None)
     if not secret_key:
-        raise ImproperlyConfigured(
-            "STRIPE_SECRET_KEY no configurada. Por favor, configura esta variable "
-            "en el Dashboard de Render (Environment Variables)."
-        )
+        logger.error("STRIPE_SECRET_KEY no configurada en los ajustes de Django.")
+        raise ImproperlyConfigured("STRIPE_SECRET_KEY es requerida para procesar pagos.")
+    
     stripe.api_key = secret_key
     return True
 
