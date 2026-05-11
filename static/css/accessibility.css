@@ -252,46 +252,58 @@
     gap: 8px;
 }
 
-.accessibility-shortcuts .skip-link {
-    position: static;
-    top: auto;
-    left: auto;
-    z-index: auto;
-    display: block;
-    width: 100%;
-    margin: 0;
-    text-align: center;
-}
-
 /* ====================================
    ENLACES DE SALTO (SKIP LINKS)
    ==================================== */
 
+/* Skip links globales (ocultos por defecto) */
 .skip-links {
     position: absolute;
-    top: -40px;
-    left: 0;
-    z-index: 10001;
+    top: -9999px;
+    left: -9999px;
+    z-index: -1;
+    display: none !important;
+    visibility: hidden !important;
 }
 
+/* Estilo general de skip-link (por defecto ocultos) */
 .skip-link {
-    display: block;
-    padding: 8px 12px;
-    background: var(--acc-primary);
-    color: var(--acc-dark);
+    display: none !important;
+    visibility: hidden !important;
+    position: static !important;
+    padding: 0 !important;
+    background: transparent !important;
+    color: inherit !important;
+    border: none !important;
+    margin: 0 !important;
+    font-size: inherit !important;
+}
+
+/* Skip links dentro del panel de accesibilidad - VISIBLES */
+.accessibility-shortcuts .skip-link {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    padding: 8px 12px !important;
+    background: var(--acc-primary) !important;
+    color: var(--acc-dark) !important;
+    border: 2px solid var(--acc-dark) !important;
+    margin: 4px 0 !important;
+    font-size: 14px !important;
+    border-radius: 4px !important;
+    transition: all 0.2s ease !important;
     text-decoration: none;
     font-weight: bold;
-    font-size: 14px;
-    border: 2px solid var(--acc-dark);
-    margin-bottom: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    text-align: center;
 }
 
-.skip-link:focus {
-    top: 0;
-    outline: 2px solid var(--acc-focus);
-    outline-offset: 2px;
+.accessibility-shortcuts .skip-link:hover {
+    background: #C5A028 !important;
+}
+
+.accessibility-shortcuts .skip-link:focus {
+    outline: 2px solid var(--acc-focus) !important;
+    outline-offset: 2px !important;
 }
 
 /* ====================================
@@ -648,6 +660,35 @@ select:focus {
    RESPONSIVE - Accesibilidad en móvil
    ==================================== */
 
+@media (max-width: 1400px) {
+    .accessibility-panel {
+        top: 75px;
+        right: 15px;
+    }
+    
+    .accessibility-menu {
+        min-width: 320px;
+        max-height: calc(100vh - 170px);
+    }
+}
+
+@media (max-width: 1024px) {
+    .accessibility-panel {
+        top: 70px;
+        right: 12px;
+    }
+    
+    .accessibility-menu {
+        min-width: 300px;
+        max-height: calc(100vh - 150px);
+    }
+    
+    .accessibility-toggle {
+        padding: 11px 15px;
+        font-size: 13px;
+    }
+}
+
 @media (max-width: 768px) {
     .accessibility-sidebar {
         right: 10px;
@@ -674,25 +715,71 @@ select:focus {
     }
 
     .accessibility-panel {
-        top: 75px;
+        top: 65px;
         right: 10px;
+        z-index: 9998;
+        pointer-events: auto;
     }
 
     .accessibility-menu {
         position: fixed;
-        top: 75px;
+        top: 65px;
         right: 10px;
         left: 10px;
         min-width: auto;
         max-width: calc(100vw - 20px);
-        max-height: 60vh;
+        max-height: 70vh;
         border-radius: 12px;
+        z-index: 9999;
+        overflow-y: auto;
+    }
+    
+    .accessibility-menu[hidden] {
+        display: none !important;
     }
 
     .accessibility-toggle {
         padding: 10px 14px;
         font-size: 13px;
         gap: 6px;
+        z-index: 9999;
+    }
+    
+    .accessibility-title {
+        font-size: 16px;
+    }
+    
+    .accessibility-option {
+        padding: 10px;
+        margin-bottom: 12px;
+    }
+    
+    .accessibility-option label {
+        font-size: 13px;
+    }
+    
+    .accessibility-shortcuts {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .accessibility-shortcuts .skip-link {
+        padding: 10px 8px !important;
+        font-size: 12px !important;
+        margin: 0 !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    .control-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+    
+    .zoom-btn {
+        padding: 8px 10px;
+        font-size: 12px;
     }
 
     button,
@@ -700,6 +787,123 @@ select:focus {
     input[type="submit"] {
         min-height: 48px !important;
         font-size: 16px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .accessibility-panel {
+        top: 62px;
+        right: 8px;
+    }
+    
+    .accessibility-menu {
+        top: 62px;
+        right: 8px;
+        left: 8px;
+        max-width: calc(100vw - 16px);
+        max-height: 65vh;
+        padding: 12px;
+    }
+    
+    .accessibility-toggle {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .accessibility-panel {
+        top: 58px;
+        right: 5px;
+        z-index: 9998;
+    }
+    
+    .accessibility-toggle {
+        padding: 8px 11px;
+        font-size: 11px;
+        gap: 5px;
+    }
+    
+    .accessibility-toggle i {
+        font-size: 14px;
+    }
+    
+    .accessibility-menu {
+        top: 58px;
+        right: 5px;
+        left: 5px;
+        max-width: calc(100vw - 10px);
+        max-height: 70vh;
+        padding: 10px;
+        border-radius: 10px;
+        z-index: 9999;
+    }
+    
+    .accessibility-title {
+        font-size: 15px;
+        margin-bottom: 12px;
+    }
+    
+    .accessibility-option {
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 6px;
+    }
+    
+    .accessibility-option label {
+        font-size: 12px;
+    }
+    
+    .zoom-controls {
+        gap: 6px;
+        margin-top: 6px;
+    }
+    
+    .zoom-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+        min-width: 35px;
+    }
+    
+    .zoom-display {
+        font-size: 12px;
+        min-width: 45px;
+    }
+    
+    .control-btn {
+        padding: 9px;
+        font-size: 12px;
+    }
+    
+    .accessibility-shortcuts .skip-link {
+        padding: 8px 6px !important;
+        font-size: 11px !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    .accessibility-info ul {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 360px) {
+    .accessibility-panel {
+        top: 55px;
+        right: 3px;
+    }
+    
+    .accessibility-toggle {
+        padding: 7px 10px;
+        font-size: 10px;
+    }
+    
+    .accessibility-menu {
+        top: 55px;
+        right: 3px;
+        left: 3px;
+        max-width: calc(100vw - 6px);
+        padding: 8px;
     }
 }
 
