@@ -36,7 +36,14 @@ class AccessibilityManager {
             </button>
             
             <div id="accessibility-menu" class="accessibility-menu" hidden>
-                <h3 class="accessibility-title">Opciones de Accesibilidad</h3>
+                <div class="accessibility-menu-header">
+                    <h3 class="accessibility-title">Opciones de Accesibilidad</h3>
+                    <button id="close-accessibility" class="accessibility-close" 
+                            title="Cerrar panel de accesibilidad"
+                            aria-label="Cerrar panel de accesibilidad">
+                        ✕
+                    </button>
+                </div>
                 
                 <!-- Zoom de Texto -->
                 <div class="accessibility-option">
@@ -149,9 +156,10 @@ class AccessibilityManager {
      */
     attachEventListeners() {
         const toggleBtn = document.getElementById('toggle-accessibility');
+        const closeBtn = document.getElementById('close-accessibility');
         const menu = document.getElementById('accessibility-menu');
         
-        toggleBtn.addEventListener('click', () => {
+        const toggleMenu = () => {
             const isExpanded = menu.hasAttribute('hidden');
             if (isExpanded) {
                 menu.removeAttribute('hidden');
@@ -160,6 +168,13 @@ class AccessibilityManager {
                 menu.setAttribute('hidden', '');
                 toggleBtn.setAttribute('aria-expanded', 'false');
             }
+        };
+        
+        toggleBtn.addEventListener('click', toggleMenu);
+        closeBtn.addEventListener('click', () => {
+            menu.setAttribute('hidden', '');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            toggleBtn.focus();
         });
 
         // Zoom de texto

@@ -64,12 +64,10 @@ body::after{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:22px 40px;
+    padding: calc(22px + env(safe-area-inset-top)) max(40px, env(safe-area-inset-right)) 22px max(40px, env(safe-area-inset-left));
     background:rgba(15,15,15,0.75);
     backdrop-filter:blur(12px);
     border-bottom:1px solid rgba(255,255,255,0.04);
-    /* Respect top safe area on iOS devices with notch */
-    padding-top: calc(22px + env(safe-area-inset-top, 0px));
 }
 
 .logo-texto{

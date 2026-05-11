@@ -19,8 +19,8 @@
 
 .accessibility-panel {
     position: fixed;
-    top: 90px;
-    right: 20px;
+    top: max(90px, env(safe-area-inset-top));
+    right: max(20px, env(safe-area-inset-right));
     z-index: 9999;
     pointer-events: auto;
     margin: 0;
@@ -55,6 +55,44 @@
     transform: translateY(0);
 }
 
+/* Botón de cierre (X) del panel */
+.accessibility-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: none;
+    border: 2px solid var(--acc-dark);
+    color: var(--acc-dark);
+    font-size: 20px;
+    cursor: pointer;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.accessibility-close:hover,
+.accessibility-close:focus {
+    background: var(--acc-primary);
+    outline: 2px solid var(--acc-focus);
+    outline-offset: 1px;
+}
+
+.accessibility-menu-header {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid var(--acc-primary);
+}
+
 /* ====================================
    MENÚ DE ACCESIBILIDAD
    ==================================== */
@@ -69,7 +107,7 @@
     padding: 20px;
     min-width: 340px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    max-height: calc(100vh - 200px);
+    max-height: calc(100vh - 200px - env(safe-area-inset-bottom));
     overflow-y: auto;
     color: var(--acc-dark);
     z-index: 9999;
@@ -80,12 +118,13 @@
 }
 
 .accessibility-title {
-    margin: 0 0 16px 0;
+    margin: 0;
     font-size: 18px;
     font-weight: bold;
     color: #000000;
-    padding-bottom: 12px;
-    border-bottom: 3px solid var(--acc-primary);
+    padding: 0;
+    border: none;
+    flex: 1;
 }
 
 .accessibility-option {
