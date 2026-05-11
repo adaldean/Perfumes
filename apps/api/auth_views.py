@@ -21,6 +21,30 @@ logger = logging.getLogger(__name__) # Inicializa el logger
 from apps.catalog.models import Producto, Categoria # Importa Categoria para usarla en generate_response
 from apps.orders.models import Carrito, ItemCarrito
 
+def verificar_recaptcha(recaptcha_response):
+    """
+    Valida la respuesta del reCAPTCHA con los servidores de Google.
+    """
+    secret_key = getattr(settings, 'RECAPTCHA_PRIVATE_KEY', None)
+    if not secret_key:
+        logger.error("RECAPTCHA_PRIVATE_KEY no configurada en settings.")
+        return False, "El servidor no tiene configurado el servicio de seguridad."
+    
+    if not recaptcha_response:
+        return False, "Por favor, completa la verificación de seguridad (CAPTCHA)."
+        
+    try:
+        data = {'secret': secret_key, 'response': recaptcha_response}
+        r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data, timeout=5)
+        r.raise_for_status()
+        result = r.json()
+        if not result.get('success'):
+            return False, "Verificación de seguridad inválida. Inténtalo de nuevo."
+        return True, None
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error de conexión con Google reCAPTCHA: {str(e)}")
+        return False, "No se pudo conectar con el servicio de seguridad."
+
 # ============================================================
 # VISTAS DE AUTENTICACIÓN FRONTEND
 # ============================================================
@@ -43,21 +67,9 @@ def registro_view(request):
 
         # Verificación de reCAPTCHA
         recaptcha_response = request.POST.get('g-recaptcha-response')
-        secret_key = getattr(settings, 'RECAPTCHA_PRIVATE_KEY', None)
-        if not secret_key:
-            errores['captcha'] = 'El sitio no está configurado para reCAPTCHA.'
-        elif not recaptcha_response:
-            errores['captcha'] = 'Por favor, completa el CAPTCHA.'
-        else:
-            data = {'secret': secret_key, 'response': recaptcha_response}
-            try:
-                r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-                r.raise_for_status()
-                result = r.json()
-                if not result.get('success'):
-                    errores['captcha'] = 'Verificación de CAPTCHA inválida. Inténtalo de nuevo.'
-            except requests.exceptions.RequestException:
-                errores['captcha'] = 'No se pudo conectar con el servicio reCAPTCHA.'
+        captcha_valido, captcha_error = verificar_recaptcha(recaptcha_response)
+        if not captcha_valido:
+            errores['captcha'] = captcha_error
 
         if not username or len(username) < 3:
             errores['username'] = 'El usuario debe tener mínimo 3 caracteres'
@@ -129,24 +141,8 @@ def login_view(request):
 
         # Verificación de reCAPTCHA
         recaptcha_response = request.POST.get('g-recaptcha-response')
-        secret_key = getattr(settings, 'RECAPTCHA_PRIVATE_KEY', None)
-        error_msg = None
+        captcha_valido, error_msg = verificar_recaptcha(recaptcha_response)
 
-        if not secret_key:
-            error_msg = 'El sitio no está configurado para reCAPTCHA.'
-        elif not recaptcha_response:
-            error_msg = 'Por favor, completa el CAPTCHA.'
-        else:
-            data = {'secret': secret_key, 'response': recaptcha_response}
-            try:
-                r = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data)
-                r.raise_for_status()
-                result = r.json()
-                if not result.get('success'):
-                    error_msg = 'Verificación de CAPTCHA inválida. Inténtalo de nuevo.'
-            except requests.exceptions.RequestException:
-                error_msg = 'No se pudo conectar con el servicio reCAPTCHA.'
-        
         if error_msg:
             return render(request, 'auth/login.html', {'error': error_msg, 'username': username})
         

@@ -47,14 +47,16 @@ import logging
 # Configurar logging para pagos
 logger = logging.getLogger(__name__)
 
-# Configurar la clave secreta de Stripe
-stripe.api_key = settings.STRIPE_SECRET_KEY
-
-if not getattr(settings, 'STRIPE_SECRET_KEY', ''):
-    raise ImproperlyConfigured(
-        "STRIPE_SECRET_KEY no configurada. Copia .env.example a .env o configura la variable de entorno STRIPE_SECRET_KEY en tu entorno (ej. Render)."
-    )
-
+def _configurar_stripe():
+    """Configura la API key de Stripe solo cuando sea necesario."""
+    key = getattr(settings, 'STRIPE_SECRET_KEY', None)
+    if not key:
+        logger.warning("STRIPE_SECRET_KEY no configurada. Las operaciones de pago fallarán.")
+        raise ImproperlyConfigured(
+            "STRIPE_SECRET_KEY no configurada. Configura la variable de entorno en Render."
+        )
+    stripe.api_key = key
+    return True
 
 class StripePaymentManager:
     """Gestor de pagos con Stripe."""
@@ -76,6 +78,8 @@ class StripePaymentManager:
             Exception: Si hay error al crear el PaymentIntent
         """
         try:
+            _configurar_stripe()
+            
             pedido = Pedido.objects.get(id=pedido_id)
             
             # Convertir el monto a centavos (Stripe usa centavos)
@@ -139,6 +143,8 @@ class StripePaymentManager:
             bool: True si se procesó correctamente
         """
         try:
+            _configurar_stripe()
+            
             event_type = event['type']
             payment_intent = event['data']['object']
             
@@ -209,6 +215,8 @@ class StripePaymentManager:
             dict: Estado del pago
         """
         try:
+            _configurar_stripe()
+            
             payment_intent = stripe.PaymentIntent.retrieve(payment_intent_id)
             
             pago = Pago.objects.filter(stripe_payment_intent_id=payment_intent_id).first()

@@ -9,6 +9,12 @@ Variables obligatorias a configurar en Render (Dashboard → Environment → Env
 - `SECRET_KEY` = cadena segura
 - `DEBUG` = False
 
+**Almacenamiento de Imágenes (Media):**
+Render borra archivos locales al reiniciar. Configura Cloudinary:
+- `CLOUDINARY_CLOUD_NAME` = tu_nombre_de_cloud
+- `CLOUDINARY_API_KEY` = tu_api_key
+- `CLOUDINARY_API_SECRET` = tu_api_secret
+
 Variables opcionales pero recomendadas:
 - `STRIPE_SECRET_KEY`, `STRIPE_PUBLIC_KEY`, `STRIPE_WEBHOOK_SECRET`
 - `MERCADOPAGO_ACCESS_TOKEN`, `MERCADOPAGO_PUBLIC_KEY`

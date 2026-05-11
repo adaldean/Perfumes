@@ -7,7 +7,7 @@ E-commerce de perfumería desarrollado con Django + Django REST Framework.
 - Django 6
 - Django REST Framework + JWT
 - Allauth (Google)
-- WhiteNoise (estáticos en producción)
+- WhiteNoise (estáticos) + Cloudinary (media persistente)
 - Render (web service + PostgreSQL vía `render.yaml`)
 
 ## Estructura del proyecto
