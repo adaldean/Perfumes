@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'apps.orders',
 ]
 
+# Silenciar el error de llaves de prueba de reCAPTCHA para permitir el desarrollo local
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
@@ -194,5 +197,12 @@ EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.Em
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@auraessence.com')
 
 # Configuración de reCAPTCHA
-RECAPTCHA_PUBLIC_KEY = os.getenv('RECAPTCHA_PUBLIC_KEY', '')
-RECAPTCHA_PRIVATE_KEY = os.getenv('RECAPTCHA_PRIVATE_KEY', '')
+# Si no se configuran en el .env, usamos las llaves de prueba oficiales de Google
+RECAPTCHA_PUBLIC_KEY = os.getenv(
+    'RECAPTCHA_PUBLIC_KEY', 
+    '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' if DEBUG else ''
+)
+RECAPTCHA_PRIVATE_KEY = os.getenv(
+    'RECAPTCHA_PRIVATE_KEY', 
+    '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe' if DEBUG else ''
+)
