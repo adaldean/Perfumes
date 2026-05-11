@@ -1,5 +1,7 @@
 from pathlib import Path
+import json
 import os
+import tempfile
 
 from django.apps import apps
 from django.conf import settings
@@ -14,13 +16,6 @@ class Command(BaseCommand):
         "catalog.Marca",
         "catalog.Categoria",
         "catalog.Producto",
-        "orders.Pedido",
-        "orders.DetallePedido",
-        "orders.Carrito",
-        "orders.ItemCarrito",
-        "orders.Pago",
-        "users.UserProfile",
-        "users.EmailOTP",
     )
 
     def add_arguments(self, parser):
@@ -50,8 +45,9 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("La base ya tiene datos de negocio. Se omite la restauración."))
             return
 
-        call_command("loaddata", str(fixture_path), verbosity=options.get("verbosity", 1))
-        self.stdout.write(self.style.SUCCESS(f"Respaldo restaurado desde {fixture_path}"))
+        filtered_fixture_path = self._build_catalog_fixture_file(fixture_path)
+        call_command("loaddata", str(filtered_fixture_path), verbosity=options.get("verbosity", 1))
+        self.stdout.write(self.style.SUCCESS(f"Catálogo restaurado desde {fixture_path}"))
 
     def database_has_business_data(self):
         for model_label in self.check_models:
@@ -74,3 +70,17 @@ class Command(BaseCommand):
             self._tables_cache = set(connection.introspection.table_names())
 
         return self._tables_cache
+
+    def _build_catalog_fixture_file(self, fixture_path):
+        with fixture_path.open("r", encoding="utf-8") as fixture_file:
+            data = json.load(fixture_file)
+
+        catalog_data = [item for item in data if item.get("model", "").startswith("catalog.")]
+        if not catalog_data:
+            raise CommandError("El fixture no contiene registros de catálogo para restaurar.")
+
+        tmp_file = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False, encoding="utf-8")
+        with tmp_file:
+            json.dump(catalog_data, tmp_file, ensure_ascii=False, indent=2)
+
+        return Path(tmp_file.name)
