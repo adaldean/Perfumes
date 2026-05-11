@@ -1,6 +1,7 @@
 services:
   - type: web
     name: aura-essence-api
+    region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
     startCommand: "python manage.py migrate --noinput && gunicorn myproject.wsgi:application"
@@ -28,5 +29,6 @@ services:
 
 databases:
   - name: aura-essence-db
+    region: oregon
     databaseName: aura_essence
     user: aura_essence_user
