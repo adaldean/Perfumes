@@ -4,12 +4,7 @@ services:
     region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
-    preDeployCommand: "python manage.py backup_database --output /var/data/backups/db_backup.json"
-    startCommand: "python manage.py migrate --noinput && python manage.py create_initial_users && python manage.py restore_database --fixture /var/data/backups/db_backup.json && python manage.py backup_database --output /var/data/backups/db_backup.json && gunicorn myproject.wsgi:application"
-    disk:
-      name: aura-essence-backups
-      mountPath: /var/data
-      sizeGB: 1
+    startCommand: "python manage.py migrate --noinput && python manage.py create_initial_users && python manage.py restore_database --fixture backups/db_backup.json && python manage.py backup_database --output backups/db_backup.json && gunicorn myproject.wsgi:application"
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -24,7 +19,7 @@ services:
           name: aura-essence-db
           property: connectionString
       - key: BACKUP_FILE_PATH
-        value: /var/data/backups/db_backup.json
+        value: backups/db_backup.json
       - key: PYTHON_VERSION
         value: 3.12.9
       - key: ADMIN_USERNAME
