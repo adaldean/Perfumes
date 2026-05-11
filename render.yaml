@@ -4,7 +4,7 @@ services:
     region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
-    startCommand: "python manage.py migrate --noinput && gunicorn myproject.wsgi:application"
+    startCommand: "python manage.py migrate --noinput && python scripts/create_initial_users.py && python manage.py shell < scripts/seed_more_products.py && gunicorn myproject.wsgi:application"
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -19,7 +19,7 @@ services:
           name: aura-essence-db
           property: connectionString
       - key: PYTHON_VERSION
-        value: 3.11.8
+        value: 3.12.3
       - key: ADMIN_USERNAME
         value: admin
       - key: ADMIN_EMAIL
