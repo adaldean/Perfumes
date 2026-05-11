@@ -76,7 +76,7 @@ def _send_otp_email(user, code):
         f'Tu código de verificación es: {code}\n\n'
         'El código expira en 3 minutos. No compartas este código con nadie.'
     )
-    from_email = settings.DEFAULT_FROM_EMAIL or settings.EMAIL_HOST_USER
+    from_email = settings.DEFAULT_FROM_EMAIL
     send_mail(subject, message, from_email, [user.email], fail_silently=False)
 
 

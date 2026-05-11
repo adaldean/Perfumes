@@ -18,5 +18,5 @@ urlpatterns = [
     path('carrito/', order_views.carrito_view, name='carrito'),
     path('api/carrito/', order_api_views.carrito_api, name='carrito_api'),
     path('api/carrito/mercadopago/', order_api_views.CrearPagoView.as_view({'post': 'crear_preferencia_mp'}), name='pago_mp'),
-    path('perfil/', views.perfil_view, name='perfil')
+    path('perfil/', views.perfil_view, name='perfil'),
 ]
