@@ -32,7 +32,6 @@ from .payments import StripePaymentManager
 import logging
 
 logger = logging.getLogger(__name__)
-stripe.api_key = settings.STRIPE_SECRET_KEY
 User = get_user_model()
 
 # ============================================
