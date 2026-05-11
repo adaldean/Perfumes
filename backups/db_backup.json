@@ -1,0 +1,928 @@
+[
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$KvTzGULBwo8MtWH5tOvyTf$DfAotVB8Gvre6UWk4DeJvQBIPttC7jQA6L49UfuyF00=",
+      "last_login": "2026-02-26T20:49:10.766Z",
+      "is_superuser": true,
+      "username": "Joss",
+      "first_name": "Jose A.",
+      "last_name": "Vargas Cisneros",
+      "email": "jossA@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-02-20T05:01:19Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$W7hLN2bqZQMi0ukJxeRdrt$EVpvRYy4VH8zk/RPd6TQO12+v/BthQ5fhJvbuFshcvM=",
+      "last_login": "2026-03-26T21:27:55.884Z",
+      "is_superuser": false,
+      "username": "Adal",
+      "first_name": "Adalberto",
+      "last_name": "Dominguez",
+      "email": "adald@gmail.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-02-20T05:17:27Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "auth.user",
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$0Wg7D9iDwc7v3m7Ykh0Xk2$PM+lE1XpZNoMwIKWXbXPHhF5MtTZANDSEDmeLPFUzxA=",
+      "last_login": "2026-05-07T17:43:24.261Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2026-03-26T19:42:16.691Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 3,
+    "fields": {
+      "nombre": "Unisex",
+      "slug": "unisex",
+      "descripcion": "Para todos",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 4,
+    "fields": {
+      "nombre": "Floral",
+      "slug": "floral",
+      "descripcion": "Notas florales",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 5,
+    "fields": {
+      "nombre": "Amaderado",
+      "slug": "amaderado",
+      "descripcion": "Notas de madera",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 7,
+    "fields": {
+      "nombre": "Oriental",
+      "slug": "oriental",
+      "descripcion": "Notas especiadas y exóticas",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 26,
+    "fields": {
+      "nombre": "Hombre",
+      "slug": "hombre",
+      "descripcion": null,
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 27,
+    "fields": {
+      "nombre": "Mujer",
+      "slug": "mujer",
+      "descripcion": null,
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 28,
+    "fields": {
+      "nombre": "Cítrico",
+      "slug": "citrico",
+      "descripcion": null,
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 29,
+    "fields": {
+      "nombre": "Frutal",
+      "slug": "frutal",
+      "descripcion": "",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 30,
+    "fields": {
+      "nombre": "Ambar",
+      "slug": "ambar",
+      "descripcion": "",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.categoria",
+    "pk": 31,
+    "fields": {
+      "nombre": "Especiado",
+      "slug": "especiado",
+      "descripcion": "",
+      "padre": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 1,
+    "fields": {
+      "nombre": "Chanel",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 2,
+    "fields": {
+      "nombre": "Dior",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 3,
+    "fields": {
+      "nombre": "Versace",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 4,
+    "fields": {
+      "nombre": "Yves Saint Laurent",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 5,
+    "fields": {
+      "nombre": "Tom Ford",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 6,
+    "fields": {
+      "nombre": "Gucci",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 7,
+    "fields": {
+      "nombre": "Armani",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 8,
+    "fields": {
+      "nombre": "Paco Rabanne",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 9,
+    "fields": {
+      "nombre": "Carolina Herrera",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 10,
+    "fields": {
+      "nombre": "Lancôme",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 11,
+    "fields": {
+      "nombre": "Creed",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 12,
+    "fields": {
+      "nombre": "Le Labo",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 13,
+    "fields": {
+      "nombre": "Maison Francis Kurkdjian",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 14,
+    "fields": {
+      "nombre": "Giorgio Armani",
+      "descripcion": null
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 15,
+    "fields": {
+      "nombre": "Musk Collection",
+      "descripcion": ""
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 16,
+    "fields": {
+      "nombre": "Marc Jacobs",
+      "descripcion": ""
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 17,
+    "fields": {
+      "nombre": "Nautica",
+      "descripcion": ""
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 18,
+    "fields": {
+      "nombre": "Polo Club",
+      "descripcion": ""
+    }
+  },
+  {
+    "model": "catalog.marca",
+    "pk": 19,
+    "fields": {
+      "nombre": "Lacoste",
+      "descripcion": ""
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 1,
+    "fields": {
+      "sku": "SKU-BLE-1150",
+      "nombre": "Blanc Pure",
+      "genero": "hombre",
+      "descripcion": "Lacoste Blanc Pure es una fragancia masculina lanzada en 2011, con un aroma fresco, limpio y dinámico. Combina notas de salida de toronja (pomelo), romero, cardamomo y agujas de cedro, un corazón floral de ylang-ylang y nardos, y un fondo amaderado y terroso de cedro de Virginia, cuero, gamuza y vetiver.  Ideal para uso diario, especialmente en primavera y verano.",
+      "precio": "3500.00",
+      "precio_oferta": null,
+      "imagen": "productos/Blanc_Pure.png",
+      "volumen_ml": 50,
+      "marca": 19,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.322Z",
+      "actualizado_en": "2026-02-22T21:57:20.434Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        28
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 2,
+    "fields": {
+      "sku": "SKU-SAU-8652",
+      "nombre": "Sauvage",
+      "genero": "hombre",
+      "descripcion": "Sauvage de Dior es una fragancia masculina lanzada en 2015, creada por François Demachy. La versión Eau de Toilette destaca por notas de bergamota de Calabria y pimienta en la salida, un corazón de lavanda, pimienta de Sichuan, vetiver y geranio, y un fondo de cedro, ládano y ambroxan.  Es fresca, especiada y con gran proyección, ideal para uso diario y nocturno. La versión Parfum es más intensa, con mandarina, sándalo, vainilla, incienso y haba tonka, ofreciendo un perfil más cálido, amaderado y sensual.",
+      "precio": "3200.00",
+      "precio_oferta": null,
+      "imagen": "productos/Sauvage.png",
+      "volumen_ml": 50,
+      "marca": 2,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.327Z",
+      "actualizado_en": "2026-02-22T21:50:25.964Z",
+      "categorias_secundarias": [
+        5,
+        28,
+        30,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 3,
+    "fields": {
+      "sku": "SKU-ERO-7754",
+      "nombre": "Eros",
+      "genero": "hombre",
+      "descripcion": "Versace Eros es una fragancia masculina lanzada en 2012 (EDT) y 2020 (EDP), inspirada en el dios griego del amor. La versión original combina notas de menta, manzana verde y limón en la salida, un corazón de haba tonka, geranio y ambroxan, y una base de vainilla, vetiver, cedro y musgo de roble.  Es fresca, especiada y amaderada, ideal para hombres jóvenes y seguros de sí mismos, con buena proyección y duración.",
+      "precio": "2800.00",
+      "precio_oferta": null,
+      "imagen": "productos/Versace_Eros.png",
+      "volumen_ml": 50,
+      "marca": 3,
+      "categoria": null,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.332Z",
+      "actualizado_en": "2026-02-22T21:47:44.411Z",
+      "categorias_secundarias": [
+        5,
+        28,
+        30,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 4,
+    "fields": {
+      "sku": "SKU-BLA-1894",
+      "nombre": "Black Opium",
+      "genero": "mujer",
+      "descripcion": "Black Opium de Yves Saint Laurent es una fragancia femenina lanzada en 2014, creada por Nathalie Lorson, Marie Salamagne, Olivier Cresp y Honorine Blanc. Combina notas de salida de pera, pimienta rosa y flor de azahar, un corazón de café, jazmín, almendra amarga y regaliz, y un fondo de vainilla, pachulí, cedro y madera de cachemira.  Su aroma es dulce, sensual y adictivo, con un toque moderno y rockero. Ideal para uso nocturno en otoño e invierno, con buena duración y estela intensa.",
+      "precio": "3100.00",
+      "precio_oferta": null,
+      "imagen": "productos/Black_Opium.png",
+      "volumen_ml": 50,
+      "marca": 4,
+      "categoria": 27,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.338Z",
+      "actualizado_en": "2026-02-22T21:57:12.169Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 5,
+    "fields": {
+      "sku": "SKU-GOO-1158",
+      "nombre": "Good Girl",
+      "genero": "mujer",
+      "descripcion": "Good Girl de Carolina Herrera es una fragancia femenina lanzada en 2016, creada por Louise Turner. Combina notas de salida de almendra, café, bergamota y limón, un corazón floral de jazmín sambac, nardos, flor de azahar y rosa de Bulgaria, y un fondo cálido de haba tonka, cacao, vainilla, praliné y maderas.  Su aroma seductor y sofisticado refleja la dualidad de la mujer moderna: dulce y atrevida, elegante y misteriosa. Ideal para uso nocturno, con buena duración y estela.",
+      "precio": "2950.00",
+      "precio_oferta": null,
+      "imagen": "productos/Good_girl_2.png",
+      "volumen_ml": 50,
+      "marca": 9,
+      "categoria": 27,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.346Z",
+      "actualizado_en": "2026-02-22T21:43:24.929Z",
+      "categorias_secundarias": [
+        4,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 6,
+    "fields": {
+      "sku": "SKU-TOB-2628",
+      "nombre": "Tobacco Vanille",
+      "genero": "unisex",
+      "descripcion": "Tobacco Vanille de Tom Ford es una fragancia icónica lanzada en 2007, creada por Olivier Gillotin. Combina notas de hojas de tabaco y especias en la salida, un corazón gourmand de vainilla, cacao, haba tonka y flor de tabaco, y un fondo de frutos secos y notas amaderadas.  Su aroma es cálido, dulce y envolvente, ideal para climas fríos y ocasiones especiales, con excelente duración y proyección. Aunque su intensidad la hace más usada por hombres, su perfil unisex la hace atractiva para cualquier género.",
+      "precio": "6500.00",
+      "precio_oferta": null,
+      "imagen": "productos/Tobacco_Vanille.png",
+      "volumen_ml": 50,
+      "marca": 5,
+      "categoria": 3,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.351Z",
+      "actualizado_en": "2026-02-22T21:40:33.980Z",
+      "categorias_secundarias": [
+        7,
+        30,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 7,
+    "fields": {
+      "sku": "SKU-ACQ-2538",
+      "nombre": "Acqua di Gio",
+      "genero": "hombre",
+      "descripcion": "Acqua di Gio de Giorgio Armani es una fragancia masculina icónica lanzada en 1996, creada por Alberto Morillas. Inspirada en la isla de Pantelleria, combina notas cítricas y marinas como bergamota, limón, mandarina y acordes acuáticos en la salida, un corazón floral y aromático con jazmín, romero, ciclamen y calone, y una base amaderada y ambarada de cedro, pachulí, musgo de roble y almizcle blanco.  Es una fragancia fresca, elegante y atemporal, ideal para uso diurno en climas cálidos.",
+      "precio": "2600.00",
+      "precio_oferta": null,
+      "imagen": "productos/Acqua_di_Gio.png",
+      "volumen_ml": 50,
+      "marca": 7,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.356Z",
+      "actualizado_en": "2026-02-22T21:37:36.282Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        28
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 8,
+    "fields": {
+      "sku": "SKU-ONE-7787",
+      "nombre": "One Million",
+      "genero": "hombre",
+      "descripcion": "One Million de Paco Rabanne es una fragancia masculina lanzada en 2008, creada por Christophe Raynaud, Olivier Pescheux y Michel Girard. Combina notas de salida de mandarina roja, pomelo y menta, un corazón de rosa, canela y especias, y una base intensa de cuero, ámbar, maderas y pachulí.  Su aroma es audaz, seductor y duradero, con una estela poderosa que lo convierte en un icono moderno. Ideal para hombres que buscan una fragancia con personalidad y presencia.",
+      "precio": "2700.00",
+      "precio_oferta": null,
+      "imagen": "productos/One_Million.png",
+      "volumen_ml": 50,
+      "marca": 8,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.361Z",
+      "actualizado_en": "2026-02-22T21:37:24.709Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        28,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 9,
+    "fields": {
+      "sku": "SKU-LA -7553",
+      "nombre": "La Vie Est Belle",
+      "genero": "mujer",
+      "descripcion": "Es un perfume femenino icónico lanzado en 2012, creado por Olivier Polge, Dominique Ropion y Anne Flipo. Combina notas de salida de grosellas negras y pera, un corazón floral de iris, jazmín y flor de azahar, y un fondo dulce y cálido de praliné, vainilla, haba tonka y pachulí.  Su aroma envolvente, sofisticado y alegre la convierte en una fragancia ideal para uso diario y ocasiones especiales, con buena duración y estela.",
+      "precio": "2900.00",
+      "precio_oferta": null,
+      "imagen": "productos/La_Vie_Est_Bell.png",
+      "volumen_ml": 50,
+      "marca": 10,
+      "categoria": 27,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.370Z",
+      "actualizado_en": "2026-02-22T21:37:07.446Z",
+      "categorias_secundarias": [
+        4,
+        29,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 10,
+    "fields": {
+      "sku": "SKU-AVE-6624",
+      "nombre": "Aventus",
+      "genero": "hombre",
+      "descripcion": "Aventus de Creed, combina notas frescas, frutales y amaderadas. Destaca por su salida de piña, bergamota, manzana y limón, un corazón de jazmín y pachulí, y una base profunda de abedul, almizcle, musgo de roble y cedro. Es una fragancia sofisticada, poderosa y duradera, ideal para hombres que buscan una estela distintiva y elegante, perfecta para ocasiones especiales o uso nocturno.",
+      "precio": "8500.00",
+      "precio_oferta": null,
+      "imagen": "productos/Aventus.png",
+      "volumen_ml": 50,
+      "marca": 11,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.378Z",
+      "actualizado_en": "2026-02-22T21:35:54.491Z",
+      "categorias_secundarias": [
+        5,
+        29,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 11,
+    "fields": {
+      "sku": "SKU-SAN-6141",
+      "nombre": "Blue",
+      "genero": "hombre",
+      "descripcion": "Polo Club Blue para hombre es una fragancia fresca y aromática, ideal para uso diario.  Destaca por sus notas cítricas y acuáticas, con melón, mandarina y pepino en la salida, seguidas de albahaca y geranio, y una base de madera de gamuza, almizcle y pachulí. Es versátil, con buena proyección y duración moderada, perfecta para climas cálidos y ocasiones informales",
+      "precio": "5200.00",
+      "precio_oferta": null,
+      "imagen": "productos/Polo_Club_Blue.png",
+      "volumen_ml": 50,
+      "marca": 18,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.387Z",
+      "actualizado_en": "2026-02-22T21:35:47.979Z",
+      "categorias_secundarias": [
+        5,
+        28
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 12,
+    "fields": {
+      "sku": "SKU-BAC-9335",
+      "nombre": "Blue Sail",
+      "genero": "hombre",
+      "descripcion": "Blue Sail de Nautica es una fragancia masculina lanzada en 2017, con un aroma fresco, verde y marino. Combina notas de salida de hojas verdes, manzana, bergamota y cáscara de naranja, un corazón de notas acuáticas, ciprés azul, lavanda y bayas de enebro, y un fondo de sándalo, vetiver y maderas.  Es ideal para uso diurno en climas cálidos, con una duración moderada (3-5 horas) y una estela ligera. Por su relación calidad-precio, es popular como fragancia casual y juvenil.",
+      "precio": "9800.00",
+      "precio_oferta": null,
+      "imagen": "productos/Blue_sail.png",
+      "volumen_ml": 50,
+      "marca": 17,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-20T01:13:38.396Z",
+      "actualizado_en": "2026-02-22T21:34:01.909Z",
+      "categorias_secundarias": [
+        5,
+        28
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 13,
+    "fields": {
+      "sku": "SKU-001",
+      "nombre": "Baccarat Rouge 540",
+      "genero": "hombre",
+      "descripcion": "Baccarat Rouge 540 de Maison Francis Kurkdjian es una fragancia icónica lanzada en 2015, inspirada en la fusión del cristal Baccarat con oro a 540 °C. Combina notas de azafrán y jazmín en la salida, un corazón de ámbar gris, amberwood y hediona, y una base de resina de abeto, cedro, azúcar y ambroxan.  Su aroma es cálido, dulce, amaderado y ligeramente mineral, con excelente duración y proyección. Ideal para cualquier época del año, es una de las fragancias más reconocidas y copiadas del mundo.",
+      "precio": "9800.00",
+      "precio_oferta": null,
+      "imagen": "productos/Baccarat_Rouge_540_3UTOqlP.png",
+      "volumen_ml": 50,
+      "marca": 13,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:29:23.598Z",
+      "actualizado_en": "2026-02-22T21:32:45.069Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        7,
+        30
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 14,
+    "fields": {
+      "sku": "SKU-002",
+      "nombre": "Santal 33",
+      "genero": "unisex",
+      "descripcion": "Santal 33 de Le Labo es una fragancia icónica lanzada en 2011, creada por Frank Voelkl. Destaca por sus notas de sándalo australiano, cedro, cardamomo, iris, violeta y cuero, con un carácter amaderado, especiado y ligeramente ahumado.  Su aroma cálido y envolvente la hace versátil y distintiva, ideal para cualquier época del año y usada tanto por hombres como por mujeres.",
+      "precio": "9800.00",
+      "precio_oferta": null,
+      "imagen": "productos/Santa_33_538HGJo.png",
+      "volumen_ml": 50,
+      "marca": 12,
+      "categoria": 3,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:29:23.604Z",
+      "actualizado_en": "2026-02-22T21:31:25.520Z",
+      "categorias_secundarias": [
+        4,
+        5
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 15,
+    "fields": {
+      "sku": "SKU-003",
+      "nombre": "Daisy",
+      "genero": "mujer",
+      "descripcion": "Daisy de Marc Jacobs es una fragancia femenina lanzada en 2007, creada por Alberto Morillas. Combina notas de salida de hojas de violeta, toronja sanguina y fresa, un corazón floral de violeta, gardenia y jazmín, y una base suave de almizcle, maderas blancas y vainilla.  Es fresca, dulce y femenina, ideal para uso diurno en primavera y verano, con buena proyección y estela agradable.",
+      "precio": "1200.00",
+      "precio_oferta": null,
+      "imagen": "productos/Daisy_oVFYLKV.png",
+      "volumen_ml": 50,
+      "marca": 16,
+      "categoria": 27,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:29:23.610Z",
+      "actualizado_en": "2026-02-22T21:31:16.407Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        29
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 16,
+    "fields": {
+      "sku": "SKU-004",
+      "nombre": "Aqua Vitae Forte",
+      "genero": "unisex",
+      "descripcion": "Aqua Vitae Forte de Maison Francis Kurkdjian es una fragancia luminosa y cálida lanzada en 2015. Combina notas cítricas y especiadas como bergamota, limón, mandarina, canela, cardamomo y pimienta rosa en la salida, un corazón floral de ylang-ylang y flor de naranjo, y una base amaderada de sándalo y vetiver.  Su aroma evoca un vínculo entre el frescor de las noches y la calidez del pasado, con buena duración (6-8 horas) y estela moderada. Ideal para climas templados y uso diurno, es versátil y sofisticada.",
+      "precio": "450.00",
+      "precio_oferta": null,
+      "imagen": "productos/Citrus_blend_LsfixzK.png",
+      "volumen_ml": 50,
+      "marca": 13,
+      "categoria": 3,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:29:23.616Z",
+      "actualizado_en": "2026-02-22T21:27:11.870Z",
+      "categorias_secundarias": [
+        4,
+        5,
+        28
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 17,
+    "fields": {
+      "sku": "SKU-005",
+      "nombre": "Oriental Night",
+      "genero": "unisex",
+      "descripcion": "Oriental Night de Musk Collection es una fragancia cálida, profunda y envolvente, ideal para uso nocturno. Combina notas de almizcle, sándalo, ámbar, incienso, pachulí y especias, creando un perfil rico, sensual y ligeramente ahumado.  Su aroma denso y persistente la hace perfecta para otoño e invierno, con buena duración y estela.",
+      "precio": "2200.00",
+      "precio_oferta": null,
+      "imagen": "productos/Oriental_night_EoH4ITe.png",
+      "volumen_ml": 50,
+      "marca": 15,
+      "categoria": 3,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:29:23.622Z",
+      "actualizado_en": "2026-02-22T21:26:47.414Z",
+      "categorias_secundarias": [
+        5,
+        7,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 18,
+    "fields": {
+      "sku": "SKU-006",
+      "nombre": "Noir Extreme",
+      "genero": "hombre",
+      "descripcion": "Noir Extreme de Tom Ford es una fragancia masculina lanzada en 2015, creada por Sonia Constant. Combina notas de salida de cardamomo, mandarina, azafrán y neroli, un corazón de kulfi indio, rosa, jazmín y flor de azahar, y una base cálida de vainilla, ámbar, sándalo y maderas.  Su aroma es especiado, dulce y sensual, ideal para uso nocturno en otoño e invierno, con buena duración y estela poderosa.",
+      "precio": "2500.00",
+      "precio_oferta": null,
+      "imagen": "productos/Noir_Extreme_7weBLDK.png",
+      "volumen_ml": 50,
+      "marca": 5,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:36:28.951Z",
+      "actualizado_en": "2026-02-22T21:25:21.671Z",
+      "categorias_secundarias": [
+        5,
+        7,
+        30,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 19,
+    "fields": {
+      "sku": "SKU-007",
+      "nombre": "Bleu de Chanel",
+      "genero": "hombre",
+      "descripcion": "Bleu de Chanel es una fragancia masculina lanzada en 2010, creada por Jacques Polge. Combina notas cítricas frescas de pomelo, limón y menta, con un corazón especiado de jengibre y nuez moscada, y un fondo amaderado y terroso de cedro, sándalo, vetiver, incienso y almizcle blanco.  Es versátil, sofisticada y atemporal, ideal para uso diario y ocasiones formales, con buena duración y proyección.",
+      "precio": "1800.00",
+      "precio_oferta": null,
+      "imagen": "productos/Bleu_de_Chanel_78s0p2Z.png",
+      "volumen_ml": 50,
+      "marca": 1,
+      "categoria": 26,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:36:28.963Z",
+      "actualizado_en": "2026-02-22T21:23:27.930Z",
+      "categorias_secundarias": [
+        5,
+        28,
+        31
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 20,
+    "fields": {
+      "sku": "SKU-008",
+      "nombre": "Chance Eau Tendre",
+      "genero": "mujer",
+      "descripcion": "Chance Eau Tendre de Chanel es una fragancia femenina lanzada en 2010, creada por Jacques Polge. Combina notas de salida de membrillo y pomelo, un corazón floral de jazmín y jacinto, y una base de almizcle, iris, cedro de Virginia y ámbar.  Su aroma es dulce, fresco y delicado, ideal para uso diurno en primavera y verano. Es una versión más suave y tierna de la línea Chance, con buena proyección y duración moderada.",
+      "precio": "1400.00",
+      "precio_oferta": null,
+      "imagen": "productos/Chance_Eau_Tendre_udHjPxL.png",
+      "volumen_ml": 50,
+      "marca": 1,
+      "categoria": 27,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:36:28.972Z",
+      "actualizado_en": "2026-02-22T21:21:50.205Z",
+      "categorias_secundarias": [
+        4,
+        29
+      ]
+    }
+  },
+  {
+    "model": "catalog.producto",
+    "pk": 21,
+    "fields": {
+      "sku": "SKU-009",
+      "nombre": "Oud Wood",
+      "genero": "unisex",
+      "descripcion": "Oud Wood de Tom Ford es una fragancia icónica de la colección Private Blend, lanzada en 2007. Creada por Richard Herpin, combina la exótica madera de oud con sándalo, palo de rosa, vetiver, cardamomo y pimienta china, terminando en un fondo cálido de vainilla, haba tonka y ámbar.  Su aroma es amaderado, ahumado y especiado, con un equilibrio entre intensidad y elegancia. Ideal para uso nocturno o en climas fríos, tiene buena duración y proyección, siendo muy apreciada tanto por hombres como por mujeres.",
+      "precio": "3200.00",
+      "precio_oferta": null,
+      "imagen": "productos/Oud_Wood_eAIvRKt.png",
+      "volumen_ml": 50,
+      "marca": 5,
+      "categoria": 3,
+      "peso_kg": null,
+      "stock": 50,
+      "activo": true,
+      "creado_en": "2026-02-22T04:36:28.980Z",
+      "actualizado_en": "2026-02-23T16:29:02.388Z",
+      "categorias_secundarias": [
+        5,
+        7,
+        30
+      ]
+    }
+  },
+  {
+    "model": "orders.carrito",
+    "pk": 1,
+    "fields": {
+      "usuario": [
+        "Adal"
+      ],
+      "creado_en": "2026-02-20T05:17:28.250Z",
+      "actualizado_en": "2026-02-20T05:17:28.250Z"
+    }
+  },
+  {
+    "model": "orders.carrito",
+    "pk": 2,
+    "fields": {
+      "usuario": [
+        "Joss"
+      ],
+      "creado_en": "2026-02-20T05:37:13.562Z",
+      "actualizado_en": "2026-02-20T05:37:13.562Z"
+    }
+  },
+  {
+    "model": "orders.carrito",
+    "pk": 3,
+    "fields": {
+      "usuario": [
+        "admin"
+      ],
+      "creado_en": "2026-03-26T19:43:26.927Z",
+      "actualizado_en": "2026-03-26T19:43:26.927Z"
+    }
+  },
+  {
+    "model": "sites.site",
+    "fields": {
+      "domain": "example.com",
+      "name": "example.com"
+    }
+  },
+  {
+    "model": "sites.site",
+    "fields": {
+      "domain": "127.0.0.1",
+      "name": "Localhost"
+    }
+  },
+  {
+    "model": "users.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": [
+        "Joss"
+      ],
+      "must_change_password": false
+    }
+  },
+  {
+    "model": "users.userprofile",
+    "pk": 2,
+    "fields": {
+      "user": [
+        "Adal"
+      ],
+      "must_change_password": false
+    }
+  },
+  {
+    "model": "users.userprofile",
+    "pk": 3,
+    "fields": {
+      "user": [
+        "admin"
+      ],
+      "must_change_password": false
+    }
+  }
+]
