@@ -205,6 +205,29 @@
             background: rgba(231, 76, 60, 0.05);
         }
 
+        /* Registro: asegurar contraste de texto en inputs en todos los navegadores */
+        .registro-page .form-group input {
+            background: #ffffff !important;
+            color: #111111 !important;
+            -webkit-text-fill-color: #111111 !important;
+            caret-color: #111111;
+            border: 1.5px solid #d8d8d8 !important;
+        }
+
+        .registro-page .form-group input::placeholder {
+            color: #6b6b6b !important;
+            opacity: 1;
+        }
+
+        .registro-page .form-group input:-webkit-autofill,
+        .registro-page .form-group input:-webkit-autofill:hover,
+        .registro-page .form-group input:-webkit-autofill:focus {
+            -webkit-text-fill-color: #111111 !important;
+            -webkit-box-shadow: 0 0 0px 1000px #ffffff inset;
+            transition: background-color 5000s ease-in-out 0s;
+            caret-color: #111111;
+        }
+
         /* Mensajes de error */
         .error-message {
             color: #e74c3c;
