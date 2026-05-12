@@ -19,9 +19,8 @@
 
 .accessibility-panel {
     position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    right: 20px;
+    bottom: 20px;
     z-index: 9999;
     pointer-events: auto;
     margin: 0;
@@ -135,6 +134,22 @@
     overflow-y: auto;
     color: var(--acc-dark);
     z-index: 9999;
+}
+
+.accessibility-menu.menu-open-up {
+    transform: none;
+}
+
+.accessibility-menu.menu-open-down {
+    transform: none;
+}
+
+.accessibility-menu.menu-open-left {
+    transform: none;
+}
+
+.accessibility-menu.menu-open-right {
+    transform: none;
 }
 
 .accessibility-menu[hidden] {

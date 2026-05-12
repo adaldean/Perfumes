@@ -97,8 +97,8 @@
 <body
     class="bg-brand-light dark:bg-zinc-900 text-brand-dark dark:text-gray-100 font-sans flex flex-col min-h-screen transition-colors duration-300">
 
-    <header class="bg-white dark:bg-zinc-800 shadow-md sticky top-0 z-50 transition-colors duration-300">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header class="bg-white dark:bg-zinc-800 shadow-md sticky top-0 z-50 transition-colors duration-300 relative overflow-visible">
+        <div class="container mx-auto px-4 py-3 flex flex-wrap md:flex-nowrap justify-between items-center gap-3 relative">
             <a href="{% url 'home' %}" class="flex items-center gap-2 group">
                 <i
                     class="fa-solid fa-spray-can-sparkles text-brand-gold text-2xl group-hover:rotate-12 transition-transform"></i>
@@ -204,12 +204,45 @@
                     <span id="cart-badge"
                         class="absolute -top-1 -right-2 bg-brand-gold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ carrito_items_count|default:0 }}</span>
                 </a>
+
+                <button id="mobile-menu-toggle" type="button"
+                    class="md:hidden inline-flex items-center justify-center w-11 h-11 rounded-full border border-brand-gold/30 text-brand-dark dark:text-white hover:text-brand-gold hover:bg-brand-gold/10 transition-colors"
+                    aria-label="Abrir menú de navegación"
+                    aria-expanded="false"
+                    aria-controls="mobile-menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
 
-            <!-- Mobile Menu Button -->
-            <button class="md:hidden text-2xl text-brand-dark dark:text-white hover:text-brand-gold">
-                <i class="fa-solid fa-bars"></i>
-            </button>
+        </div>
+
+        <div id="mobile-menu" class="md:hidden hidden absolute left-0 top-full w-full border-t border-white/10 bg-brand-dark/98 text-white shadow-2xl backdrop-blur-sm z-50">
+            <div class="container mx-auto px-4 py-4 space-y-4">
+                <nav class="space-y-2 text-base font-medium" aria-label="Navegación móvil">
+                    <a href="{% url 'home' %}" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Inicio</a>
+                    <a href="{% url 'home' %}#esencia" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Quiénes somos</a>
+                    <a href="{% url 'frontend:catalogo' %}" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Catálogo</a>
+                    <a href="{% url 'home' %}#esencia" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Nuestra Historia</a>
+                </nav>
+
+                <div class="h-px bg-white/10"></div>
+
+                {% if user.is_authenticated %}
+                <div class="space-y-2">
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="block rounded-lg px-3 py-2 bg-brand-gold text-brand-dark font-semibold hover:opacity-90 transition-colors">
+                        Volver al panel de administración
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'auth:perfil' %}" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Mi cuenta</a>
+                    <a href="{% url 'auth:logout' %}" class="block rounded-lg px-3 py-2 hover:bg-white/10 transition-colors">Cerrar sesión</a>
+                </div>
+                {% else %}
+                <div class="space-y-2">
+                    <a href="{% url 'auth:login' %}" class="block rounded-lg px-3 py-2 bg-brand-gold text-brand-dark font-semibold hover:opacity-90 transition-colors">Iniciar sesión</a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </header>
 
@@ -782,6 +815,57 @@
     sendBtn.addEventListener('click', sendMessage);
     input.addEventListener('keydown', function(e){ if(e.key==='Enter') sendMessage(); });
 })();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggle = document.getElementById('mobile-menu-toggle');
+        const menu = document.getElementById('mobile-menu');
+        if (!toggle || !menu) {
+            return;
+        }
+
+        const icon = toggle.querySelector('i');
+
+        function setOpen(isOpen) {
+            menu.classList.toggle('hidden', !isOpen);
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            if (icon) {
+                icon.classList.toggle('fa-bars', !isOpen);
+                icon.classList.toggle('fa-xmark', isOpen);
+            }
+        }
+
+        toggle.addEventListener('click', function (event) {
+            event.stopPropagation();
+            const isHidden = menu.classList.contains('hidden');
+            setOpen(isHidden);
+        });
+
+        menu.addEventListener('click', function (event) {
+            if (event.target.closest('a')) {
+                setOpen(false);
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!menu.contains(event.target) && !toggle.contains(event.target)) {
+                setOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                setOpen(false);
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 768) {
+                setOpen(false);
+            }
+        });
+    });
 </script>
 
 <!-- Script de Accesibilidad -->

@@ -162,6 +162,7 @@ class AccessibilityManager {
         const closeBtn = document.getElementById('close-accessibility');
         const menu = document.getElementById('accessibility-menu');
         const panel = document.getElementById('accessibility-panel');
+        const recomputeMenuPlacement = () => this.updateMenuPlacement();
         
         // Variables para drag
         let isDragging = false;
@@ -177,9 +178,11 @@ class AccessibilityManager {
             if (isExpanded) {
                 menu.removeAttribute('hidden');
                 toggleBtn.setAttribute('aria-expanded', 'true');
+                this.updateMenuPlacement();
             } else {
                 menu.setAttribute('hidden', '');
                 toggleBtn.setAttribute('aria-expanded', 'false');
+                menu.classList.remove('menu-open-up', 'menu-open-down', 'menu-open-left', 'menu-open-right');
             }
         };
         
@@ -331,6 +334,7 @@ class AccessibilityManager {
         closeBtn.addEventListener('click', () => {
             menu.setAttribute('hidden', '');
             toggleBtn.setAttribute('aria-expanded', 'false');
+            menu.classList.remove('menu-open-up', 'menu-open-down', 'menu-open-left', 'menu-open-right');
             toggleBtn.focus();
         });
 
@@ -375,71 +379,117 @@ class AccessibilityManager {
 
         // Detener lectura
         document.getElementById('stop-reading-btn').addEventListener('click', () => this.stopReading());
+
+        window.addEventListener('resize', recomputeMenuPlacement);
     }
 
     /**
-     * Ajusta la posición del panel para pantallas pequeñas si el usuario no lo ha movido.
+     * Ajusta la posición del panel si el usuario no lo ha movido.
      */
     resetPanelPositionForViewport() {
         const panel = document.getElementById('accessibility-panel');
-        const menu = document.getElementById('accessibility-menu');
         if (!panel) return;
+        
         // No sobrescribir la posición si el usuario la ha personalizado
         if (this.userMoved) return;
-        const header = document.querySelector('header');
-        // For small viewports, place panel under header (respect safe area)
-        if (window.innerWidth <= 600) {
-            panel.style.position = 'fixed';
-            panel.style.left = 'auto';
-            panel.style.right = '12px';
-            panel.style.bottom = 'auto';
-            panel.style.transform = 'none';
+        
+        // Posición inferior derecha por defecto
+        panel.style.position = 'fixed';
+        panel.style.top = 'auto';
+        panel.style.left = 'auto';
+        panel.style.right = '20px';
+        panel.style.bottom = '20px';
+        panel.style.transform = 'none';
 
-            if (header) {
-                const hRect = header.getBoundingClientRect();
-                const topPx = Math.max(hRect.bottom + 8, 8); // keep at least 8px
-                panel.style.top = topPx + 'px';
+        // Permitimos que la lógica direccional (updateMenuPlacement)
+        // se encargue de posicionar el menú.
+        const menu = document.getElementById('accessibility-menu');
+        if (menu) {
+             menu.style.position = '';
+             menu.style.left = '';
+             menu.style.right = '';
+             menu.style.top = '';
+             menu.style.bottom = '';
+             menu.style.transform = '';
+        }
+    }
 
-                if (menu) {
-                    const toggle = document.getElementById('toggle-accessibility');
-                    const toggleH = toggle ? toggle.offsetHeight : 48;
-                    const menuTop = topPx + toggleH + 8;
-                    menu.style.position = 'fixed';
-                    menu.style.top = menuTop + 'px';
-                    menu.style.right = '12px';
-                    menu.style.left = 'auto';
-                    menu.style.bottom = 'auto';
-                    menu.style.transform = 'none';
-                }
-            } else {
-                // fallback: bottom-right
-                panel.style.top = '';
-                panel.style.bottom = '12px';
-                if (menu) {
-                    menu.style.position = 'fixed';
-                    menu.style.bottom = '70px';
-                    menu.style.right = '12px';
-                    menu.style.left = 'auto';
-                    menu.style.transform = 'none';
-                }
-            }
+    /**
+     * Calcula la mejor dirección para abrir el panel según el espacio disponible.
+     */
+    updateMenuPlacement() {
+        const panel = document.getElementById('accessibility-panel');
+        const menu = document.getElementById('accessibility-menu');
+        const toggleBtn = document.getElementById('toggle-accessibility');
+
+        if (!panel || !menu || !toggleBtn || menu.hasAttribute('hidden')) {
+            return;
+        }
+
+        menu.classList.remove('menu-open-up', 'menu-open-down', 'menu-open-left', 'menu-open-right');
+
+        const margin = 12;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const toggleRect = toggleBtn.getBoundingClientRect();
+        const menuRect = menu.getBoundingClientRect();
+
+        const spaceAbove = toggleRect.top - margin;
+        const spaceBelow = viewportHeight - toggleRect.bottom - margin;
+        const spaceLeft = toggleRect.left - margin;
+        const spaceRight = viewportWidth - toggleRect.right - margin;
+
+        const fitsBelow = spaceBelow >= menuRect.height;
+        const fitsAbove = spaceAbove >= menuRect.height;
+        const fitsRight = spaceRight >= menuRect.width;
+        const fitsLeft = spaceLeft >= menuRect.width;
+
+        let placement = 'up';
+
+        if (fitsBelow && !fitsAbove) {
+            placement = 'down';
+        } else if (fitsAbove && !fitsBelow) {
+            placement = 'up';
+        } else if (fitsRight && !fitsLeft) {
+            placement = 'right';
+        } else if (fitsLeft && !fitsRight) {
+            placement = 'left';
         } else {
-            // Desktop / tablet default centered
-            panel.style.position = 'fixed';
-            panel.style.left = '50%';
-            panel.style.top = '50%';
-            panel.style.right = '';
-            panel.style.bottom = '';
-            panel.style.transform = 'translate(-50%, -50%)';
+            const roomAbove = spaceAbove - menuRect.height;
+            const roomBelow = spaceBelow - menuRect.height;
+            const roomLeft = spaceLeft - menuRect.width;
+            const roomRight = spaceRight - menuRect.width;
+            const candidate = [
+                { side: 'up', room: roomAbove },
+                { side: 'down', room: roomBelow },
+                { side: 'left', room: roomLeft },
+                { side: 'right', room: roomRight },
+            ].sort((a, b) => b.room - a.room)[0];
+            placement = candidate && candidate.room > -Infinity ? candidate.side : 'up';
+        }
 
-            if (menu) {
-                menu.style.position = '';
-                menu.style.left = '50%';
-                menu.style.right = '';
-                menu.style.top = '';
-                menu.style.bottom = '';
-                menu.style.transform = 'translateX(-50%)';
-            }
+        menu.classList.add(`menu-open-${placement}`);
+
+        const menuStyle = menu.style;
+        menuStyle.position = 'fixed';
+        menuStyle.left = '';
+        menuStyle.right = '';
+        menuStyle.top = '';
+        menuStyle.bottom = '';
+        menuStyle.transform = '';
+
+        if (placement === 'down') {
+            menuStyle.top = `${toggleRect.bottom + 10}px`;
+            menuStyle.left = `${Math.max(margin, Math.min(toggleRect.left, viewportWidth - menuRect.width - margin))}px`;
+        } else if (placement === 'left') {
+            menuStyle.top = `${Math.max(margin, Math.min(toggleRect.top - (menuRect.height / 2), viewportHeight - menuRect.height - margin))}px`;
+            menuStyle.left = `${Math.max(margin, toggleRect.left - menuRect.width - 10)}px`;
+        } else if (placement === 'right') {
+            menuStyle.top = `${Math.max(margin, Math.min(toggleRect.top - (menuRect.height / 2), viewportHeight - menuRect.height - margin))}px`;
+            menuStyle.left = `${Math.min(viewportWidth - menuRect.width - margin, toggleRect.right + 10)}px`;
+        } else {
+            menuStyle.bottom = `${Math.max(margin, viewportHeight - toggleRect.top + 10)}px`;
+            menuStyle.left = `${Math.max(margin, Math.min(toggleRect.left, viewportWidth - menuRect.width - margin))}px`;
         }
     }
 
