@@ -158,6 +158,16 @@ class AccessibilityManager {
         const toggleBtn = document.getElementById('toggle-accessibility');
         const closeBtn = document.getElementById('close-accessibility');
         const menu = document.getElementById('accessibility-menu');
+        const panel = document.getElementById('accessibility-panel');
+        
+        // Variables para drag
+        let isDragging = false;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let dragStartPanelLeft = 0;
+        let dragStartPanelBottom = 0;
+        let dragThreshold = 5; // píxeles mínimos para considerar un drag
+        let dragDistance = 0;
         
         const toggleMenu = () => {
             const isExpanded = menu.hasAttribute('hidden');
@@ -170,7 +180,99 @@ class AccessibilityManager {
             }
         };
         
-        toggleBtn.addEventListener('click', toggleMenu);
+        // Iniciar drag
+        toggleBtn.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            dragDistance = 0;
+            
+            // Guardar posición actual
+            const panelStyle = window.getComputedStyle(panel);
+            dragStartPanelLeft = parseInt(panelStyle.right) || 20;
+            dragStartPanelBottom = parseInt(panelStyle.bottom) || 20;
+            
+            e.preventDefault();
+        });
+        
+        toggleBtn.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            dragStartX = e.touches[0].clientX;
+            dragStartY = e.touches[0].clientY;
+            dragDistance = 0;
+            
+            const panelStyle = window.getComputedStyle(panel);
+            dragStartPanelLeft = parseInt(panelStyle.right) || 20;
+            dragStartPanelBottom = parseInt(panelStyle.bottom) || 20;
+        });
+        
+        // Mover durante drag
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.clientX - dragStartX;
+            const deltaY = e.clientY - dragStartY;
+            dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            if (dragDistance > dragThreshold) {
+                // Calcular nueva posición
+                let newRight = dragStartPanelLeft - deltaX;
+                let newBottom = dragStartPanelBottom + deltaY;
+                
+                // Limitar a los bordes de pantalla (con margen)
+                const minMargin = 10;
+                const maxRight = window.innerWidth - minMargin - 64; // 64px es ancho del botón
+                const maxBottom = window.innerHeight - minMargin - 64;
+                
+                newRight = Math.max(minMargin, Math.min(newRight, maxRight));
+                newBottom = Math.max(minMargin, Math.min(newBottom, maxBottom));
+                
+                panel.style.right = newRight + 'px';
+                panel.style.bottom = newBottom + 'px';
+                panel.style.position = 'fixed';
+            }
+        });
+        
+        document.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            const deltaX = e.touches[0].clientX - dragStartX;
+            const deltaY = e.touches[0].clientY - dragStartY;
+            dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            if (dragDistance > dragThreshold) {
+                let newRight = dragStartPanelLeft - deltaX;
+                let newBottom = dragStartPanelBottom + deltaY;
+                
+                const minMargin = 10;
+                const maxRight = window.innerWidth - minMargin - 64;
+                const maxBottom = window.innerHeight - minMargin - 64;
+                
+                newRight = Math.max(minMargin, Math.min(newRight, maxRight));
+                newBottom = Math.max(minMargin, Math.min(newBottom, maxBottom));
+                
+                panel.style.right = newRight + 'px';
+                panel.style.bottom = newBottom + 'px';
+                panel.style.position = 'fixed';
+            }
+        }, {passive: true});
+        
+        // Finalizar drag
+        document.addEventListener('mouseup', () => {
+            if (isDragging && dragDistance <= dragThreshold) {
+                // Si el drag fue muy pequeño, tratar como click
+                toggleMenu();
+            }
+            isDragging = false;
+        });
+        
+        document.addEventListener('touchend', () => {
+            if (isDragging && dragDistance <= dragThreshold) {
+                toggleMenu();
+            }
+            isDragging = false;
+        });
+        
         closeBtn.addEventListener('click', () => {
             menu.setAttribute('hidden', '');
             toggleBtn.setAttribute('aria-expanded', 'false');

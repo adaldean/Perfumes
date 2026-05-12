@@ -19,8 +19,8 @@
 
 .accessibility-panel {
     position: fixed;
-    top: max(90px, env(safe-area-inset-top));
     right: max(20px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
     z-index: 9999;
     pointer-events: auto;
     margin: 0;
@@ -28,10 +28,13 @@
 }
 
 .accessibility-toggle {
+    width: 64px;
+    height: 64px;
+    padding: 0;
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
+    justify-content: center;
+    gap: 0;
     background: linear-gradient(135deg, var(--acc-primary), #C5A028);
     color: var(--acc-dark);
     border: 2px solid var(--acc-dark);
@@ -41,6 +44,22 @@
     font-size: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
+}
+
+.accessibility-toggle i {
+    font-size: 26px;
+}
+
+.accessibility-toggle span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 .accessibility-toggle:hover,
@@ -99,8 +118,8 @@
 
 .accessibility-menu {
     position: absolute;
-    top: 52px;
-    right: -15px;
+    right: 0;
+    bottom: 76px;
     background: white;
     border: 3px solid var(--acc-dark);
     border-radius: 8px;
@@ -725,30 +744,30 @@ select:focus {
 
 @media (max-width: 1400px) {
     .accessibility-panel {
-        top: 75px;
         right: 15px;
+        bottom: 15px;
     }
     
     .accessibility-menu {
         min-width: 320px;
-        max-height: calc(100vh - 170px);
+        max-height: calc(100vh - 140px);
     }
 }
 
 @media (max-width: 1024px) {
     .accessibility-panel {
-        top: 70px;
         right: 12px;
+        bottom: 12px;
     }
     
     .accessibility-menu {
         min-width: 300px;
-        max-height: calc(100vh - 150px);
+        max-height: calc(100vh - 130px);
     }
     
     .accessibility-toggle {
-        padding: 11px 15px;
-        font-size: 13px;
+        width: 60px;
+        height: 60px;
     }
 }
 
@@ -778,20 +797,20 @@ select:focus {
     }
 
     .accessibility-panel {
-        top: 65px;
         right: 10px;
+        bottom: 10px;
         z-index: 9998;
         pointer-events: auto;
     }
 
     .accessibility-menu {
         position: fixed;
-        top: 65px;
         right: 10px;
         left: 10px;
+        bottom: 84px;
         min-width: auto;
         max-width: calc(100vw - 20px);
-        max-height: 70vh;
+        max-height: calc(100vh - 120px);
         border-radius: 12px;
         z-index: 9999;
         overflow-y: auto;
@@ -802,10 +821,13 @@ select:focus {
     }
 
     .accessibility-toggle {
-        padding: 10px 14px;
-        font-size: 13px;
-        gap: 6px;
+        width: 56px;
+        height: 56px;
         z-index: 9999;
+    }
+
+    .accessibility-toggle i {
+        font-size: 24px;
     }
     
     .accessibility-title {
