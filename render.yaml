@@ -49,17 +49,17 @@ services:
       - key: AWS_S3_REGION_NAME
         value: "us-east-1"
       - key: EMAIL_HOST
-        value: smtp.gmail.com
+        value: smtp.sendgrid.net
       - key: EMAIL_PORT
         value: "587"
       - key: EMAIL_HOST_USER
-        sync: false
+        value: apikey
       - key: EMAIL_HOST_PASSWORD
         sync: false
       - key: EMAIL_USE_TLS
         value: "True"
       - key: DEFAULT_FROM_EMAIL
-        sync: false
+        value: i231080113@iztalapala.tecnm.mx
 
 databases:
   - name: aura-essence-db
