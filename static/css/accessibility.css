@@ -19,8 +19,9 @@
 
 .accessibility-panel {
     position: fixed;
-    right: max(20px, env(safe-area-inset-right));
-    bottom: max(20px, env(safe-area-inset-bottom));
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     z-index: 9999;
     pointer-events: auto;
     margin: 0;
@@ -44,6 +45,9 @@
     font-size: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .accessibility-toggle i {
@@ -118,8 +122,9 @@
 
 .accessibility-menu {
     position: absolute;
-    right: 0;
-    bottom: 76px;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(100% + 12px);
     background: white;
     border: 3px solid var(--acc-dark);
     border-radius: 8px;
@@ -744,8 +749,9 @@ select:focus {
 
 @media (max-width: 1400px) {
     .accessibility-panel {
-        right: 15px;
-        bottom: 15px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
     
     .accessibility-menu {
@@ -756,8 +762,9 @@ select:focus {
 
 @media (max-width: 1024px) {
     .accessibility-panel {
-        right: 12px;
-        bottom: 12px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
     
     .accessibility-menu {
@@ -797,17 +804,18 @@ select:focus {
     }
 
     .accessibility-panel {
-        right: 10px;
-        bottom: 10px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
         z-index: 9998;
         pointer-events: auto;
     }
 
     .accessibility-menu {
         position: fixed;
-        right: 10px;
-        left: 10px;
-        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: calc(50% + 44px); /* open above center FAB */
         min-width: auto;
         max-width: calc(100vw - 20px);
         max-height: calc(100vh - 120px);

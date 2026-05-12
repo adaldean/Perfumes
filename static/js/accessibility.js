@@ -165,7 +165,7 @@ class AccessibilityManager {
         let dragStartX = 0;
         let dragStartY = 0;
         let dragStartPanelLeft = 0;
-        let dragStartPanelBottom = 0;
+        let dragStartPanelTop = 0;
         let dragThreshold = 5; // píxeles mínimos para considerar un drag
         let dragDistance = 0;
         
@@ -186,12 +186,12 @@ class AccessibilityManager {
             dragStartX = e.clientX;
             dragStartY = e.clientY;
             dragDistance = 0;
-            
-            // Guardar posición actual
-            const panelStyle = window.getComputedStyle(panel);
-            dragStartPanelLeft = parseInt(panelStyle.right) || 20;
-            dragStartPanelBottom = parseInt(panelStyle.bottom) || 20;
-            
+
+            // Guardar posición actual (usando left/top cuando está centrado)
+            const rect = panel.getBoundingClientRect();
+            dragStartPanelLeft = rect.left;
+            dragStartPanelTop = rect.top;
+
             e.preventDefault();
         });
         
@@ -200,10 +200,55 @@ class AccessibilityManager {
             dragStartX = e.touches[0].clientX;
             dragStartY = e.touches[0].clientY;
             dragDistance = 0;
-            
-            const panelStyle = window.getComputedStyle(panel);
-            dragStartPanelLeft = parseInt(panelStyle.right) || 20;
-            dragStartPanelBottom = parseInt(panelStyle.bottom) || 20;
+
+            const rect = panel.getBoundingClientRect();
+            dragStartPanelLeft = rect.left;
+            dragStartPanelTop = rect.top;
+        });
+
+        // Pointer events (unified for mouse/touch/pen)
+        toggleBtn.addEventListener('pointerdown', (e) => {
+            // Only track primary pointers
+            if (e.isPrimary === false) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            dragDistance = 0;
+            const rect = panel.getBoundingClientRect();
+            dragStartPanelLeft = rect.left;
+            dragStartPanelTop = rect.top;
+            // capture pointer to continue receiving events
+            try { toggleBtn.setPointerCapture && toggleBtn.setPointerCapture(e.pointerId); } catch (err) {}
+            e.preventDefault();
+        });
+
+        document.addEventListener('pointermove', (e) => {
+            if (!isDragging) return;
+            if (e.isPrimary === false) return;
+            const deltaX = e.clientX - dragStartX;
+            const deltaY = e.clientY - dragStartY;
+            dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (dragDistance > dragThreshold) {
+                let newLeft = dragStartPanelLeft + deltaX;
+                let newTop = dragStartPanelTop + deltaY;
+                const minMargin = 10;
+                const btnW = toggleBtn.offsetWidth || 64;
+                const btnH = toggleBtn.offsetHeight || 64;
+                newLeft = Math.max(minMargin, Math.min(newLeft, window.innerWidth - minMargin - btnW));
+                newTop = Math.max(minMargin, Math.min(newTop, window.innerHeight - minMargin - btnH));
+                panel.style.left = newLeft + 'px';
+                panel.style.top = newTop + 'px';
+                panel.style.transform = 'none';
+                panel.style.position = 'fixed';
+            }
+        });
+
+        document.addEventListener('pointerup', (e) => {
+            if (isDragging && dragDistance <= dragThreshold) {
+                toggleMenu();
+            }
+            isDragging = false;
+            try { toggleBtn.releasePointerCapture && toggleBtn.releasePointerCapture(e.pointerId); } catch (err) {}
         });
         
         // Mover durante drag
@@ -213,22 +258,17 @@ class AccessibilityManager {
             const deltaX = e.clientX - dragStartX;
             const deltaY = e.clientY - dragStartY;
             dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            
             if (dragDistance > dragThreshold) {
-                // Calcular nueva posición
-                let newRight = dragStartPanelLeft - deltaX;
-                let newBottom = dragStartPanelBottom + deltaY;
-                
-                // Limitar a los bordes de pantalla (con margen)
+                let newLeft = dragStartPanelLeft + deltaX;
+                let newTop = dragStartPanelTop + deltaY;
                 const minMargin = 10;
-                const maxRight = window.innerWidth - minMargin - 64; // 64px es ancho del botón
-                const maxBottom = window.innerHeight - minMargin - 64;
-                
-                newRight = Math.max(minMargin, Math.min(newRight, maxRight));
-                newBottom = Math.max(minMargin, Math.min(newBottom, maxBottom));
-                
-                panel.style.right = newRight + 'px';
-                panel.style.bottom = newBottom + 'px';
+                const btnW = toggleBtn.offsetWidth || 64;
+                const btnH = toggleBtn.offsetHeight || 64;
+                newLeft = Math.max(minMargin, Math.min(newLeft, window.innerWidth - minMargin - btnW));
+                newTop = Math.max(minMargin, Math.min(newTop, window.innerHeight - minMargin - btnH));
+                panel.style.left = newLeft + 'px';
+                panel.style.top = newTop + 'px';
+                panel.style.transform = 'none';
                 panel.style.position = 'fixed';
             }
         });
@@ -239,20 +279,17 @@ class AccessibilityManager {
             const deltaX = e.touches[0].clientX - dragStartX;
             const deltaY = e.touches[0].clientY - dragStartY;
             dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            
             if (dragDistance > dragThreshold) {
-                let newRight = dragStartPanelLeft - deltaX;
-                let newBottom = dragStartPanelBottom + deltaY;
-                
+                let newLeft = dragStartPanelLeft + deltaX;
+                let newTop = dragStartPanelTop + deltaY;
                 const minMargin = 10;
-                const maxRight = window.innerWidth - minMargin - 64;
-                const maxBottom = window.innerHeight - minMargin - 64;
-                
-                newRight = Math.max(minMargin, Math.min(newRight, maxRight));
-                newBottom = Math.max(minMargin, Math.min(newBottom, maxBottom));
-                
-                panel.style.right = newRight + 'px';
-                panel.style.bottom = newBottom + 'px';
+                const btnW = toggleBtn.offsetWidth || 64;
+                const btnH = toggleBtn.offsetHeight || 64;
+                newLeft = Math.max(minMargin, Math.min(newLeft, window.innerWidth - minMargin - btnW));
+                newTop = Math.max(minMargin, Math.min(newTop, window.innerHeight - minMargin - btnH));
+                panel.style.left = newLeft + 'px';
+                panel.style.top = newTop + 'px';
+                panel.style.transform = 'none';
                 panel.style.position = 'fixed';
             }
         }, {passive: true});
