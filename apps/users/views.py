@@ -48,6 +48,13 @@ def _authenticate_username_or_email(request, identifier, password):
     return user
 
 
+def _find_user_by_identifier(identifier):
+    User = get_user_model()
+    if '@' in identifier:
+        return User.objects.filter(email__iexact=identifier).first()
+    return User.objects.filter(username__iexact=identifier).first()
+
+
 def _verify_recaptcha(request):
     """Valida el token de reCAPTCHA con Google."""
     recaptcha_response = request.POST.get('g-recaptcha-response')
@@ -171,6 +178,27 @@ def login_view(request):
 
             next_url = request.GET.get('next') or reverse('frontend:catalogo')
             return redirect(next_url)
+
+        # Si el usuario existe pero aún no está activo/verificado, mostrar un mensaje claro
+        candidate = _find_user_by_identifier(identifier)
+        if candidate is not None:
+            if not candidate.is_active:
+                return render(request, 'auth/login.html', {
+                    'error': 'Tu cuenta aún no ha sido activada. Revisa tu correo y usa el enlace de activación antes de iniciar sesión.',
+                    'username': identifier,
+                    'google_login_available': _google_login_available(request),
+                    'recaptcha_public_key': getattr(settings, 'RECAPTCHA_PUBLIC_KEY', ''),
+                    'success': success_message,
+                })
+
+            if not candidate.is_staff and not candidate.is_superuser and not _email_verified(candidate):
+                return render(request, 'auth/login.html', {
+                    'error': 'Tu correo todavía no está verificado. Revisa tu bandeja de entrada y confirma tu cuenta.',
+                    'username': identifier,
+                    'google_login_available': _google_login_available(request),
+                    'recaptcha_public_key': getattr(settings, 'RECAPTCHA_PUBLIC_KEY', ''),
+                    'success': success_message,
+                })
 
         return render(request, 'auth/login.html', {
             'error': 'Usuario o contraseña incorrectos',
