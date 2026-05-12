@@ -128,6 +128,9 @@ def agregar_carrito(request):
             else:
                 item.cantidad += cantidad
             item.save()
+            
+            # Devolver cantidad_items actualizada
+            cantidad_items = carrito.cantidad_items
         else:
             # Agregar a carrito de sesión
             sid = str(producto_id)
@@ -136,7 +139,14 @@ def agregar_carrito(request):
             request.session['carrito'] = carrito_sesion
             request.session.modified = True
             
-        return JsonResponse({'exito': True, 'mensaje': 'Producto agregado'})
+            # Calcular cantidad_items para sesión
+            cantidad_items = sum(carrito_sesion.values())
+            
+        return JsonResponse({
+            'exito': True, 
+            'mensaje': 'Producto agregado',
+            'cantidad_items': cantidad_items
+        })
     except Exception as e:
         logger.error(f"Error agregando al carrito: {str(e)}")
         return JsonResponse({'exito': False, 'error': str(e)}, status=500)
@@ -158,6 +168,8 @@ def eliminar_de_carrito(request):
             carrito, _ = Carrito.objects.get_or_create(usuario=request.user)
             # Remove item for this product
             ItemCarrito.objects.filter(carrito=carrito, producto_id=producto_id).delete()
+            # Obtener cantidad_items actualizada
+            cantidad_items = carrito.cantidad_items
         else:
             sid = str(producto_id)
             carrito_sesion = request.session.get('carrito', {})
@@ -165,8 +177,14 @@ def eliminar_de_carrito(request):
                 del carrito_sesion[sid]
                 request.session['carrito'] = carrito_sesion
                 request.session.modified = True
+            # Calcular cantidad_items para sesión
+            cantidad_items = sum(carrito_sesion.values())
         
-        return JsonResponse({'exito': True, 'mensaje': 'Producto eliminado'})
+        return JsonResponse({
+            'exito': True, 
+            'mensaje': 'Producto eliminado',
+            'cantidad_items': cantidad_items
+        })
     except Exception as e:
         return JsonResponse({'exito': False, 'error': str(e)}, status=500)
 

@@ -126,7 +126,7 @@ if not DEBUG:
     SECURE_REFERRER_POLICY = 'same-origin'
 
     # Configuración de Almacenamiento
-    if os.getenv('AWS_ACCESS_KEY_ID'):
+    if os.getenv('AWS_ACCESS_KEY_ID') and os.getenv('AWS_SECRET_ACCESS_KEY') and os.getenv('AWS_STORAGE_BUCKET_NAME'):
         AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
         AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
         AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
@@ -135,6 +135,8 @@ if not DEBUG:
         AWS_QUERYSTRING_AUTH = False
         AWS_S3_FILE_OVERWRITE = False
         AWS_DEFAULT_ACL = None
+        AWS_S3_SIGNATURE_VERSION = 's3v4'
+        AWS_S3_ADDRESSING_STYLE = 'path'
 
         STORAGES = {
             'default': {
@@ -147,6 +149,13 @@ if not DEBUG:
 
         STATIC_URL = '/static/'
         MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/'
+        
+        # Logging para S3
+        import logging
+        boto3_logger = logging.getLogger('boto3')
+        boto3_logger.setLevel(logging.WARNING)
+        botocore_logger = logging.getLogger('botocore')
+        botocore_logger.setLevel(logging.WARNING)
     else:
         # Si no hay S3, WhiteNoise maneja estáticos; media se queda local (limitado en Render)
         STORAGES = {

@@ -201,8 +201,8 @@
                 <a href="{% url 'auth:carrito' %}"
                     class="relative text-xl hover:text-brand-gold transition-colors dark:text-gray-200">
                     <i class="fa-solid fa-bag-shopping"></i>
-                    <span
-                        class="absolute -top-1 -right-2 bg-brand-gold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">0</span>
+                    <span id="cart-badge"
+                        class="absolute -top-1 -right-2 bg-brand-gold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ carrito_items_count|default:0 }}</span>
                 </a>
             </div>
 

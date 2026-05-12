@@ -186,10 +186,21 @@ document.addEventListener('DOMContentLoaded', function(){
 
                 const data = await response.json();
                 if (data.exito) {
-                    // opcional: actualizar contador de carrito si existe
-                    const badge = document.querySelector('.fa-bag-shopping + span, .cart-badge');
-                    if (badge && data.cantidad_items) badge.textContent = data.cantidad_items;
-                    this.innerHTML = original;
+                    // Actualizar contador de carrito - múltiples selectores para compatibilidad
+                    const badge = document.getElementById('cart-badge') || 
+                                  document.querySelector('.cart-badge') ||
+                                  document.querySelector('[data-cart-count]');
+                    if (badge && data.cantidad_items) {
+                        badge.textContent = data.cantidad_items;
+                    }
+                    
+                    // Feedback visual
+                    this.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    this.classList.add('bg-green-500');
+                    setTimeout(() => {
+                        this.innerHTML = original;
+                        this.classList.remove('bg-green-500');
+                    }, 1500);
                 } else {
                     alert('Error al agregar al carrito: ' + (data.error || 'Desconocido'));
                     this.innerHTML = original;
