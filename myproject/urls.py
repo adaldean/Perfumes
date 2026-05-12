@@ -2,8 +2,6 @@
 URL configuration for myproject project.
 """
 
-import os
-
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
@@ -41,10 +39,7 @@ urlpatterns = [
     path('catalogo/', include('apps.catalog.urls')),
 ]
 
-# Servir media local también en producción cuando no hay S3 configurado.
-if not os.getenv('AWS_STORAGE_BUCKET_NAME'):
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-# Archivos estáticos adicionales de desarrollo.
+# Servir archivos estáticos y de medios en desarrollo
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
