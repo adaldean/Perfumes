@@ -213,6 +213,7 @@ LOGOUT_REDIRECT_URL = '/login/'
 
 # Email config unificada
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend' if DEBUG else 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_TIMEOUT = 10  # Timeout de 10 segundos para evitar Worker Timeouts en Gunicorn
 EMAIL_HOST = os.getenv('EMAIL_HOST', '')
 EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')

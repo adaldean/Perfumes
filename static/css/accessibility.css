@@ -25,12 +25,18 @@
     pointer-events: auto;
     margin: 0;
     padding: 0;
+    /* Prevención de colapso de dimensiones al arrastrar el panel */
+    min-width: 64px;
+    min-height: 64px;
 }
 
 .accessibility-toggle {
     width: 64px;
     height: 64px;
+    min-width: 64px;
+    min-height: 64px;
     padding: 0;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -46,6 +52,7 @@
     transition: all 0.3s ease;
     touch-action: none;
     -webkit-user-select: none;
+    white-space: nowrap;
     user-select: none;
 }
 
@@ -129,9 +136,11 @@
     border-radius: 8px;
     padding: 20px;
     min-width: 340px;
+    max-width: 90vw;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     max-height: calc(100vh - 200px - env(safe-area-inset-bottom));
     overflow-y: auto;
+    overflow-x: hidden;
     color: var(--acc-dark);
     z-index: 9999;
 }
