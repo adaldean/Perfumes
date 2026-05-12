@@ -21,6 +21,9 @@ from apps.orders.models import Carrito
 from .forms import RegistroForm
 from .models import UserProfile, EmailOTP
 from allauth.account.adapter import get_adapter
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def _google_login_available(request):
@@ -270,8 +273,9 @@ def signup_view(request):
 
                 messages.success(request, 'Cuenta creada exitosamente. Revisa tu correo para activar tu cuenta.')
                 return redirect('auth:login')
-            except Exception:
-                errores = {'general': 'No se pudo enviar el correo de activación. Revisa la configuración de email del servidor.'}
+            except Exception as e:
+                logger.error(f"Error completo en el registro: {str(e)}")
+                errores = {'general': f'No se pudo enviar el correo de activación: {str(e)}'}
                 return render(request, 'auth/registro.html', {
                     'errores': errores,
                     'username': request.POST.get('username'),
@@ -354,4 +358,10 @@ def _send_activation_email(request, user):
     """
     
     from_email = settings.DEFAULT_FROM_EMAIL
-    send_mail(subject, message, from_email, [user.email], fail_silently=False)
+    
+    logger.info(f"Intentando conectar a SMTP: Host={settings.EMAIL_HOST}, Puerto={settings.EMAIL_PORT}, Usuario={settings.EMAIL_HOST_USER}, TLS={settings.EMAIL_USE_TLS}")
+    try:
+        send_mail(subject, message, from_email, [user.email], fail_silently=False)
+    except Exception as e:
+        logger.error(f"Excepción al enviar el email: {str(e)}")
+        raise e
