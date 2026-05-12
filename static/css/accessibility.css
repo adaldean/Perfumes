@@ -414,10 +414,34 @@ body.high-contrast .accessibility-toggle {
 
 body.reading-mode {
     line-height: 1.8 !important;
+    font-size: 18px !important;
 }
 
 body.reading-mode * {
     line-height: 1.8 !important;
+    font-size: 18px !important;
+}
+
+body.reading-mode h1,
+body.reading-mode h2,
+body.reading-mode h3 {
+    font-size: 32px !important;
+    margin: 24px 0 16px 0 !important;
+}
+
+body.reading-mode p,
+body.reading-mode li,
+body.reading-mode td {
+    font-size: 20px !important;
+}
+
+body.reading-mode main,
+body.reading-mode .container,
+body.reading-mode article {
+    max-width: 800px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 40px 20px !important;
 }
 
 /* ====================================
