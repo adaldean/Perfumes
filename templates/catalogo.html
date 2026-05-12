@@ -149,3 +149,59 @@
 </section>
 
 {% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.querySelectorAll('.add-to-cart-btn[data-id]').forEach(btn => {
+        btn.addEventListener('click', async function (e) {
+            const productoId = this.dataset.id;
+            const original = this.innerHTML;
+            this.disabled = true;
+            this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+
+            try {
+                const response = await fetch('/api/carrito/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ producto_id: productoId, cantidad: 1 })
+                });
+
+                const data = await response.json();
+                if (data.exito) {
+                    // opcional: actualizar contador de carrito si existe
+                    const badge = document.querySelector('.fa-bag-shopping + span, .cart-badge');
+                    if (badge && data.cantidad_items) badge.textContent = data.cantidad_items;
+                    this.innerHTML = original;
+                } else {
+                    alert('Error al agregar al carrito: ' + (data.error || 'Desconocido'));
+                    this.innerHTML = original;
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error de conexión al agregar al carrito.');
+                this.innerHTML = original;
+            }
+
+            this.disabled = false;
+        });
+    });
+});
+</script>

@@ -9,6 +9,7 @@ class AccessibilityManager {
         this.synth = window.speechSynthesis;
         this.currentUtterance = null;
         this.skipLinksAdded = false;
+        this.userMoved = false; // whether user repositioned the panel
 
         this.init();
     }
@@ -148,6 +149,8 @@ class AccessibilityManager {
         `;
 
         document.body.insertBefore(panel, document.body.firstChild);
+        // Ensure panel position is appropriate for current viewport
+        this.resetPanelPositionForViewport();
         this.attachEventListeners();
     }
 
@@ -180,7 +183,7 @@ class AccessibilityManager {
             }
         };
         
-        // Iniciar drag
+        // Iniciar drag (mouse)
         toggleBtn.addEventListener('mousedown', (e) => {
             isDragging = true;
             dragStartX = e.clientX;
@@ -191,8 +194,6 @@ class AccessibilityManager {
             const rect = panel.getBoundingClientRect();
             dragStartPanelLeft = rect.left;
             dragStartPanelTop = rect.top;
-
-            e.preventDefault();
         });
         
         toggleBtn.addEventListener('touchstart', (e) => {
@@ -219,7 +220,17 @@ class AccessibilityManager {
             dragStartPanelTop = rect.top;
             // capture pointer to continue receiving events
             try { toggleBtn.setPointerCapture && toggleBtn.setPointerCapture(e.pointerId); } catch (err) {}
-            e.preventDefault();
+        });
+
+        // Prevent accidental double-toggle: suppress click briefly after pointerup toggles
+        let suppressClick = false;
+
+        // Click should also toggle menu for simple taps (avoids issues on some mobile browsers)
+        toggleBtn.addEventListener('click', (e) => {
+            if (suppressClick) return;
+            if (!isDragging || dragDistance <= dragThreshold) {
+                toggleMenu();
+            }
         });
 
         document.addEventListener('pointermove', (e) => {
@@ -246,7 +257,11 @@ class AccessibilityManager {
         document.addEventListener('pointerup', (e) => {
             if (isDragging && dragDistance <= dragThreshold) {
                 toggleMenu();
+                suppressClick = true;
+                setTimeout(() => { suppressClick = false; }, 300);
             }
+            // If the user actually dragged the panel, remember it
+            if (dragDistance > dragThreshold) this.userMoved = true;
             isDragging = false;
             try { toggleBtn.releasePointerCapture && toggleBtn.releasePointerCapture(e.pointerId); } catch (err) {}
         });
@@ -300,6 +315,8 @@ class AccessibilityManager {
                 // Si el drag fue muy pequeño, tratar como click
                 toggleMenu();
             }
+            // Si el usuario arrastró, marcar posición personalizada
+            if (dragDistance > dragThreshold) this.userMoved = true;
             isDragging = false;
         });
         
@@ -307,6 +324,7 @@ class AccessibilityManager {
             if (isDragging && dragDistance <= dragThreshold) {
                 toggleMenu();
             }
+            if (dragDistance > dragThreshold) this.userMoved = true;
             isDragging = false;
         });
         
@@ -357,6 +375,72 @@ class AccessibilityManager {
 
         // Detener lectura
         document.getElementById('stop-reading-btn').addEventListener('click', () => this.stopReading());
+    }
+
+    /**
+     * Ajusta la posición del panel para pantallas pequeñas si el usuario no lo ha movido.
+     */
+    resetPanelPositionForViewport() {
+        const panel = document.getElementById('accessibility-panel');
+        const menu = document.getElementById('accessibility-menu');
+        if (!panel) return;
+        // No sobrescribir la posición si el usuario la ha personalizado
+        if (this.userMoved) return;
+        const header = document.querySelector('header');
+        // For small viewports, place panel under header (respect safe area)
+        if (window.innerWidth <= 600) {
+            panel.style.position = 'fixed';
+            panel.style.left = 'auto';
+            panel.style.right = '12px';
+            panel.style.bottom = 'auto';
+            panel.style.transform = 'none';
+
+            if (header) {
+                const hRect = header.getBoundingClientRect();
+                const topPx = Math.max(hRect.bottom + 8, 8); // keep at least 8px
+                panel.style.top = topPx + 'px';
+
+                if (menu) {
+                    const toggle = document.getElementById('toggle-accessibility');
+                    const toggleH = toggle ? toggle.offsetHeight : 48;
+                    const menuTop = topPx + toggleH + 8;
+                    menu.style.position = 'fixed';
+                    menu.style.top = menuTop + 'px';
+                    menu.style.right = '12px';
+                    menu.style.left = 'auto';
+                    menu.style.bottom = 'auto';
+                    menu.style.transform = 'none';
+                }
+            } else {
+                // fallback: bottom-right
+                panel.style.top = '';
+                panel.style.bottom = '12px';
+                if (menu) {
+                    menu.style.position = 'fixed';
+                    menu.style.bottom = '70px';
+                    menu.style.right = '12px';
+                    menu.style.left = 'auto';
+                    menu.style.transform = 'none';
+                }
+            }
+        } else {
+            // Desktop / tablet default centered
+            panel.style.position = 'fixed';
+            panel.style.left = '50%';
+            panel.style.top = '50%';
+            panel.style.right = '';
+            panel.style.bottom = '';
+            panel.style.transform = 'translate(-50%, -50%)';
+
+            if (menu) {
+                menu.style.position = '';
+                menu.style.left = '50%';
+                menu.style.right = '';
+                menu.style.top = '';
+                menu.style.bottom = '';
+                menu.style.transform = 'translateX(-50%)';
+            }
+        }
     }
 
     /**
@@ -730,7 +814,10 @@ class AccessibilityManager {
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         window.accessibilityManager = new AccessibilityManager();
+        // Ajustar al cambiar el tamaño
+        window.addEventListener('resize', () => window.accessibilityManager.resetPanelPositionForViewport());
     });
 } else {
     window.accessibilityManager = new AccessibilityManager();
+    window.addEventListener('resize', () => window.accessibilityManager.resetPanelPositionForViewport());
 }
