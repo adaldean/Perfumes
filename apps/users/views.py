@@ -3,6 +3,7 @@ import requests
 from datetime import timedelta
 
 from django.shortcuts import render, redirect
+from django.db import transaction
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
@@ -252,21 +253,33 @@ def signup_view(request):
         recaptcha_success, recaptcha_error = _verify_recaptcha(request)
         
         if form.is_valid() and recaptcha_success:
-            # Crear usuario inactivo
-            user = get_user_model().objects.create_user(
-                username=form.cleaned_data['username'],
-                email=form.cleaned_data['email'],
-                password=form.cleaned_data['password'],
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                is_active=False
-            )
-            
-            # Enviar email de activación
-            _send_activation_email(request, user)
-            
-            messages.success(request, 'Cuenta creada exitosamente. Revisa tu correo para activar tu cuenta.')
-            return redirect('auth:login')
+            try:
+                with transaction.atomic():
+                    # Crear usuario inactivo
+                    user = get_user_model().objects.create_user(
+                        username=form.cleaned_data['username'],
+                        email=form.cleaned_data['email'],
+                        password=form.cleaned_data['password'],
+                        first_name=form.cleaned_data['first_name'],
+                        last_name=form.cleaned_data['last_name'],
+                        is_active=False
+                    )
+
+                    # Enviar email de activación
+                    _send_activation_email(request, user)
+
+                messages.success(request, 'Cuenta creada exitosamente. Revisa tu correo para activar tu cuenta.')
+                return redirect('auth:login')
+            except Exception:
+                errores = {'general': 'No se pudo enviar el correo de activación. Revisa la configuración de email del servidor.'}
+                return render(request, 'auth/registro.html', {
+                    'errores': errores,
+                    'username': request.POST.get('username'),
+                    'email': request.POST.get('email'),
+                    'first_name': request.POST.get('first_name'),
+                    'last_name': request.POST.get('last_name'),
+                    'recaptcha_public_key': getattr(settings, 'RECAPTCHA_PUBLIC_KEY', ''),
+                })
         else:
             # Convertir errores del formulario al diccionario 'errores' que usa el HTML
             errores = {field: items[0] for field, items in form.errors.items()}
