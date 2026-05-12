@@ -185,34 +185,9 @@ class AccessibilityManager {
                 menu.classList.remove('menu-open-up', 'menu-open-down', 'menu-open-left', 'menu-open-right');
             }
         };
-        
-        // Iniciar drag (mouse)
-        toggleBtn.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            dragStartX = e.clientX;
-            dragStartY = e.clientY;
-            dragDistance = 0;
-
-            // Guardar posición actual (usando left/top cuando está centrado)
-            const rect = panel.getBoundingClientRect();
-            dragStartPanelLeft = rect.left;
-            dragStartPanelTop = rect.top;
-        });
-        
-        toggleBtn.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            dragStartX = e.touches[0].clientX;
-            dragStartY = e.touches[0].clientY;
-            dragDistance = 0;
-
-            const rect = panel.getBoundingClientRect();
-            dragStartPanelLeft = rect.left;
-            dragStartPanelTop = rect.top;
-        });
 
         // Pointer events (unified for mouse/touch/pen)
         toggleBtn.addEventListener('pointerdown', (e) => {
-            // Only track primary pointers
             if (e.isPrimary === false) return;
             isDragging = true;
             dragStartX = e.clientX;
@@ -221,19 +196,8 @@ class AccessibilityManager {
             const rect = panel.getBoundingClientRect();
             dragStartPanelLeft = rect.left;
             dragStartPanelTop = rect.top;
-            // capture pointer to continue receiving events
             try { toggleBtn.setPointerCapture && toggleBtn.setPointerCapture(e.pointerId); } catch (err) {}
-        });
-
-        // Prevent accidental double-toggle: suppress click briefly after pointerup toggles
-        let suppressClick = false;
-
-        // Click should also toggle menu for simple taps (avoids issues on some mobile browsers)
-        toggleBtn.addEventListener('click', (e) => {
-            if (suppressClick) return;
-            if (!isDragging || dragDistance <= dragThreshold) {
-                toggleMenu();
-            }
+            e.preventDefault(); // Evita que se disparen mousedown/touchstart extras de forma predeterminada
         });
 
         document.addEventListener('pointermove', (e) => {
@@ -258,79 +222,17 @@ class AccessibilityManager {
         });
 
         document.addEventListener('pointerup', (e) => {
-            if (isDragging && dragDistance <= dragThreshold) {
+            if (!isDragging) return;
+            if (e.isPrimary === false) return;
+            if (dragDistance <= dragThreshold) {
                 toggleMenu();
-                suppressClick = true;
-                setTimeout(() => { suppressClick = false; }, 300);
+            } else {
+                this.userMoved = true;
             }
-            // If the user actually dragged the panel, remember it
-            if (dragDistance > dragThreshold) this.userMoved = true;
             isDragging = false;
             try { toggleBtn.releasePointerCapture && toggleBtn.releasePointerCapture(e.pointerId); } catch (err) {}
         });
-        
-        // Mover durante drag
-        document.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            
-            const deltaX = e.clientX - dragStartX;
-            const deltaY = e.clientY - dragStartY;
-            dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            if (dragDistance > dragThreshold) {
-                let newLeft = dragStartPanelLeft + deltaX;
-                let newTop = dragStartPanelTop + deltaY;
-                const minMargin = 10;
-                const btnW = toggleBtn.offsetWidth || 64;
-                const btnH = toggleBtn.offsetHeight || 64;
-                newLeft = Math.max(minMargin, Math.min(newLeft, window.innerWidth - minMargin - btnW));
-                newTop = Math.max(minMargin, Math.min(newTop, window.innerHeight - minMargin - btnH));
-                panel.style.left = newLeft + 'px';
-                panel.style.top = newTop + 'px';
-                panel.style.transform = 'none';
-                panel.style.position = 'fixed';
-            }
-        });
-        
-        document.addEventListener('touchmove', (e) => {
-            if (!isDragging) return;
-            
-            const deltaX = e.touches[0].clientX - dragStartX;
-            const deltaY = e.touches[0].clientY - dragStartY;
-            dragDistance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            if (dragDistance > dragThreshold) {
-                let newLeft = dragStartPanelLeft + deltaX;
-                let newTop = dragStartPanelTop + deltaY;
-                const minMargin = 10;
-                const btnW = toggleBtn.offsetWidth || 64;
-                const btnH = toggleBtn.offsetHeight || 64;
-                newLeft = Math.max(minMargin, Math.min(newLeft, window.innerWidth - minMargin - btnW));
-                newTop = Math.max(minMargin, Math.min(newTop, window.innerHeight - minMargin - btnH));
-                panel.style.left = newLeft + 'px';
-                panel.style.top = newTop + 'px';
-                panel.style.transform = 'none';
-                panel.style.position = 'fixed';
-            }
-        }, {passive: true});
-        
-        // Finalizar drag
-        document.addEventListener('mouseup', () => {
-            if (isDragging && dragDistance <= dragThreshold) {
-                // Si el drag fue muy pequeño, tratar como click
-                toggleMenu();
-            }
-            // Si el usuario arrastró, marcar posición personalizada
-            if (dragDistance > dragThreshold) this.userMoved = true;
-            isDragging = false;
-        });
-        
-        document.addEventListener('touchend', () => {
-            if (isDragging && dragDistance <= dragThreshold) {
-                toggleMenu();
-            }
-            if (dragDistance > dragThreshold) this.userMoved = true;
-            isDragging = false;
-        });
-        
+
         closeBtn.addEventListener('click', () => {
             menu.setAttribute('hidden', '');
             toggleBtn.setAttribute('aria-expanded', 'false');
@@ -393,11 +295,11 @@ class AccessibilityManager {
         // No sobrescribir la posición si el usuario la ha personalizado
         if (this.userMoved) return;
         
-        // Posición inferior derecha por defecto
+        // Posición inferior izquierda por defecto (evita colisión con chatbot)
         panel.style.position = 'fixed';
         panel.style.top = 'auto';
-        panel.style.left = 'auto';
-        panel.style.right = '20px';
+        panel.style.right = 'auto';
+        panel.style.left = '20px';
         panel.style.bottom = '20px';
         panel.style.transform = 'none';
 
@@ -426,12 +328,21 @@ class AccessibilityManager {
             return;
         }
 
+        // Remueve clases de dirección
         menu.classList.remove('menu-open-up', 'menu-open-down', 'menu-open-left', 'menu-open-right');
+
+        // Para obtener el tamaño real sin que afecte el CSS actual o posiciones recortadas:
+        menu.style.position = 'fixed';
+        menu.style.top = '0px';
+        menu.style.left = '0px';
+        menu.style.transform = 'none';
 
         const margin = 12;
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
         const toggleRect = toggleBtn.getBoundingClientRect();
+        
+        // Ahora medimos el menú
         const menuRect = menu.getBoundingClientRect();
 
         const spaceAbove = toggleRect.top - margin;
@@ -472,9 +383,7 @@ class AccessibilityManager {
 
         const menuStyle = menu.style;
         menuStyle.position = 'fixed';
-        menuStyle.left = '';
         menuStyle.right = '';
-        menuStyle.top = '';
         menuStyle.bottom = '';
         menuStyle.transform = '';
 
@@ -488,6 +397,7 @@ class AccessibilityManager {
             menuStyle.top = `${Math.max(margin, Math.min(toggleRect.top - (menuRect.height / 2), viewportHeight - menuRect.height - margin))}px`;
             menuStyle.left = `${Math.min(viewportWidth - menuRect.width - margin, toggleRect.right + 10)}px`;
         } else {
+            menuStyle.top = '';
             menuStyle.bottom = `${Math.max(margin, viewportHeight - toggleRect.top + 10)}px`;
             menuStyle.left = `${Math.max(margin, Math.min(toggleRect.left, viewportWidth - menuRect.width - margin))}px`;
         }

@@ -19,7 +19,7 @@
 
 .accessibility-panel {
     position: fixed;
-    right: 20px;
+    left: 20px;
     bottom: 20px;
     z-index: 9999;
     pointer-events: auto;
@@ -763,12 +763,6 @@ select:focus {
    ==================================== */
 
 @media (max-width: 1400px) {
-    .accessibility-panel {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    
     .accessibility-menu {
         min-width: 320px;
         max-height: calc(100vh - 140px);
@@ -776,12 +770,6 @@ select:focus {
 }
 
 @media (max-width: 1024px) {
-    .accessibility-panel {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-    }
-    
     .accessibility-menu {
         min-width: 300px;
         max-height: calc(100vh - 130px);
@@ -816,14 +804,6 @@ select:focus {
     .accessibility-reading-loading {
         bottom: 80px;
         right: 10px;
-    }
-
-    .accessibility-panel {
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9998;
-        pointer-events: auto;
     }
 
     .accessibility-menu {
@@ -899,11 +879,6 @@ select:focus {
 }
 
 @media (max-width: 600px) {
-    .accessibility-panel {
-        top: 62px;
-        right: 8px;
-    }
-    
     .accessibility-menu {
         top: 62px;
         right: 8px;
@@ -920,13 +895,6 @@ select:focus {
 }
 
 @media (max-width: 480px) {
-    .accessibility-panel {
-        /* Respect the device safe area (notch) and keep panel below header */
-        top: calc(58px + env(safe-area-inset-top, 0px));
-        right: 6px;
-        z-index: 9998;
-    }
-
     .accessibility-toggle {
         padding: 8px 10px !important;
         font-size: 11px !important;
@@ -998,11 +966,6 @@ select:focus {
 }
 
 @media (max-width: 360px) {
-    .accessibility-panel {
-        top: 55px;
-        right: 3px;
-    }
-    
     .accessibility-toggle {
         padding: 7px 10px;
         font-size: 10px;
