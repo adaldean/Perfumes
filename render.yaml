@@ -4,7 +4,7 @@ services:
     region: oregon
     runtime: python
     buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --no-input"
-    startCommand: "python manage.py migrate --noinput && python manage.py create_initial_users && python manage.py restore_database --fixture backups/db_backup.json && python manage.py backup_database --output backups/db_backup.json && gunicorn myproject.wsgi:application"
+    startCommand: "python manage.py migrate --noinput && python manage.py create_initial_users && python manage.py restore_database --fixture backups/db_backup.json && python manage.py backup_database --output backups/db_backup.json && python manage.py migrate_media_to_s3 && gunicorn myproject.wsgi:application"
     envVars:
       - key: SECRET_KEY
         generateValue: true
@@ -40,6 +40,14 @@ services:
         sync: false
       - key: MERCADOPAGO_PUBLIC_KEY
         sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_STORAGE_BUCKET_NAME
+        value: ""
+      - key: AWS_S3_REGION_NAME
+        value: "us-east-1"
 
 databases:
   - name: aura-essence-db
